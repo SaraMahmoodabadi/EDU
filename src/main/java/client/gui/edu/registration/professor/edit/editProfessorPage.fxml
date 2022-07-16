@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.registration.professor.edit.EditProfessorController">
+   <children>
+      <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="48.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="563.0" layoutY="732.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="add" layoutX="519.0" layoutY="119.0" mnemonicParsing="false" onAction="#add" prefHeight="39.0" prefWidth="162.0" style="-fx-background-color: #b151b8;" text="add professor" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Line endX="468.0" layoutX="603.0" layoutY="187.0" startX="-475.0" />
+      <TextField fx:id="professorCode" alignment="CENTER" layoutX="493.0" layoutY="215.0" prefHeight="40.0" prefWidth="215.0" promptText="professor's code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="279.0" layoutX="110.0" layoutY="286.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="982.0" />
+      <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="93.0" layoutX="110.0" layoutY="586.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="982.0" />
+      <Button fx:id="deposal" layoutX="141.0" layoutY="613.0" mnemonicParsing="false" onAction="#deposal" prefHeight="39.0" prefWidth="325.0" style="-fx-background-color: #b151b8;" text="deposal of educatinal assistant" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="appointment" layoutX="732.0" layoutY="613.0" mnemonicParsing="false" onAction="#appointment" prefHeight="39.0" prefWidth="325.0" style="-fx-background-color: #b151b8;" text="appintment of educatinal assistant" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Text fx:id="phoneText" fill="#b151b8" layoutX="155.0" layoutY="326.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="phoneField" layoutX="155.0" layoutY="346.0" prefHeight="40.0" prefWidth="215.0" promptText="phone number" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="emailText" fill="#b151b8" layoutX="600.0" layoutY="332.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="emailField" layoutX="601.0" layoutY="346.0" prefHeight="40.0" prefWidth="400.0" promptText="email" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="roomText" fill="#b151b8" layoutX="155.0" layoutY="435.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room number">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="roomField" layoutX="155.0" layoutY="449.0" prefHeight="40.0" prefWidth="215.0" promptText="room number" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="gradeText" fill="#b151b8" layoutX="598.0" layoutY="434.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="assistant" layoutX="602.0" layoutY="459.0" mnemonicParsing="false" text="Assistant professor" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="associate" layoutX="777.0" layoutY="459.0" mnemonicParsing="false" text="Associate professor" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="full" layoutX="959.0" layoutY="459.0" mnemonicParsing="false" text="Full professor" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Button fx:id="edit" layoutX="519.0" layoutY="515.0" mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="162.0" style="-fx-background-color: #b151b8;" text="edit" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="remove" layoutX="517.0" layoutY="613.0" mnemonicParsing="false" onAction="#remove" prefHeight="39.0" prefWidth="162.0" style="-fx-background-color: #b151b8;" text="remove" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

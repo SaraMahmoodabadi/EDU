@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.registration.professor.list.ProfessorListController">
+   <children>
+      <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="563.0" layoutY="732.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <TableView fx:id="list" layoutX="161.0" layoutY="239.0" prefHeight="367.0" prefWidth="878.0" style="-fx-background-color: #ffffff;">
+         <columns>
+            <TableColumn fx:id="nameColumn" prefWidth="177.0" text="Professor's name" />
+            <TableColumn fx:id="codeColumn" prefWidth="121.0" text="Code" />
+            <TableColumn fx:id="collegeColumn" prefWidth="243.0" text="College's name" />
+            <TableColumn fx:id="degreeColumn" prefWidth="167.0" text="Degree" />
+            <TableColumn fx:id="postColumn" prefWidth="170.0" text="Post" />
+         </columns>
+         <effect>
+            <InnerShadow color="#b151b8" />
+         </effect>
+      </TableView>
+      <Button fx:id="edit" layoutX="510.0" layoutY="637.0" mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="181.0" style="-fx-background-color: #b151b8;" text="edit professors" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <ComboBox fx:id="collegeBox" layoutX="824.0" layoutY="107.0" prefHeight="40.0" prefWidth="215.0" promptText="college's name" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </ComboBox>
+      <ComboBox fx:id="degreeBox" layoutX="493.0" layoutY="107.0" prefHeight="40.0" prefWidth="215.0" promptText="degree" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </ComboBox>
+      <TextField fx:id="codeField" alignment="CENTER" layoutX="161.0" layoutY="107.0" prefHeight="40.0" prefWidth="215.0" promptText="professor's code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="show" layoutX="539.0" layoutY="177.0" mnemonicParsing="false" onAction="#show" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

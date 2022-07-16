@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.effect.SepiaTone?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.QuadCurve?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.login.loginPage.LoginController">
+   <children>
+      <ImageView fx:id="sharifImage" disable="true" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../resource/images/sharifUniversity.jpg" />
+         </image>
+         <effect>
+            <InnerShadow choke="0.49" color="#b151b8" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </ImageView>
+      <Rectangle fx:id="leftRectangle" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="800.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" width="600.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Rectangle fx:id="upRectangle" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="132.0" layoutX="735.0" layoutY="48.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="327.0" />
+      <Rectangle fx:id="middleRectangle" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="550.0" layoutX="675.0" layoutY="125.0" stroke="#ffd100" strokeType="INSIDE" width="450.0" />
+      <TextField fx:id="username" layoutX="750.0" layoutY="286.0" prefHeight="40.0" prefWidth="300.0" promptText="username" style="-fx-background-color: #b151b8;">
+         <effect>
+            <SepiaTone />
+         </effect>
+      </TextField>
+      <TextField fx:id="password" layoutX="750.0" layoutY="348.0" prefHeight="40.0" prefWidth="300.0" promptText="password" style="-fx-background-color: #b151b8;">
+         <effect>
+            <SepiaTone />
+         </effect>
+      </TextField>
+      <Text fx:id="startText" fill="#b151b8" layoutX="753.0" layoutY="100.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" text="In The Name Of God">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Text>
+      <Circle fx:id="person" fill="#b151b8" layoutX="899.0" layoutY="201.0" opacity="0.5" radius="66.0" stroke="#e4e0e0" strokeType="INSIDE" />
+      <Circle fill="#af53b800" layoutX="899.0" layoutY="180.0" opacity="0.5" radius="21.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="4.0" />
+      <QuadCurve controlX="-1.0" controlY="-98.0" endX="39.0" endY="-17.0" fill="#ae54b800" layoutX="900.0" layoutY="258.0" opacity="0.5" startX="-41.0" startY="-17.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+      <Line endX="-31.0" layoutX="965.0" layoutY="238.0" opacity="0.5" startX="-100.0" strokeWidth="5.0" />
+      <Rectangle fx:id="rightRectangle" arcHeight="5.0" arcWidth="5.0" fill="#b151b8" height="800.0" opacity="0.3" stroke="BLACK" strokeType="INSIDE" width="600.0" />
+      <ImageView fx:id="captchaImage" fitHeight="60.0" fitWidth="150.0" layoutX="824.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="recaptcha" layoutX="981.0" layoutY="425.0" mnemonicParsing="false" onAction="#recaptcha" prefHeight="40.0" prefWidth="46.0" style="-fx-background-image: recaptchaLogo.png; -fx-background-color: #b151b8;">
+         <graphic>
+            <ImageView fx:id="recaptchaImage" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../resource/images/recaptchaLogo.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <TextField fx:id="captchaText" layoutX="750.0" layoutY="487.0" prefHeight="40.0" prefWidth="300.0" promptText="captcha" style="-fx-background-color: #b151b8;">
+         <effect>
+            <SepiaTone />
+         </effect>
+      </TextField>
+      <Button fx:id="login" layoutX="839.0" layoutY="593.0" mnemonicParsing="false" onAction="#login" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="login" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

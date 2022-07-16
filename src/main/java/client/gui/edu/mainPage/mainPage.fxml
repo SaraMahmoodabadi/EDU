@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.mainPage.MainPageController">
+   <children>
+      <Rectangle fx:id="upRectangle" arcHeight="5.0" arcWidth="5.0" fill="#b151b8" height="50.0" stroke="#b151b8" strokeType="INSIDE" width="1200.0" />
+      <MenuBar fx:id="menuBar" layoutY="50.0" prefHeight="39.0" prefWidth="1200.0" style="-fx-background-color: #ffd100;">
+        <menus>
+          <Menu fx:id="registrationMatters" mnemonicParsing="false" text="Registration matters">
+            <items>
+              <MenuItem fx:id="lessonsList" mnemonicParsing="false" onAction="#showLessonsList" text="Lessons list" />
+                  <MenuItem fx:id="professorsList" mnemonicParsing="false" onAction="#showProfessorsList" text="Professors list" />
+                  <MenuItem fx:id="newUser" mnemonicParsing="false" onAction="#showNewUserPage" text="New user" />
+            </items>
+          </Menu>
+          <Menu fx:id="educationalServices" mnemonicParsing="false" text="Educational services">
+            <items>
+              <MenuItem fx:id="weeklySchedule" mnemonicParsing="false" onAction="#showWeeklySchedule" text="Weekly schedule" />
+                  <MenuItem fx:id="examList" mnemonicParsing="false" onAction="#showExamList" text="Exam list" />
+                  <MenuItem fx:id="requests" mnemonicParsing="false" onAction="#showRequests" text="Requests" />
+                  <MenuItem fx:id="unitSelection" mnemonicParsing="false" onAction="#showUnitSelectionPage" text="Unit selection" />
+            </items>
+          </Menu>
+          <Menu fx:id="reportCardMatters" mnemonicParsing="false" text="Report card matters">
+            <items>
+              <MenuItem fx:id="temporaryScores" mnemonicParsing="false" onAction="#showTemporaryScores" text="Temporary scores" />
+                  <MenuItem fx:id="educationalStatus" mnemonicParsing="false" onAction="#showEducationalStatus" text="Educational status" />
+            </items>
+          </Menu>
+            <Menu fx:id="courseware" mnemonicParsing="false" text="Courseware">
+              <items>
+                <MenuItem fx:id="coursewareItem" mnemonicParsing="false" onAction="#showCourseware" text="Courseware" />
+              </items>
+            </Menu>
+            <Menu fx:id="messages" mnemonicParsing="false" text="Messages">
+              <items>
+                <MenuItem fx:id="messagesItem" mnemonicParsing="false" onAction="#showMessages" text="Messages" />
+                  <MenuItem fx:id="messenger" mnemonicParsing="false" onAction="#showMessenger" text="Messenger" />
+              </items>
+            </Menu>
+            <Menu fx:id="profile" mnemonicParsing="false" text="Profile">
+              <items>
+                <MenuItem fx:id="profileItem" mnemonicParsing="false" onAction="#showProfile" text="Profile" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <Rectangle fx:id="bigRectangle" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="582.0" layoutX="81.0" layoutY="117.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="1039.0" />
+      <Rectangle fx:id="leftRectangle" arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="50.0" layoutX="81.0" layoutY="719.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="315.0" />
+      <Rectangle fx:id="rightRectangle" arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="50.0" layoutX="805.0" layoutY="719.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="315.0" />
+      <Button fx:id="logOut" layoutX="506.0" layoutY="724.0" mnemonicParsing="false" onAction="#logOut" prefHeight="39.0" prefWidth="188.0" style="-fx-background-color: #b151b8;" text="log out" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Rectangle fx:id="smallRectangle" arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="542.0" layoutX="98.0" layoutY="137.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="1005.0" />
+      <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" layoutX="870.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../resource/images/defaultProfile.png" />
+         </image>
+      </ImageView>
+      <Rectangle fx:id="informationRectangle" arcHeight="100.0" arcWidth="100.0" fill="#ffffff00" height="175.0" layoutX="166.0" layoutY="159.0" stroke="#b151b8" strokeType="INSIDE" strokeWidth="2.0" width="619.0" />
+      <Text fx:id="name" fill="#ffd100" layoutX="331.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="2.0" textAlignment="CENTER" wrappingWidth="289.99999952316284">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="email" fill="#ffd100" layoutX="220.0" layoutY="253.0" strokeType="OUTSIDE" strokeWidth="2.0" textAlignment="CENTER" wrappingWidth="511.99999952316284">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="role" fill="#ffd100" layoutX="279.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="2.0" textAlignment="CENTER" wrappingWidth="394.99999952316284">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <Rectangle fx:id="statusRectangle" arcHeight="5.0" arcWidth="5.0" fill="#b151b8" height="30.0" layoutX="165.0" layoutY="425.0" stroke="#b151b8" strokeType="INSIDE" width="870.0" />
+      <Text fx:id="statusText" fill="#ffd100" layoutX="400.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="2.0" text="Educational status" textAlignment="CENTER" wrappingWidth="413.99999952316284">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <ListView fx:id="rightList" layoutX="515.0" layoutY="453.0" prefHeight="130.0" prefWidth="520.0" />
+      <ListView fx:id="middleList" layoutX="340.0" layoutY="453.0" prefHeight="130.0" prefWidth="175.0" />
+      <ListView fx:id="leftList" layoutX="165.0" layoutY="453.0" prefHeight="130.0" prefWidth="175.0" />
+   </children>
+</AnchorPane>

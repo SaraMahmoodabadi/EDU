@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.eduServices.request.professor.ProfessorRequestController">
+   <children>
+      <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="563.0" layoutY="732.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="282.0" layoutX="114.0" layoutY="174.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="973.0" />
+      <TextField fx:id="studentCode" alignment="CENTER" layoutX="493.0" layoutY="110.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Label fx:id="recommendationLabel" layoutX="520.0" layoutY="195.0" text="recommendation" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="passedLessonsField" alignment="CENTER" layoutX="177.0" layoutY="306.0" prefHeight="40.0" prefWidth="215.0" promptText="lessons' code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Label fx:id="passedLessonsLabel" layoutX="216.0" layoutY="261.0" text="passed lessons" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="scoresLabel" layoutX="571.0" layoutY="261.0" text="scores" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="assistantLabel" layoutX="836.0" layoutY="261.0" text="edu assistant(lessons)" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="scoresField" alignment="CENTER" layoutX="493.0" layoutY="306.0" prefHeight="40.0" prefWidth="215.0" promptText="scores" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <TextField fx:id="assistantField" alignment="CENTER" layoutX="831.0" layoutY="306.0" prefHeight="40.0" prefWidth="215.0" promptText="lessons' code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="registerRecommendation" layoutX="522.0" layoutY="394.0" mnemonicParsing="false" onAction="#registerRecommendation" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="181.0" layoutX="197.0" layoutY="481.0" opacity="0.4" stroke="#b151b8" strokeType="INSIDE" width="807.0" />
+      <ComboBox fx:id="requestBox" layoutX="369.0" layoutY="519.0" prefHeight="40.0" prefWidth="215.0" promptText="request" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </ComboBox>
+      <RadioButton fx:id="accept" layoutX="621.0" layoutY="525.0" mnemonicParsing="false" text="accept" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="reject" layoutX="722.0" layoutY="525.0" mnemonicParsing="false" text="reject" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </RadioButton>
+      <Button fx:id="register" layoutX="522.0" layoutY="591.0" mnemonicParsing="false" onAction="#register" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
