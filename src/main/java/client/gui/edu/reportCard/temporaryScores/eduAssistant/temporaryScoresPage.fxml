@@ -1,14 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.gui.edu.reportCard.temporaryScores.eduAssistant.TemporaryScoresController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.reportCard.temporaryScores.eduAssistant.TemporaryScoresController">
+   <children>
+      <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="563.0" layoutY="732.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <TextField fx:id="lessonCodeField" alignment="CENTER" layoutX="114.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="lesson code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <TextField fx:id="studentCodeField" alignment="CENTER" layoutX="493.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <TextField fx:id="professorNameField" alignment="CENTER" layoutX="867.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="professor name" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="showLessonScores" layoutX="161.0" layoutY="167.0" mnemonicParsing="false" onAction="#showLessonScores" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="showStudentScores" layoutX="539.0" layoutY="167.0" mnemonicParsing="false" onAction="#showStudentScores" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="showProfessorScores" layoutX="914.0" layoutY="167.0" mnemonicParsing="false" onAction="#showProfessorScores" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <TableView fx:id="table" layoutX="190.0" layoutY="238.0" prefHeight="248.0" prefWidth="822.0">
+         <columns>
+            <TableColumn fx:id="lessonCodeColumn" prefWidth="100.0" style="-fx-background-color: #ffd100;" text="lesson code" />
+            <TableColumn fx:id="professorCodeColumn" prefWidth="115.0" style="-fx-background-color: #ffd100;" text="professor code" />
+            <TableColumn fx:id="studentCodeColumn" prefWidth="101.0" style="-fx-background-color: #ffd100;" text="student code" />
+            <TableColumn fx:id="scoreColumn" prefWidth="87.0" style="-fx-background-color: #ffd100;" text="score" />
+            <TableColumn fx:id="protestColumn" prefWidth="206.0" style="-fx-background-color: #ffd100;" text="protest" />
+            <TableColumn fx:id="protestAnswerColumn" prefWidth="212.0" style="-fx-background-color: #ffd100;" text="protest answer" />
+         </columns>
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TableView>
+      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="511.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="632.0" layoutY="511.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle3" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="598.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle4" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="632.0" layoutY="598.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Text fx:id="numberPassedText" fill="#b151b8" layoutX="252.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of passed students:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="numberFailedText" fill="#b151b8" layoutX="717.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of failed students:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="averageText" fill="#b151b8" layoutX="315.0" layoutY="631.0" strokeType="OUTSIDE" strokeWidth="0.0" text="scores average:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="averagePassedText" fill="#b151b8" layoutX="665.0" layoutY="631.0" strokeType="OUTSIDE" strokeWidth="0.0" text="average regardless of the failed students:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Label fx:id="numberPassedLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="459.0" layoutY="528.0" prefHeight="21.0" prefWidth="27.0" text="-" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="averageLabel" layoutX="440.0" layoutY="614.0" text="-" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="numberFailedLabel" layoutX="922.0" layoutY="527.0" text="-" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="averagePassedLabel" layoutX="971.0" layoutY="614.0" text="-" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+   </children>
 </AnchorPane>
