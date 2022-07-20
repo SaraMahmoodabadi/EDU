@@ -1,6 +1,6 @@
 package server.logic.managers.edu.reportCard;
 
-import server.logic.model.university.lesson.score.Score;
+import shared.model.university.lesson.score.Score;
 
 import java.util.List;
 

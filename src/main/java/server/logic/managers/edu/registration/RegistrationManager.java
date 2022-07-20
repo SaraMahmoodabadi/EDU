@@ -1,7 +1,7 @@
 package server.logic.managers.edu.registration;
 
-import server.logic.model.university.lesson.Lesson;
-import server.logic.model.user.professor.Professor;
+import shared.model.university.lesson.Lesson;
+import shared.model.user.professor.Professor;
 
 import java.util.List;
 
