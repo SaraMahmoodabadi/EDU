@@ -2,6 +2,7 @@ package shared.request;
 
 public enum RequestType {
     LOGIN,
+    RECAPTCHA,
     CHANGE_PASSWORD,
 
     SHOW_LESSONS_LIST_PAGE,

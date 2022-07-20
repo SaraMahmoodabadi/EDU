@@ -18,6 +18,8 @@ public class RequestHandler {
         switch (this.request.getRequestType()) {
             case LOGIN:
                 break;
+            case RECAPTCHA:
+                break;
             case CHANGE_PASSWORD:
                 break;
             default:

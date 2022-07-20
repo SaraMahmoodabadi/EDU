@@ -2,6 +2,7 @@ package server.network;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import server.Server;
+import server.logic.captcha.CaptchaHandler;
 import shared.request.Request;
 import shared.response.Response;
 import shared.util.Jackson;
@@ -18,11 +19,13 @@ public class ClientHandler {
     private final Server server;
     private final int clientID;
     private final String token;
+    private final CaptchaHandler captchaHandler;
 
     public ClientHandler(int clientID, Server server, Socket socket, Token token) {
         this.clientID = clientID;
         this.server = server;
         this.token = token.generateToken();
+        this.captchaHandler = new CaptchaHandler();
         try {
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
@@ -32,7 +35,6 @@ public class ClientHandler {
             e.printStackTrace();
         }
     }
-
 
     private void makeListenerThread() {
         Thread thread = new Thread(() -> {
@@ -61,6 +63,5 @@ public class ClientHandler {
             e.printStackTrace();
         }
     }
-
 
 }
