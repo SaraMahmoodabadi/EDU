@@ -2,7 +2,9 @@ package client;
 
 public class ClientMain {
     public static void main(String[] args) {
-        Client client = new Client();
+        //TODO
+        int port = 0;
+        Client client = new Client(port);
         client.start();
     }
 }
