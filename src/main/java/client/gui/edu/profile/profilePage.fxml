@@ -25,7 +25,7 @@
          <graphic>
             <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../resource/images/backButton.png" />
+                  <Image url="@../../../resource/images/backButton.png" />
                </image>
             </ImageView>
          </graphic>
@@ -34,7 +34,7 @@
       <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="234.0" layoutX="100.0" layoutY="101.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="1000.0" />
       <ImageView fx:id="profilePicture" fitHeight="150.0" fitWidth="150.0" layoutX="908.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../resource/images/defaultProfile.png" />
+            <Image url="@../../../resource/images/defaultProfile.png" />
          </image>
       </ImageView>
       <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="170.0" layoutX="140.0" layoutY="133.0" stroke="#ffd100" strokeType="INSIDE" width="724.0" />
@@ -129,7 +129,7 @@
          <graphic>
             <ImageView fx:id="registerImage1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../resource/images/registrationIcon.png" />
+                  <Image url="@../../../resource/images/registrationIcon.png" />
                </image>
             </ImageView>
          </graphic>
@@ -138,7 +138,7 @@
          <graphic>
             <ImageView fx:id="registerImage2" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../resource/images/registrationIcon.png" />
+                  <Image url="@../../../resource/images/registrationIcon.png" />
                </image>
             </ImageView>
          </graphic>

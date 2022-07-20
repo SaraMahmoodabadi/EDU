@@ -157,7 +157,7 @@
                <graphic>
                   <ImageView fx:id="plusImage1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../resource/images/plusIcon.png" />
+                        <Image url="@../../../../../resource/images/plusIcon.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -179,7 +179,7 @@
                <graphic>
                   <ImageView fx:id="plusImage2" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../resource/images/plusIcon.png" />
+                        <Image url="@../../../../../resource/images/plusIcon.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -357,7 +357,7 @@
                <graphic>
                   <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../resource/images/backButton.png" />
+                        <Image url="@../../../../../resource/images/backButton.png" />
                      </image>
                   </ImageView>
                </graphic>

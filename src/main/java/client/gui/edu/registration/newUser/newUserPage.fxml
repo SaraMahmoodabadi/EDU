@@ -28,7 +28,7 @@
                <graphic>
                   <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../resource/images/backButton.png" />
+                        <Image url="@../../../../resource/images/backButton.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -122,7 +122,7 @@
             </TextField>
             <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" layoutX="708.0" layoutY="478.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../resource/images/defaultProfile.png" />
+                  <Image url="@../../../../resource/images/defaultProfile.png" />
                </image>
             </ImageView>
             <Button fx:id="select" layoutX="708.0" layoutY="641.0" mnemonicParsing="false" onAction="#select" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #b151b8;" text="select" textAlignment="CENTER" textFill="#ffd100">

@@ -18,7 +18,7 @@
    <children>
       <ImageView fx:id="sharifImage" disable="true" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../resource/images/sharifUniversity.jpg" />
+            <Image url="@../../../../resource/images/sharifUniversity.jpg" />
          </image>
          <effect>
             <InnerShadow choke="0.49" color="#b151b8" height="125.0" radius="62.0" width="125.0" />
@@ -56,7 +56,7 @@
          <graphic>
             <ImageView fx:id="recaptchaImage" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../resource/images/recaptchaLogo.png" />
+                  <Image url="@../../../../resource/images/recaptchaLogo.png" />
                </image>
             </ImageView>
          </graphic>

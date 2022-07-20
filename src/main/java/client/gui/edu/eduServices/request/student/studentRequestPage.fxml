@@ -27,7 +27,7 @@
          <graphic>
             <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../resource/images/backButton.png" />
+                  <Image url="@../../../../../resource/images/backButton.png" />
                </image>
             </ImageView>
          </graphic>
