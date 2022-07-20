@@ -1,17 +1,21 @@
 package shared.request;
 
+import shared.model.user.UserType;
+
 import java.util.HashMap;
 
 public class Request {
 
     private RequestType requestType;
     private HashMap<String, Object> data;
+    private UserType userType;
 
     public Request() {}
 
-    public Request(RequestType requestType) {
+    public Request(RequestType requestType, UserType userType) {
         this.requestType = requestType;
         this.data = new HashMap<>();
+        this.userType = userType;
     }
 
     public RequestType getRequestType() {
