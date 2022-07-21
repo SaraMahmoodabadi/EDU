@@ -9,9 +9,8 @@ public class Lesson {
     private String name;
     private String lessonCode;
     private String collegeCode;
-    private String professorCode;
+    private List<Group> groups;
     private List<String> teacherAssistant;
-    private int group;
     private int unitNumber;
     private Grade grade;
     private List<String> prerequisites;
@@ -23,16 +22,14 @@ public class Lesson {
     private String examTime;
 
     public Lesson(String name, String lessonCode, String collegeCode,
-                  String professorCode, List<String> teacherAssistant, int group,
-                  int unitNumber, Grade grade, List<String> prerequisites,
+                  List<String> teacherAssistant, int unitNumber,
+                  Grade grade, List<String> prerequisites,
                   List<String> theNeed, int capacity, List<Day> days,
                   String classTime, String examTime) {
         this.name = name;
         this.lessonCode = lessonCode;
         this.collegeCode = collegeCode;
-        this.professorCode = professorCode;
         this.teacherAssistant = teacherAssistant;
-        this.group = group;
         this.unitNumber = unitNumber;
         this.grade = grade;
         this.prerequisites = prerequisites;
@@ -67,12 +64,12 @@ public class Lesson {
         this.collegeCode = collegeCode;
     }
 
-    public String getProfessorCode() {
-        return professorCode;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setProfessorCode(String professorCode) {
-        this.professorCode = professorCode;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public List<String> getTeacherAssistant() {
@@ -81,14 +78,6 @@ public class Lesson {
 
     public void setTeacherAssistant(List<String> teacherAssistant) {
         this.teacherAssistant = teacherAssistant;
-    }
-
-    public int getGroup() {
-        return group;
-    }
-
-    public void setGroup(int group) {
-        this.group = group;
     }
 
     public int getUnitNumber() {
