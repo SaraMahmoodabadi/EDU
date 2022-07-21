@@ -3,15 +3,15 @@ package shared.model.courseware.exercise;
 public class Answer {
 
     private String studentCode;
-    private String courseCode;
     private String text;
     private String fileAddress;
     private String sendTime;
+    private String exerciseCode;
 
-    public Answer(String studentCode, String courseCode, String sendTime) {
+    public Answer(String studentCode, String exerciseCode, String sendTime) {
         this.studentCode = studentCode;
-        this.courseCode = courseCode;
         this.sendTime = sendTime;
+        this.exerciseCode = exerciseCode;
     }
 
     public String getStudentCode() {
@@ -20,14 +20,6 @@ public class Answer {
 
     public void setStudentCode(String studentCode) {
         this.studentCode = studentCode;
-    }
-
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
     }
 
     public String getText() {
@@ -52,5 +44,13 @@ public class Answer {
 
     public void setSendTime(String sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public String getExerciseCode() {
+        return exerciseCode;
+    }
+
+    public void setExerciseCode(String exerciseCode) {
+        this.exerciseCode = exerciseCode;
     }
 }
