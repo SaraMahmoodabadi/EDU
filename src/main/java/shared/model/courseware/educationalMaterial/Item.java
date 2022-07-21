@@ -2,12 +2,22 @@ package shared.model.courseware.educationalMaterial;
 
 public class Item {
 
+    private String itemCode;
     private ItemType itemType;
     private String text;
     private String mediaFileAddress;
 
-    public Item(ItemType itemType) {
+    public Item(ItemType itemType, String eduMaterialCode, int itemCount) {
+        this.itemCode = this.generateCode(eduMaterialCode, itemCount);
         this.itemType = itemType;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public ItemType getItemType() {
@@ -32,5 +42,9 @@ public class Item {
 
     public void setMediaFileAddress(String mediaFileAddress) {
         this.mediaFileAddress = mediaFileAddress;
+    }
+
+    private String generateCode(String eduMaterialCode, int itemCount) {
+        return eduMaterialCode + "_" + (itemCount + 1);
     }
 }

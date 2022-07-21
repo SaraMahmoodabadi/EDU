@@ -4,11 +4,21 @@ import java.util.List;
 
 public class EducationalMaterial {
 
+    private String educationalMaterialCode;
     private String name;
     private List<Item> items;
 
-    public EducationalMaterial(String name) {
+    public EducationalMaterial(String courseCode,String name) {
+        this.educationalMaterialCode = this.generateCode(courseCode);
         this.name = name;
+    }
+
+    public String getEducationalMaterialCode() {
+        return educationalMaterialCode;
+    }
+
+    public void setEducationalMaterialCode(String educationalMaterialCode) {
+        this.educationalMaterialCode = educationalMaterialCode;
     }
 
     public String getName() {
@@ -25,5 +35,9 @@ public class EducationalMaterial {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    private String generateCode(String courseCode) {
+        return courseCode + "_" + this.name;
     }
 }

@@ -6,25 +6,35 @@ import java.util.List;
 
 public class Exercise {
 
+    private String exerciseCode;
     private String name;
     private String openingTime;
     private String closingTime;
     private String uploadingTimeWithoutDeductingScores;
     private String fileAddress;
-    private String Descriptions;
+    private String descriptions;
     private ItemType itemType;
     private List<Answer> answers;
 
-    public Exercise(String name, String openingTime, String closingTime,
-                    String uploadingTimeWithoutDeductingScores,
+    public Exercise(String courseCode, String name, String openingTime,
+                    String closingTime, String uploadingTimeWithoutDeductingScores,
                     String fileAddress, String descriptions, ItemType itemType) {
+        this.exerciseCode = this.generateCode(courseCode);
         this.name = name;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
         this.uploadingTimeWithoutDeductingScores = uploadingTimeWithoutDeductingScores;
         this.fileAddress = fileAddress;
-        Descriptions = descriptions;
+        this.descriptions = descriptions;
         this.itemType = itemType;
+    }
+
+    public String getExerciseCode() {
+        return exerciseCode;
+    }
+
+    public void setExerciseCode(String exerciseCode) {
+        this.exerciseCode = exerciseCode;
     }
 
     public String getName() {
@@ -68,11 +78,11 @@ public class Exercise {
     }
 
     public String getDescriptions() {
-        return Descriptions;
+        return descriptions;
     }
 
     public void setDescriptions(String descriptions) {
-        Descriptions = descriptions;
+        this.descriptions = descriptions;
     }
 
     public ItemType getItemType() {
@@ -89,5 +99,9 @@ public class Exercise {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    private String generateCode(String courseCode) {
+        return courseCode + "_" + this.name;
     }
 }
