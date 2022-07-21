@@ -9,6 +9,8 @@ public class Request {
     private String firstBlank;
     private String secondBlank;
     private String thirdBlank;
+    private boolean result;
+    private boolean secondResult;
 
     public Request(Type type, String studentCode, String professorCode) {
         this.type = type;
@@ -70,5 +72,21 @@ public class Request {
 
     public void setThirdBlank(String thirdBlank) {
         this.thirdBlank = thirdBlank;
+    }
+
+    public boolean isResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
+
+    public boolean isSecondResult() {
+        return secondResult;
+    }
+
+    public void setSecondResult(boolean secondResult) {
+        this.secondResult = secondResult;
     }
 }
