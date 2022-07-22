@@ -1,5 +1,6 @@
 package client.gui.edu.login.loginPage;
 
+import client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import shared.response.Response;
+import shared.util.media.ImageHandler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,6 +58,8 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        Response response = Client.serverController.getResponse();
+        Object image = response.getData("captcha image");
+        this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
     }
 }
