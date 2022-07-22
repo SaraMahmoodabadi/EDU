@@ -1,6 +1,8 @@
 package shared.request;
 
 public enum RequestType {
+    START_CONNECTION,
+
     LOGIN,
     RECAPTCHA,
     CHANGE_PASSWORD,
@@ -52,4 +54,6 @@ public enum RequestType {
 
     REGISTER_EMAIL,
     REGISTER_PHONE_NUMBER,
+
+    END_CONNECTION
 }

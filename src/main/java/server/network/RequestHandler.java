@@ -1,20 +1,34 @@
 package server.network;
 
+import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
 
 public class RequestHandler {
     private boolean result;
-    private int clientID;
+    private ClientHandler client;
     private Request request;
 
-    public void handleRequests(int clientID, Request request) {
+    public void handleRequests(ClientHandler client, Request request) {
         this.result = false;
-        this.clientID = clientID;
+        this.client = client;
         this.request = request;
-        handleInitialRequests();
+        if (this.request == null) return;
+        handleConnectionRequest();
     }
 
-    public void handleInitialRequests() {
+    private void handleConnectionRequest() {
+        switch (request.getRequestType()) {
+            case START_CONNECTION:
+                this.client.sendResponse(new UserManager().sendCaptchaImage());
+                break;
+            case END_CONNECTION:
+                break;
+            default:
+                handleInitialRequests();
+        }
+    }
+
+    private void handleInitialRequests() {
         switch (this.request.getRequestType()) {
             case LOGIN:
                 break;
@@ -27,7 +41,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleMainRequests() {
+    private void handleMainRequests() {
         switch (this.request.getRequestType()) {
             case SHOW_LESSONS_LIST_PAGE:
                 break;
@@ -62,7 +76,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleRegistrationRequests() {
+    private void handleRegistrationRequests() {
         switch (this.request.getRequestType()) {
             case SHOW_DESIRED_LESSONS_LIST:
                 break;
@@ -81,7 +95,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleEduServicesRequests() {
+    private void handleEduServicesRequests() {
         switch (this.request.getRequestType()) {
             case SHOW_DESIRED_PROFESSORS_LIST:
                 break;
@@ -102,7 +116,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleNewUserRequests() {
+    private void handleNewUserRequests() {
         switch (this.request.getRequestType()) {
             case SELECT_USER_TYPE:
                 break;
@@ -113,7 +127,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleRequestPageRequests() {
+    private void handleRequestPageRequests() {
         switch (this.request.getRequestType()) {
             case REGISTER_REQUEST:
                 break;
@@ -126,7 +140,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleReportCardRequests() {
+    private void handleReportCardRequests() {
         switch (this.request.getRequestType()) {
             case REGISTER_PROTEST:
                 break;
@@ -147,7 +161,7 @@ public class RequestHandler {
         }
     }
 
-    public void handleProfileRequests() {
+    private void handleProfileRequests() {
         switch (this.request.getRequestType()) {
             case REGISTER_EMAIL:
                 break;
