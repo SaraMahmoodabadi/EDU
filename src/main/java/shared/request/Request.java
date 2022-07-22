@@ -18,6 +18,10 @@ public class Request {
         this.userType = userType;
     }
 
+    public Request(RequestType requestType) {
+        this.requestType = requestType;
+    }
+
     public RequestType getRequestType() {
         return this.requestType;
     }
