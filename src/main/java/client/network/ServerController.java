@@ -2,6 +2,8 @@ package client.network;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
 import shared.util.Jackson;
 
 import java.io.IOException;
@@ -27,6 +29,7 @@ public class ServerController {
             Socket socket = new Socket(InetAddress.getLocalHost(), port);
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
+            sendRequest(new Request(RequestType.START_CONNECTION));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,5 +45,14 @@ public class ServerController {
         }
     }
 
+   public Response getResponse() {
+       Response response = new Response();
+       try {
+           response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+       return response;
+   }
 
 }
