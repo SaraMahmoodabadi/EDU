@@ -1,35 +1,43 @@
-package shared.util;
+package shared.util.config;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.util.Optional;
+import java.util.Properties;
 
-public class Config {
-
+public class Config extends Properties {
+    private static String configPath = "src/main/java/shared/util/config/config.properties";
     private static Config config;
 
     private Config(String address) {
         try {
             Reader fileReader = new FileReader(address);
-            //this.load(fileReader);
+            this.load(fileReader);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static Config getConfig() {
-        if (config == null) {
-            //config = new Config(Constants.CONFIG_ADDRESS);
+    public static Config getConfig(ConfigType type) {
+        Config config = getMainConfig();
+        switch (type) {
+            case CLIENT_IMAGE:
+                return config.getProperty(Config.class, "clientImage");
+            case FXML_FILE:
+                return config.getProperty(Config.class, "fxmlFiles");
+            case GUI_TEXT:
+                return config.getProperty(Config.class, "guiText");
+            default:
         }
-        return config;
+        return null;
     }
 
     public <E> E getProperty(Class<E> c, String propertyName) {
         return getObject(c, propertyName);
     }
 
-    /**
     public <E> Optional<E> getOptionalProperty(Class<E> c, String propertyName) {
         if (containsKey(propertyName)) {
             return Optional.of(getObject(c, propertyName));
@@ -37,7 +45,6 @@ public class Config {
             return Optional.empty();
         }
     }
-     */
 
     private <E> E getObject(Class<E> c, String value) {
         E e = null;
@@ -48,5 +55,12 @@ public class Config {
             reflectiveOperationException.printStackTrace();
         }
         return e;
+    }
+
+    private static Config getMainConfig() {
+        if (config == null) {
+            config = new Config(configPath);
+        }
+        return config;
     }
 }
