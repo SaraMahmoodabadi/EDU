@@ -21,6 +21,8 @@ import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
 import shared.util.media.ImageHandler;
 
 import java.net.URL;
@@ -70,9 +72,7 @@ public class LoginController implements Initializable {
     }
 
     public void login(ActionEvent actionEvent) {
-        if (isNull()) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, "All fields must be completed!");
-        }
+        if (isNull()) return;
         Request request = new Request(RequestType.LOGIN);
         request.addData("username", this.username.getText());
         request.addData("password", this.password.getText());
@@ -88,6 +88,15 @@ public class LoginController implements Initializable {
         }
         else {
             EDU.userType = (UserType) response.getData("userType");
+            if (EDU.userType == UserType.STUDENT) {
+                EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
+                if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
+                    String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
+                            getProperty(String.class, "withdrawalError");
+                    ErrorMonitor.showError(Alert.AlertType.ERROR, errorMessage);
+                    return;
+                }
+            }
             if (response.getNotificationMessage().equals("User should change password.")) {
                 EDU.sceneSwitcher.switchScene(actionEvent, "changePasswordPage");
             }
@@ -102,13 +111,6 @@ public class LoginController implements Initializable {
                     if (EDU.userType == UserType.PROFESSOR) {
                         EDU.professorType = (Type) response.getData("professorType");
                     }
-                    if (EDU.userType == UserType.STUDENT) {
-                        EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
-                        if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
-                            ErrorMonitor.showError(Alert.AlertType.ERROR, "You have dropped out of university!");
-                            return;
-                        }
-                    }
                     EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
                 }
             }
@@ -116,9 +118,15 @@ public class LoginController implements Initializable {
     }
 
     private boolean isNull() {
-        return this.username.getText() != null &&
-                this.password.getText() != null &&
-                this.captchaText.getText() != null;
+        if (this.username.getText() == null ||
+                this.password.getText() == null ||
+                this.captchaText.getText() == null) {
+            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
+                    getProperty(String.class, "nullFieldsError");
+            ErrorMonitor.showError(Alert.AlertType.ERROR, errorMessage);
+            return true;
+        }
+        return false;
     }
 
     @Override
