@@ -6,6 +6,7 @@ public class Response {
     private ResponseStatus status;
     private HashMap<String, Object> data;
     private String errorMessage;
+    private String notificationMessage;
 
     public Response() {}
 
@@ -24,6 +25,14 @@ public class Response {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getNotificationMessage() {
+        return notificationMessage;
+    }
+
+    public void setNotificationMessage(String notificationMessage) {
+        this.notificationMessage = notificationMessage;
     }
 
     public Object getData(String dataName) {

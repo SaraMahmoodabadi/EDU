@@ -1,16 +1,26 @@
 package client.gui.edu.login.loginPage;
 
-import client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
+import client.gui.EDU;
+import client.gui.ErrorMonitor;
+
+import shared.model.user.UserType;
+import shared.model.user.professor.Type;
+import shared.model.user.student.EducationalStatus;
+import shared.request.Request;
+import shared.request.RequestType;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.media.ImageHandler;
 
 import java.net.URL;
@@ -48,18 +58,74 @@ public class LoginController implements Initializable {
     protected Text startText;
     @FXML
     protected Circle person;
+    private int captchaID;
 
 
     public void recaptcha(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.START_CONNECTION);
+        request.addData("last captchaID", this.captchaID);
+        Response response = EDU.serverController.sendRequest(request);
+        Object image = response.getData("captcha image");
+        this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
     }
 
     public void login(ActionEvent actionEvent) {
+        if (isNull()) {
+            ErrorMonitor.showError(Alert.AlertType.ERROR, "All fields must be completed!");
+        }
+        Request request = new Request(RequestType.LOGIN);
+        request.addData("username", this.username.getText());
+        request.addData("password", this.password.getText());
+        request.addData("captcha", this.captchaText.getText());
+        Response response = EDU.serverController.sendRequest(request);
+        changeScene(actionEvent, response);
+    }
+
+    //TODO : Change scene for other type of users
+    private void changeScene(ActionEvent actionEvent, Response response) {
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            EDU.userType = (UserType) response.getData("userType");
+            if (response.getNotificationMessage().equals("User should change password.")) {
+                EDU.sceneSwitcher.switchScene(actionEvent, "changePasswordPage");
+            }
+            else {
+                if (EDU.userType == UserType.EDU_ADMIN) {
+
+                }
+                else if(EDU.userType == UserType.MR_MOHSENI) {
+
+                }
+                else {
+                    if (EDU.userType == UserType.PROFESSOR) {
+                        EDU.professorType = (Type) response.getData("professorType");
+                    }
+                    if (EDU.userType == UserType.STUDENT) {
+                        EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
+                        if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
+                            ErrorMonitor.showError(Alert.AlertType.ERROR, "You have dropped out of university!");
+                            return;
+                        }
+                    }
+                    EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+                }
+            }
+        }
+    }
+
+    private boolean isNull() {
+        return this.username.getText() != null &&
+                this.password.getText() != null &&
+                this.captchaText.getText() != null;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Response response = Client.serverController.getResponse();
+        Response response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
         Object image = response.getData("captcha image");
         this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        this.captchaID = (int) response.getData("captchaID");
     }
 }

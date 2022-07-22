@@ -29,13 +29,12 @@ public class ServerController {
             Socket socket = new Socket(InetAddress.getLocalHost(), port);
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
-            sendRequest(new Request(RequestType.START_CONNECTION));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendRequest(Request request) {
+    public Response sendRequest(Request request) {
         try {
             String requestString = this.objectMapper.writeValueAsString(request);
             this.printStream.println(requestString);
@@ -43,6 +42,7 @@ public class ServerController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return getResponse();
     }
 
    public Response getResponse() {
