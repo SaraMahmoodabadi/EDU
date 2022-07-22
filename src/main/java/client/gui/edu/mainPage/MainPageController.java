@@ -1,18 +1,42 @@
 package client.gui.edu.mainPage;
 
+import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+import shared.model.user.UserType;
+import shared.model.user.professor.Type;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.util.media.ImageHandler;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainPageController implements Initializable {
 
+    @FXML
+    protected Text name;
+    @FXML
+    protected Text email;
+    @FXML
+    protected Text role;
+    @FXML
+    protected Text statusText;
+    @FXML
+    protected ImageView profileImage;
+    @FXML
+    protected Button logOut;
     @FXML
     protected Rectangle upRectangle;
     @FXML
@@ -67,32 +91,62 @@ public class MainPageController implements Initializable {
     protected MenuItem messenger;
     @FXML
     protected MenuItem profileItem;
+    @FXML
+    protected ListView<String> rightList;
+    @FXML
+    protected ListView<String> middleList;
+    @FXML
+    protected ListView<String> leftList;
+    private Stage stage;
 
     public void showLessonsList(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "lessonListPage");
     }
 
     public void showProfessorsList(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "professorListPage");
     }
 
     public void showNewUserPage(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "newUserPage");
     }
 
     public void showWeeklySchedule(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "weeklyPlanPage");
     }
 
     public void showExamList(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "examListPage");
     }
 
     public void showRequests(ActionEvent actionEvent) {
+        if (EDU.userType == UserType.STUDENT) {
+            EDU.sceneSwitcher.switchScenes(this.stage, "studentRequestPage");
+        }
+        else if (EDU.userType == UserType.PROFESSOR) {
+            EDU.sceneSwitcher.switchScenes(this.stage, "professorRequestPage");
+        }
     }
 
     public void showUnitSelectionPage(ActionEvent actionEvent) {
     }
 
     public void showTemporaryScores(ActionEvent actionEvent) {
+        if (EDU.userType == UserType.STUDENT) {
+            EDU.sceneSwitcher.switchScenes(this.stage, "studentTemporaryScoresPage");
+        }
+        else if (EDU.userType == UserType.PROFESSOR){
+            if (EDU.professorType == Type.EDUCATIONAL_ASSISTANT) {
+                EDU.sceneSwitcher.switchScenes(this.stage, "eduAssistantTemporaryScoresPage");
+            }
+            else {
+                EDU.sceneSwitcher.switchScenes(this.stage, "professorTemporaryScoresPage");
+            }
+        }
     }
 
     public void showEducationalStatus(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "eduStatusPage");
     }
 
     public void showCourseware(ActionEvent actionEvent) {
@@ -105,13 +159,66 @@ public class MainPageController implements Initializable {
     }
 
     public void showProfile(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScenes(this.stage, "profilePage");
     }
 
     public void logOut(ActionEvent actionEvent) {
+        EDU.professorType = null;
+        EDU.userType = null;
+        EDU.sceneSwitcher.switchScene(actionEvent, "loginPage");
+    }
+
+    private void hideFields() {
+        if (EDU.userType == UserType.PROFESSOR) {
+            this.leftList.setVisible(false);
+            this.middleList.setVisible(false);
+            this.rightList.setVisible(false);
+            if (EDU.professorType != Type.EDUCATIONAL_ASSISTANT) {
+                this.unitSelection.setDisable(true);
+                this.unitSelection.setVisible(false);
+                this.educationalStatus.setDisable(true);
+                this.educationalStatus.setDisable(false);
+            }
+        }
+        if (EDU.userType == UserType.STUDENT ||
+                EDU.professorType != Type.EDUCATIONAL_ASSISTANT) {
+            this.newUser.setDisable(true);
+            this.newUser.setVisible(false);
+        }
+    }
+
+    private void getData() {
+        Request request = new Request(RequestType.LOGIN, EDU.userType);
+        Response response = EDU.serverController.sendRequest(request);
+        this.name.setText((String) response.getData("name"));
+        this.email.setText((String) response.getData("email"));
+        this.role.setText((String) response.getData("role"));
+        Object image = response.getData("profileImage");
+        this.profileImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        if (EDU.userType == UserType.STUDENT) getTableData(response);
+    }
+
+    private void getTableData(Response response) {
+        String middleListString = (String) response.getData("middleList");
+        List<String> middleListValues = new ArrayList<>(Arrays.asList(middleListString.split(",")));
+        String rightListString = (String) response.getData("middleList");
+        List<String> rightListValues = new ArrayList<>(Arrays.asList(middleListString.split(",")));
+        setTableData(middleListValues, rightListValues);
+    }
+
+    private void setTableData(List<String> middleListValues, List<String> rightListValues) {
+        leftList.getItems().addAll("educational status", "supervisor",
+                "registrationLicense", "registrationTime");
+        middleList.getItems().addAll(middleListValues.get(0), middleListValues.get(1),
+                middleListValues.get(2), middleListValues.get(3));
+        rightList.getItems().addAll(rightListValues.get(0), rightListValues.get(1),
+                rightListValues.get(2), rightListValues.get(3));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        this.stage = (Stage) (logOut.getScene().getWindow());;
+        hideFields();
+        getData();
     }
 }
