@@ -36,6 +36,7 @@ public class ClientHandler {
         }
     }
 
+    //TODO : handle end of connection
     private void makeListenerThread() {
         Thread thread = new Thread(() -> {
             while (true) {
@@ -52,6 +53,7 @@ public class ClientHandler {
     }
 
     private void handleRequest(Request request) {
+        new RequestHandler().handleRequests(this, request);
     }
 
     public void sendResponse(Response response) {
