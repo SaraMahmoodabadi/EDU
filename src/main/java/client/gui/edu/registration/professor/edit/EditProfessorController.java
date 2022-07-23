@@ -1,15 +1,20 @@
 package client.gui.edu.registration.professor.edit;
 
+import client.gui.AlertMonitor;
+import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import shared.model.user.professor.MasterDegree;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.response.ResponseStatus;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -60,27 +65,66 @@ public class EditProfessorController implements Initializable {
     protected Button edit;
     @FXML
     protected Button remove;
+    private final ToggleGroup grade = new ToggleGroup();
 
     public void add(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "newUserPage");
     }
 
     public void deposal(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.DEPOSAL_EDU_ASSISTANT);
+        request.addData("professorCode", professorCode.getText());
+        showRequestResult(request);
     }
 
     public void appointment(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.APPOINTMENT_EDU_ASSISTANT);
+        request.addData("professorCode", professorCode.getText());
+        showRequestResult(request);
     }
 
     public void edit(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.EDIT_PROFESSOR);
+        request.addData("phoneNumber", phoneField.getText());
+        request.addData("email", emailField.getText());
+        request.addData("room", roomField.getText());
+        request.addData("degree", setDegree());
+        showRequestResult(request);
     }
 
     public void remove(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.REMOVE_PROFESSOR);
+        request.addData("professorCode", professorCode.getText());
+        showRequestResult(request);
     }
 
     public void back(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "professorListPage");
+    }
+
+    private void showRequestResult(Request request) {
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+        }
+    }
+
+    protected MasterDegree setDegree() {
+        if (grade.getSelectedToggle().equals(assistant))
+            return MasterDegree.ASSISTANT_PROFESSOR;
+        else if (grade.getSelectedToggle().equals(associate))
+            return MasterDegree.ASSOCIATE_PROFESSOR;
+        else
+            return MasterDegree.FULL_PROFESSOR;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        assistant.setToggleGroup(grade);
+        associate.setToggleGroup(grade);
+        full.setToggleGroup(grade);
     }
 }
