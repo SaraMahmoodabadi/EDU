@@ -1,7 +1,7 @@
 package shared.model.user;
 
 public class User {
-
+    private String fullName;
     private String firstName;
     private String lastName;
     private String emailAddress;
@@ -20,6 +20,7 @@ public class User {
                 UserType userType) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
         this.nationalCode = nationalCode;
         this.collegeCode = collegeCode;
         this.username = username;

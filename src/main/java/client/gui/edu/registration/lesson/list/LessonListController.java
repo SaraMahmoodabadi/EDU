@@ -143,11 +143,11 @@ public class LessonListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         hide();
         List<Lesson> lessons = getData();
+        collegeName.getItems().add("-");
+        collegeName.getItems().addAll(University.getUniversity().getCollegeName());
+        unitBox.getItems().addAll("1", "2", "3", "4");
         if (lessons != null) {
             setTableData(lessons);
-            collegeName.getItems().add("-");
-            collegeName.getItems().addAll(University.getUniversity().getCollegeName());
-            unitBox.getItems().addAll("1", "2", "3", "4");
         }
     }
 }
