@@ -1,6 +1,7 @@
 package client.gui.edu.mainPage;
 
 import client.gui.EDU;
+import client.gui.ErrorMonitor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,18 +11,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import shared.model.user.User;
 import shared.model.user.UserType;
 import shared.model.user.professor.Type;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.media.ImageHandler;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainPageController implements Initializable {
 
@@ -33,6 +33,10 @@ public class MainPageController implements Initializable {
     protected Text role;
     @FXML
     protected Text statusText;
+    @FXML
+    protected Text time;
+    @FXML
+    protected Text lastLogin;
     @FXML
     protected ImageView profileImage;
     @FXML
@@ -190,19 +194,29 @@ public class MainPageController implements Initializable {
     private void getData() {
         Request request = new Request(RequestType.LOGIN, EDU.userType);
         Response response = EDU.serverController.sendRequest(request);
-        this.name.setText((String) response.getData("name"));
-        this.email.setText((String) response.getData("email"));
-        this.role.setText((String) response.getData("role"));
-        Object image = response.getData("profileImage");
-        this.profileImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
-        if (EDU.userType == UserType.STUDENT) getTableData(response);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            this.name.setText((String) response.getData("name"));
+            this.email.setText((String) response.getData("emailAddress"));
+            this.lastLogin.setText(this.lastLogin.getText() + response.getData("lastLogin"));
+            Object image = response.getData("profileImage");
+            this.profileImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
+            if (EDU.userType == UserType.STUDENT) {
+                this.role.setText(EDU.userType.toString().toLowerCase());
+                getTableData(response);
+            } else {
+                this.role.setText(EDU.professorType.toString().toLowerCase());
+            }
+        }
     }
 
     private void getTableData(Response response) {
         String middleListString = (String) response.getData("middleList");
-        List<String> middleListValues = new ArrayList<>(Arrays.asList(middleListString.split(",")));
-        String rightListString = (String) response.getData("middleList");
-        List<String> rightListValues = new ArrayList<>(Arrays.asList(middleListString.split(",")));
+        List<String> middleListValues = new ArrayList<>(Arrays.asList(middleListString.split(", ")));
+        String rightListString = (String) response.getData("rightList");
+        List<String> rightListValues = new ArrayList<>(Arrays.asList(rightListString.split(", ")));
         setTableData(middleListValues, rightListValues);
     }
 

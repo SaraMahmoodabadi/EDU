@@ -1,14 +1,26 @@
 package client.gui.edu.registration.lesson.list;
 
+import client.gui.EDU;
+import client.gui.ErrorMonitor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import shared.model.university.college.University;
+import shared.model.university.lesson.Lesson;
+import shared.model.user.UserType;
+import shared.model.user.professor.Type;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.response.ResponseStatus;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,42 +45,109 @@ public class LessonListController implements Initializable {
     @FXML
     protected ImageView backImage;
     @FXML
-    protected TableView<String> list;
+    protected TableView<Lesson> list;
     @FXML
-    TableColumn<String, String> codeColumn;
+    TableColumn<Lesson, String> codeColumn;
     @FXML
-    TableColumn<String, String> groupColumn;
+    TableColumn<Lesson, String> groupColumn;
     @FXML
-    TableColumn<String, String> unitColumn;
+    TableColumn<Lesson, String> unitColumn;
     @FXML
-    TableColumn<String, String> nameColumn;
+    TableColumn<Lesson, String> nameColumn;
     @FXML
-    TableColumn<String, String> prerequisitesColumn;
+    TableColumn<Lesson, List<String>> prerequisitesColumn;
     @FXML
-    TableColumn<String, String> needColumn;
+    TableColumn<Lesson, List<String>> needColumn;
     @FXML
-    TableColumn<String, String> capacityColumn;
+    TableColumn<Lesson, String> capacityColumn;
     @FXML
-    TableColumn<String, String> registrationColumn;
+    TableColumn<Lesson, String> registrationColumn;
     @FXML
-    TableColumn<String, String> professorColumn;
+    TableColumn<Lesson, String> professorColumn;
     @FXML
-    TableColumn<String, String> examTimeColumn;
+    TableColumn<Lesson, String> examTimeColumn;
     @FXML
-    TableColumn<String, List<String>> planColumn;
+    TableColumn<Lesson, List<String>> planColumn;
 
 
     public void show(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.SHOW_DESIRED_LESSONS_LIST);
+        request.addData("collegeName", collegeName.getValue());
+        request.addData("unitNumber", unitBox.getValue());
+        request.addData("lessonCode", lessonCode.getText());
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            List<Lesson> desiredLessons = new ArrayList<>();
+            response.getData().forEach((K, V) -> {
+                if (K.startsWith("lesson")) {
+                    desiredLessons.add((Lesson) V);
+                }
+            });
+            list.getItems().clear();
+            list.getItems().addAll(desiredLessons);
+        }
     }
 
     public void edit(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "editLessonPage");
     }
 
     public void back(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    private void hide() {
+        if (EDU.userType != UserType.PROFESSOR ||
+                EDU.professorType != Type.EDUCATIONAL_ASSISTANT) {
+            this.edit.setDisable(true);
+            this.edit.setVisible(false);
+        }
+    }
+
+    private List<Lesson> getData() {
+        Request request = new Request(RequestType.SHOW_LESSONS_LIST_PAGE);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            return null;
+        }
+        List<Lesson> lessons = new ArrayList<>();
+        response.getData().forEach((K, V) -> {
+            if (K.startsWith("lesson")) {
+                lessons.add((Lesson) V);
+            }
+        });
+        return lessons;
+    }
+
+    private void setTableData(List<Lesson> lessons) {
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("lessonCode"));
+        groupColumn.setCellValueFactory(new PropertyValueFactory<>("group"));
+        unitColumn.setCellValueFactory(new PropertyValueFactory<>("unitNumber"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        capacityColumn.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+        registrationColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
+        professorColumn.setCellValueFactory(new PropertyValueFactory<>("professorCode"));
+        examTimeColumn.setCellValueFactory(new PropertyValueFactory<>("examTime"));
+        planColumn.setCellValueFactory(new PropertyValueFactory<>("days"));
+        prerequisitesColumn.setCellValueFactory(new PropertyValueFactory<>("prerequisites"));
+        needColumn.setCellValueFactory(new PropertyValueFactory<>("theNeed"));
+
+        list.getItems().addAll(lessons);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        hide();
+        List<Lesson> lessons = getData();
+        if (lessons != null) {
+            setTableData(lessons);
+            collegeName.getItems().add("-");
+            collegeName.getItems().addAll(University.getUniversity().getCollegeName());
+            unitBox.getItems().addAll("1", "2", "3", "4");
+        }
     }
 }

@@ -12,7 +12,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.mainPage.MainPageController">
    <children>
       <Rectangle fx:id="upRectangle" arcHeight="5.0" arcWidth="5.0" fill="#b151b8" height="50.0" stroke="#b151b8" strokeType="INSIDE" width="1200.0" />
@@ -96,5 +95,15 @@
       <ListView fx:id="rightList" layoutX="515.0" layoutY="453.0" prefHeight="130.0" prefWidth="520.0" />
       <ListView fx:id="middleList" layoutX="340.0" layoutY="453.0" prefHeight="130.0" prefWidth="175.0" />
       <ListView fx:id="leftList" layoutX="165.0" layoutY="453.0" prefHeight="130.0" prefWidth="175.0" />
+      <Text fx:id="lastLogin" fill="#ffd100" layoutX="94.0" layoutY="751.0" strokeType="OUTSIDE" strokeWidth="2.0" text="last login: " textAlignment="CENTER" wrappingWidth="289.99999952316284">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
+      <Text fx:id="time" fill="#ffd100" layoutX="818.0" layoutY="751.0" strokeType="OUTSIDE" strokeWidth="2.0" text="current time: " textAlignment="CENTER" wrappingWidth="289.99999952316284">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

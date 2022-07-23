@@ -19,6 +19,10 @@ public class Response {
         return this.status;
     }
 
+    public HashMap<String, Object> getData() {
+        return data;
+    }
+
     public String getErrorMessage() {
         return this.errorMessage;
     }

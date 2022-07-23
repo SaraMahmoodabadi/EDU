@@ -20,6 +20,9 @@ public class Lesson {
     private List<Day> days;
     private String classTime;
     private String examTime;
+    private int registrationNumber;
+    private int group;
+    private int professorCode;
 
     public Lesson(String name, String lessonCode, String collegeCode,
                   List<String> teacherAssistant, int unitNumber,
@@ -150,5 +153,29 @@ public class Lesson {
 
     public void setExamTime(String examTime) {
         this.examTime = examTime;
+    }
+
+    public int getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(int registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public int getGroup() {
+        return group;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
+    }
+
+    public int getProfessorCode() {
+        return professorCode;
+    }
+
+    public void setProfessorCode(int professorCode) {
+        this.professorCode = professorCode;
     }
 }
