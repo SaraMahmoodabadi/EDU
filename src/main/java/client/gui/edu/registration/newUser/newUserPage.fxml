@@ -39,12 +39,12 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Text>
-            <RadioButton fx:id="student" layoutX="559.0" layoutY="121.0" mnemonicParsing="false" text="Student" textFill="#b151b8">
+            <RadioButton fx:id="student" layoutX="559.0" layoutY="121.0" mnemonicParsing="false" onAction="#selectStudent" text="Student" textFill="#b151b8">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </RadioButton>
-            <RadioButton fx:id="professor" layoutX="664.0" layoutY="121.0" mnemonicParsing="false" text="Professor" textFill="#b151b8">
+            <RadioButton fx:id="professor" layoutX="664.0" layoutY="121.0" mnemonicParsing="false" onAction="#selectProfessor" text="Professor" textFill="#b151b8">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -227,6 +227,26 @@
                   <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
                </effect>
             </TextField>
+            <Text fx:id="status" fill="#b151b8" layoutX="600.0" layoutY="867.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Educational status">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <RadioButton fx:id="studying" layoutX="600.0" layoutY="880.0" mnemonicParsing="false" text="Studying" textFill="#b151b8">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </RadioButton>
+            <RadioButton fx:id="graduated" layoutX="710.0" layoutY="880.0" mnemonicParsing="false" text="Graduated" textFill="#b151b8">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </RadioButton>
+            <RadioButton fx:id="withdrawal" layoutX="820.0" layoutY="880.0" mnemonicParsing="false" text="Withdrawal feom education" textFill="#b151b8">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </RadioButton>
          </children>
       </AnchorPane>
    </content>

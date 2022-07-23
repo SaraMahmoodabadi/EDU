@@ -331,7 +331,7 @@ public class EditLessonController implements Initializable {
             if (capacity < 0) capacity = -1;
         } catch (NumberFormatException e) {
             String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
-                    getProperty(String.class, "capacityError");
+                    getProperty(String.class, "numberError");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
         }
         return capacity;
