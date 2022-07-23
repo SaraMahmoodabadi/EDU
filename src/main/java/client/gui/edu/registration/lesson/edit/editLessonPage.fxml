@@ -4,7 +4,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.InnerShadow?>
@@ -128,11 +127,6 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Text>
-            <ComboBox fx:id="timeBox1" layoutX="140.0" layoutY="522.0" prefHeight="30.0" prefWidth="275.0" promptText="Hour" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ComboBox>
             <Text fx:id="examText1" fill="#b151b8" layoutX="590.0" layoutY="505.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time of exam">
                <font>
                   <Font name="System Bold" size="20.0" />
@@ -143,17 +137,7 @@
                   <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
                </effect>
             </DatePicker>
-            <ComboBox fx:id="examHour1" layoutX="755.0" layoutY="522.0" prefHeight="31.0" prefWidth="110.0" promptText="Hour" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ComboBox>
-            <ListView fx:id="prerequisiteList" editable="true" layoutX="140.0" layoutY="618.0" prefHeight="30.0" prefWidth="225.0">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ListView>
-            <Button fx:id="plusButton1" layoutX="374.0" layoutY="618.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="40.0">
+            <Button fx:id="plusButton1" layoutX="374.0" layoutY="618.0" mnemonicParsing="false" onAction="#addPrerequisite" prefHeight="30.0" prefWidth="40.0">
                <graphic>
                   <ImageView fx:id="plusImage1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -170,12 +154,7 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Text>
-            <ListView fx:id="needList" editable="true" layoutX="590.0" layoutY="618.0" prefHeight="30.0" prefWidth="225.0">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ListView>
-            <Button fx:id="plusButton2" layoutX="825.0" layoutY="618.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="40.0">
+            <Button fx:id="plusButton2" layoutX="825.0" layoutY="618.0" mnemonicParsing="false" onAction="#addNeed" prefHeight="30.0" prefWidth="40.0">
                <graphic>
                   <ImageView fx:id="plusImage2" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -294,11 +273,6 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Text>
-            <ComboBox fx:id="timeBox2" layoutX="140.0" layoutY="1318.0" prefHeight="30.0" prefWidth="275.0" promptText="Hour" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ComboBox>
             <Line fx:id="line3" endX="530.0" fill="#2c2a2c" layoutX="500.0" layoutY="1365.0" startX="-350.0" />
             <Text fx:id="examText2" fill="#b151b8" layoutX="525.0" layoutY="1400.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time of exam">
                <font>
@@ -310,11 +284,6 @@
                   <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
                </effect>
             </DatePicker>
-            <ComboBox fx:id="examHour2" layoutX="621.0" layoutY="1425.0" prefHeight="31.0" prefWidth="110.0" promptText="Hour" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
-               </effect>
-            </ComboBox>
             <Button fx:id="edit" layoutX="528.0" layoutY="1490.0" mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="edit" textAlignment="CENTER" textFill="#ffd100">
                <font>
                   <Font name="System Bold" size="18.0" />
@@ -362,6 +331,116 @@
                   </ImageView>
                </graphic>
             </Button>
+            <TextField fx:id="hour1" layoutX="143.0" layoutY="522.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="190.0" layoutY="545.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute1" layoutX="201.0" layoutY="522.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="250.0" layoutY="545.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="hour2" layoutX="270.0" layoutY="522.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="318.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute2" layoutX="332.0" layoutY="522.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <TextField fx:id="hour3" layoutX="758.0" layoutY="521.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="807.0" layoutY="543.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute3" layoutX="825.0" layoutY="521.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <TextField fx:id="hour4" layoutX="143.0" layoutY="1318.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="190.0" layoutY="1340.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute4" layoutX="201.0" layoutY="1318.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="250.0" layoutY="1340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="hour5" layoutX="270.0" layoutY="1318.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="318.0" layoutY="1340.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute5" layoutX="332.0" layoutY="1318.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <TextField fx:id="hour6" layoutX="615.0" layoutY="1425.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <Text layoutX="665.0" layoutY="1447.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Text>
+            <TextField fx:id="minute6" layoutX="685.0" layoutY="1425.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <TextField fx:id="prerequisiteList" layoutX="140.0" layoutY="618.0" prefHeight="31.0" prefWidth="225.0" promptText="prerequisite">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
+            <TextField fx:id="needList" layoutX="591.0" layoutY="618.0" prefHeight="31.0" prefWidth="225.0" promptText="the need">
+               <effect>
+                  <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+               </effect>
+            </TextField>
          </children></AnchorPane>
    </content>
 </ScrollPane>

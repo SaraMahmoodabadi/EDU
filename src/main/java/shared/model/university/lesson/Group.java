@@ -4,10 +4,11 @@ public class Group {
     private String lessonCode;
     private int groupNumber;
     private String professorCode;
+    private int capacity;
 
-    public Group(String lessonCode, int groupNumber, String professorCode) {
+    public Group(String lessonCode, int capacity, String professorCode) {
         this.lessonCode = lessonCode;
-        this.groupNumber = groupNumber;
+        this.capacity= capacity;
         this.professorCode = professorCode;
     }
 
@@ -33,5 +34,13 @@ public class Group {
 
     public void setProfessorCode(String professorCode) {
         this.professorCode = professorCode;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

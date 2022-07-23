@@ -12,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import client.gui.EDU;
-import client.gui.ErrorMonitor;
+import client.gui.AlertMonitor;
 
 import shared.model.user.UserType;
 import shared.model.user.professor.Type;
@@ -84,16 +84,19 @@ public class LoginController implements Initializable {
     //TODO : Change scene for other type of users
     private void changeScene(ActionEvent actionEvent, Response response) {
         if (response.getStatus() == ResponseStatus.ERROR) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
             EDU.userType = (UserType) response.getData("userType");
+            if (EDU.userType == UserType.STUDENT || EDU.userType == UserType.PROFESSOR) {
+                EDU.collegeCode = (String) response.getData("collegeCode");
+            }
             if (EDU.userType == UserType.STUDENT) {
                 EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
                 if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
                     String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
                             getProperty(String.class, "withdrawalError");
-                    ErrorMonitor.showError(Alert.AlertType.ERROR, errorMessage);
+                    AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
                     return;
                 }
             }
@@ -123,7 +126,7 @@ public class LoginController implements Initializable {
                 this.captchaText.getText() == null) {
             String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
                     getProperty(String.class, "nullFieldsError");
-            ErrorMonitor.showError(Alert.AlertType.ERROR, errorMessage);
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
             return true;
         }
         return false;

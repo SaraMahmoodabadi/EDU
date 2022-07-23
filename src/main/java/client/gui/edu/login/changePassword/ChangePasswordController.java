@@ -1,7 +1,7 @@
 package client.gui.edu.login.changePassword;
 
 import client.gui.EDU;
-import client.gui.ErrorMonitor;
+import client.gui.AlertMonitor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,7 +14,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import shared.model.user.UserType;
 import shared.model.user.professor.Type;
-import shared.model.user.student.EducationalStatus;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -59,7 +58,7 @@ public class ChangePasswordController implements Initializable {
     //TODO : Change scene for other type of users
     private void changeScene(ActionEvent actionEvent, Response response) {
         if (response.getStatus() == ResponseStatus.ERROR) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
             if (EDU.userType == UserType.EDU_ADMIN) {
@@ -82,7 +81,7 @@ public class ChangePasswordController implements Initializable {
                 this.newPassword.getText() == null) {
             String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
                     getProperty(String.class, "nullFieldsError");
-            ErrorMonitor.showError(Alert.AlertType.ERROR, errorMessage);
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
             return true;
         }
         return false;

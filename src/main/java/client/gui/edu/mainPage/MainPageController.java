@@ -1,7 +1,7 @@
 package client.gui.edu.mainPage;
 
 import client.gui.EDU;
-import client.gui.ErrorMonitor;
+import client.gui.AlertMonitor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +11,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import shared.model.user.User;
 import shared.model.user.UserType;
 import shared.model.user.professor.Type;
 import shared.request.Request;
@@ -195,7 +194,7 @@ public class MainPageController implements Initializable {
         Request request = new Request(RequestType.LOGIN, EDU.userType);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
             this.name.setText((String) response.getData("name"));

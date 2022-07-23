@@ -18,6 +18,7 @@ public class EDU extends Stage {
     public static SceneSwitcher sceneSwitcher;
     public static UserType userType;
     public static Type professorType;
+    public static String collegeCode;
 
     public EDU(ServerController controller) {
         sceneSwitcher = new SceneSwitcher();

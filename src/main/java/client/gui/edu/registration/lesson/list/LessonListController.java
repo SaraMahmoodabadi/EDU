@@ -1,7 +1,7 @@
 package client.gui.edu.registration.lesson.list;
 
 import client.gui.EDU;
-import client.gui.ErrorMonitor;
+import client.gui.AlertMonitor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -77,7 +77,7 @@ public class LessonListController implements Initializable {
         request.addData("lessonCode", lessonCode.getText());
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
             List<Lesson> desiredLessons = new ArrayList<>();
@@ -111,7 +111,7 @@ public class LessonListController implements Initializable {
         Request request = new Request(RequestType.SHOW_LESSONS_LIST_PAGE);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
-            ErrorMonitor.showError(Alert.AlertType.ERROR, response.getErrorMessage());
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             return null;
         }
         List<Lesson> lessons = new ArrayList<>();
