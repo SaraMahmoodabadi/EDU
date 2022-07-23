@@ -5,6 +5,7 @@ import java.util.List;
 
 public class University {
     private List<String> collegeName;
+    private List<String> major;
     private static University university;
 
     private University() {
@@ -19,8 +20,20 @@ public class University {
         this.collegeName = collegeName;
     }
 
+    public List<String> getMajor() {
+        return major;
+    }
+
+    public void setMajor(List<String> major) {
+        this.major = major;
+    }
+
     public void addCollege(String name) {
         this.collegeName.add(name);
+    }
+
+    public void addMajor(String major) {
+        this.major.add(major);
     }
 
     public static University getUniversity() {

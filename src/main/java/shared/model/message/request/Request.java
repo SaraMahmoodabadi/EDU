@@ -11,6 +11,8 @@ public class Request {
     private String thirdBlank;
     private boolean result;
     private boolean secondResult;
+    private String finalResult;
+    private String date;
 
     public Request(Type type, String studentCode, String professorCode) {
         this.type = type;
@@ -88,5 +90,21 @@ public class Request {
 
     public void setSecondResult(boolean secondResult) {
         this.secondResult = secondResult;
+    }
+
+    public String getFinalResult() {
+        return finalResult;
+    }
+
+    public void setFinalResult(String finalResult) {
+        this.finalResult = finalResult;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
