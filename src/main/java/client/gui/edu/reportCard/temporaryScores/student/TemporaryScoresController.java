@@ -1,18 +1,28 @@
 package client.gui.edu.reportCard.temporaryScores.student;
 
+import client.gui.AlertMonitor;
+import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import shared.model.university.lesson.score.Score;
+import shared.model.user.UserType;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.response.ResponseStatus;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TemporaryScoresController implements Initializable {
@@ -24,15 +34,15 @@ public class TemporaryScoresController implements Initializable {
     @FXML
     protected Rectangle smallRectangle;
     @FXML
-    protected TableView<String> table;
+    protected TableView<Score> table;
     @FXML
-    protected TableColumn<String, String> nameColumn;
+    protected TableColumn<Score, String> codeColumn;
     @FXML
-    protected TableColumn<String, String> scoreColumn;
+    protected TableColumn<Score, String> scoreColumn;
     @FXML
-    protected TableColumn<String, String> protestColumn;
+    protected TableColumn<Score, String> protestColumn;
     @FXML
-    protected TableColumn<String, String> protestResultColumn;
+    protected TableColumn<Score, String> protestResultColumn;
     @FXML
     protected Text explanationText;
     @FXML
@@ -45,13 +55,70 @@ public class TemporaryScoresController implements Initializable {
     protected ImageView backImage;
 
     public void register(ActionEvent actionEvent) {
+        if (table.getSelectionModel().getSelectedItem() == null) {
+            String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullChoice");
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
+        }
+        else {
+            Score score = table.getSelectionModel().getSelectedItem();
+            if (score == null || protestArea.getText() == null) {
+                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullItem");
+                AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
+            }
+            else {
+                Request request = new Request(RequestType.REGISTER_PROTEST);
+                request.addData("score", score);
+                request.addData("protest", protestArea.getText());
+                showRequestResult(request);
+            }
+        }
+    }
+
+    private void showRequestResult(Request request) {
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+        }
     }
 
     public void back(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    private List<Score> gerData() {
+        Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.STUDENT);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            List<Score> scores = new ArrayList<>();
+            response.getData().forEach((K, V) -> {
+                if (K.startsWith("score")) {
+                    scores.add((Score) V);
+                }
+            });
+            return scores;
+        }
+        return null;
+    }
+
+    private void makeTable() {
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("lessonCode"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        protestColumn.setCellValueFactory(new PropertyValueFactory<>("protest"));
+        protestResultColumn.setCellValueFactory(new PropertyValueFactory<>("protestAnswer"));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        makeTable();
+        List<Score> scores = gerData();
+        if (scores != null) {
+            table.getItems().addAll(scores);
+        }
     }
 }

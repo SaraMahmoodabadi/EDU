@@ -12,7 +12,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.reportCard.temporaryScores.student.TemporaryScoresController">
    <children>
       <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
@@ -35,7 +34,7 @@
       <Rectangle fx:id="smallRectangle" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="294.0" layoutX="147.0" layoutY="388.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="906.0" />
       <TableView fx:id="table" layoutX="199.0" layoutY="114.0" prefHeight="235.0" prefWidth="803.0">
          <columns>
-            <TableColumn fx:id="nameColumn" editable="false" prefWidth="206.0" style="-fx-background-color: #ffd100;" text="Lesson name" />
+            <TableColumn fx:id="codeColumn" editable="false" prefWidth="206.0" style="-fx-background-color: #ffd100;" text="Lesson Code" />
             <TableColumn fx:id="scoreColumn" editable="false" prefWidth="93.0" style="-fx-background-color: #ffd100;" text="Score" />
             <TableColumn fx:id="protestColumn" editable="false" prefWidth="250.0" style="-fx-background-color: #ffd100;" text="Protest" />
             <TableColumn fx:id="protestResultColumn" editable="false" prefWidth="250.0" style="-fx-background-color: #ffd100;" text="Protest result" />
