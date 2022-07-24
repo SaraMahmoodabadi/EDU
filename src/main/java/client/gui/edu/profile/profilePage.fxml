@@ -124,7 +124,7 @@
          </font>
       </Label>
       <TextField fx:id="emailField" layoutX="225.0" layoutY="443.0" prefHeight="31.0" prefWidth="330.0" promptText="email" />
-      <TextField fx:id="phoneNumberLabel" layoutX="782.0" layoutY="443.0" prefHeight="31.0" prefWidth="225.0" promptText="phone number" />
+      <TextField fx:id="phoneNumberField" layoutX="782.0" layoutY="443.0" prefHeight="31.0" prefWidth="225.0" promptText="phone number" />
       <Button fx:id="registerButton1" layoutX="565.0" layoutY="443.0" mnemonicParsing="false" onAction="#registerEmail" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: #ffd100;">
          <graphic>
             <ImageView fx:id="registerImage1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">

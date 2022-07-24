@@ -1,8 +1,11 @@
 package client.gui.edu.profile;
 
+import client.gui.AlertMonitor;
+import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import shared.model.user.UserType;
+import shared.model.user.professor.Professor;
+import shared.model.user.student.Student;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.response.ResponseStatus;
+import shared.util.media.ImageHandler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -69,7 +80,7 @@ public class ProfileController implements Initializable {
     @FXML
     protected TextField emailField;
     @FXML
-    protected TextField phoneNumberLabel;
+    protected TextField phoneNumberField;
     @FXML
     protected Button registerButton1;
     @FXML
@@ -91,16 +102,85 @@ public class ProfileController implements Initializable {
 
 
     public void registerEmail(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.REGISTER_EMAIL);
+        request.addData("email", emailField.getText());
+        showRequestResult(request);
     }
 
     public void registerPhoneNumber(ActionEvent actionEvent) {
+        Request request = new Request(RequestType.REGISTER_PHONE_NUMBER);
+        request.addData("phoneNumber", phoneNumberField.getText());
+        showRequestResult(request);
     }
 
     public void back(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    private void makeFields() {
+        if (EDU.userType == UserType.PROFESSOR) {
+            userCodeText.setText("professor code:");
+            averageOrRoomText.setText("room number:");
+            supervisorText.setVisible(false);
+            enteringYearText.setVisible(false);
+            statusText.setVisible(false);
+        }
+    }
+
+    private void getStudentData() {
+        Request request = new Request(RequestType.SHOW_PROFILE_PAGE, UserType.STUDENT);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) {
+            Student student = (Student) response.getData("student");
+            firstNameLabel.setText(student.getFirstName());
+            lastNameLabel.setText(student.getLastName());
+            nationalCodeLabel.setText(String.valueOf(student.getNationalCode()));
+            userCodeLabel.setText(student.getStudentCode());
+            collegeLabel.setText(student.getCollegeCode());
+            emailField.setText(student.getEmailAddress());
+            phoneNumberField.setText(String.valueOf(student.getPhoneNumber()));
+            averageOrRoomText.setText(String.valueOf(student.getRate()));
+            degreeLabel.setText(String.valueOf(student.getGrade()));
+            supervisorLabel.setText(student.getSupervisorCode());
+            enteringYearLabel.setText(String.valueOf(student.getEnteringYear()));
+            Object image = response.getData("profile");
+            this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        }
+    }
+
+    private void getProfessorData() {
+        Request request = new Request(RequestType.SHOW_PROFILE_PAGE, UserType.PROFESSOR);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) {
+            Professor professor = (Professor) response.getData("professor");
+            firstNameLabel.setText(professor.getFirstName());
+            lastNameLabel.setText(professor.getLastName());
+            nationalCodeLabel.setText(String.valueOf(professor.getNationalCode()));
+            userCodeLabel.setText(professor.getProfessorCode());
+            collegeLabel.setText(professor.getCollegeCode());
+            emailField.setText(professor.getEmailAddress());
+            phoneNumberField.setText(String.valueOf(professor.getPhoneNumber()));
+            averageOrRoomText.setText(String.valueOf(professor.getRoomNumber()));
+            degreeLabel.setText(String.valueOf(professor.getDegree()));
+            Object image = response.getData("profile");
+            this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        }
+    }
+
+    private void showRequestResult(Request request) {
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.ERROR) {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+        else {
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        makeFields();
+        if (EDU.userType ==UserType.STUDENT) getStudentData();
+        else getProfessorData();
     }
 }
