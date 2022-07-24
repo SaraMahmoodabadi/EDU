@@ -60,12 +60,10 @@ public class LoginController implements Initializable {
     protected Text startText;
     @FXML
     protected Circle person;
-    private int captchaID;
 
 
     public void recaptcha(ActionEvent actionEvent) {
         Request request = new Request(RequestType.START_CONNECTION);
-        request.addData("last captchaID", this.captchaID);
         Response response = EDU.serverController.sendRequest(request);
         Object image = response.getData("captcha image");
         this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
@@ -92,15 +90,13 @@ public class LoginController implements Initializable {
                 EDU.collegeCode = (String) response.getData("collegeCode");
             }
             if (EDU.userType == UserType.STUDENT) {
-                EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
-                if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
-                    String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
-                            getProperty(String.class, "withdrawalError");
-                    AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
-                    return;
-                }
+               checkWithdrawal(response);
             }
-            if (response.getNotificationMessage().equals("User should change password.")) {
+            if (EDU.userType == UserType.PROFESSOR) {
+                EDU.professorType = (Type) response.getData("professorType");
+            }
+            if (response.getNotificationMessage().equals
+                    (Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("changePassword"))) {
                 EDU.sceneSwitcher.switchScene(actionEvent, "changePasswordPage");
             }
             else {
@@ -111,12 +107,18 @@ public class LoginController implements Initializable {
 
                 }
                 else {
-                    if (EDU.userType == UserType.PROFESSOR) {
-                        EDU.professorType = (Type) response.getData("professorType");
-                    }
                     EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
                 }
             }
+        }
+    }
+
+    private void checkWithdrawal(Response response) {
+        EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
+        if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
+            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
+                    getProperty(String.class, "withdrawalError");
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
         }
     }
 
@@ -135,8 +137,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Response response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
-        Object image = response.getData("captcha image");
+        Object image = response.getData("captchaImage");
         this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
-        this.captchaID = (int) response.getData("captchaID");
     }
 }

@@ -10,6 +10,10 @@ public class Captcha {
         this.captchaValue = captchaValue;
     }
 
+    public String getCaptchaImageAddress() {
+        return captchaImageAddress;
+    }
+
     public String getCaptchaValue() {
         return this.captchaValue;
     }

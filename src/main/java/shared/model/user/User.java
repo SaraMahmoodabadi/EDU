@@ -28,6 +28,15 @@ public class User {
         this.userType = userType;
     }
 
+    public User(UserType userType, String collegeCode,
+                String lastLogin, String userName, String password) {
+        this.userType = userType;
+        this.collegeCode = collegeCode;
+        this.lastLogin = lastLogin;
+        this.username = userName;
+        this.password = password;
+    }
+
     public String getFirstName() {
         return firstName;
     }

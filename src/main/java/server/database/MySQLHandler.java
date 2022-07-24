@@ -31,6 +31,16 @@ public class MySQLHandler {
         }
     }
 
+    public ResultSet getResultSet(String query) {
+        try {
+            Statement statement = this.connection.createStatement();
+            return statement.executeQuery(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<String> getData(String query, List<String> columnName) {
         List<String> dataList = new ArrayList<>();
         try {

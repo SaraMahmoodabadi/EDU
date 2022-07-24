@@ -1,15 +1,15 @@
 package server.network;
 
+import server.database.dataHandlers.UserHandler;
 import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
+import shared.response.Response;
 
 public class RequestHandler {
-    private boolean result;
     private ClientHandler client;
     private Request request;
 
     public void handleRequests(ClientHandler client, Request request) {
-        this.result = false;
         this.client = client;
         this.request = request;
         if (this.request == null) return;
@@ -17,9 +17,11 @@ public class RequestHandler {
     }
 
     private void handleConnectionRequest() {
+        UserManager manager = new UserManager(this.client);
         switch (request.getRequestType()) {
             case START_CONNECTION:
-                this.client.sendResponse(new UserManager().sendCaptchaImage());
+                Response response = manager.sendCaptchaImage();
+                client.sendResponse(response);
                 break;
             case END_CONNECTION:
                 break;
@@ -29,12 +31,16 @@ public class RequestHandler {
     }
 
     private void handleInitialRequests() {
+        UserManager manager = new UserManager(this.client);
         switch (this.request.getRequestType()) {
             case LOGIN:
+                client.sendResponse(manager.login(request));
                 break;
             case RECAPTCHA:
+                client.sendResponse(manager.sendCaptchaImage());
                 break;
             case CHANGE_PASSWORD:
+                client.sendResponse(manager.changePassword(request));
                 break;
             default:
                 handleMainRequests();

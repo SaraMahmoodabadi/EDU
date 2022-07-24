@@ -29,6 +29,10 @@ public class Config extends Properties {
                 return config.getProperty(Config.class, "fxmlFiles");
             case GUI_TEXT:
                 return config.getProperty(Config.class, "guiText");
+            case QUERY:
+                return config.getProperty(Config.class, "query");
+            case SERVER_MESSAGES:
+                return config.getProperty(Config.class, "serverMessages");
             default:
         }
         return null;
