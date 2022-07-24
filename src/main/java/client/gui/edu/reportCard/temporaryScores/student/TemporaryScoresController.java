@@ -74,6 +74,10 @@ public class TemporaryScoresController implements Initializable {
         }
     }
 
+    public void back(ActionEvent actionEvent) {
+        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
     private void showRequestResult(Request request) {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
@@ -82,10 +86,6 @@ public class TemporaryScoresController implements Initializable {
         else {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
         }
-    }
-
-    public void back(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
     private List<Score> gerData() {
