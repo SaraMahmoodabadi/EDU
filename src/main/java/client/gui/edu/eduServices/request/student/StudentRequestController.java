@@ -22,6 +22,7 @@ import shared.response.ResponseStatus;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class StudentRequestController implements Initializable {
@@ -56,10 +57,21 @@ public class StudentRequestController implements Initializable {
     protected Button back;
     @FXML
     protected ImageView backImage;
+    @FXML
+    protected TextField professorCode;
     private Grade grade;
 
     public void register(ActionEvent actionEvent) {
         shared.request.Request request = new shared.request.Request(RequestType.REGISTER_REQUEST);
+        if (Objects.equals(requestBox.getValue(), Type.RECOMMENDATION.toString())) {
+            if (professorCode.getText() == null) return;
+            else request.addData("professorCode", professorCode.getText());
+        }
+        if (requestBox.getValue().equals(Type.MINOR.toString())) {
+            if (majorBox.getValue() == null) return;
+            request.addData("major", majorBox.getValue());
+        }
+        request.addData("type", requestBox.getValue());
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
@@ -98,6 +110,7 @@ public class StudentRequestController implements Initializable {
         if (response.getStatus() == ResponseStatus.OK) {
             grade = (Grade) response.getData("grade");
             makeBoxes();
+            hide();
             List<Request> requests = new ArrayList<>();
             response.getData().forEach((K, V) -> {
                 if (K.startsWith("request")) {
@@ -113,6 +126,11 @@ public class StudentRequestController implements Initializable {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         resultColumn.setCellValueFactory(new PropertyValueFactory<>("finalResult"));
+    }
+
+    private void hide() {
+        if (grade == Grade.PHD) professorCode.setVisible(false);
+        if (grade != Grade.UNDERGRADUATE) majorBox.setVisible(false);
     }
 
     @Override
