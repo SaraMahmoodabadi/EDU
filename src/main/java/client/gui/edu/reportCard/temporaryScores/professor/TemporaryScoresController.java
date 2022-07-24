@@ -136,7 +136,9 @@ public class TemporaryScoresController implements Initializable {
 
     public void registerAllScores(ActionEvent actionEvent) {
         Request request = new Request(RequestType.REGISTER_ALL_SCORES);
-        updatedScores.forEach(S -> request.addData("score", S));
+        for (int i = 1; i < updatedScores.size(); i++) {
+            request.addData("score" + i, updatedScores.get(i));
+        }
         showRequestResult(request);
     }
 
