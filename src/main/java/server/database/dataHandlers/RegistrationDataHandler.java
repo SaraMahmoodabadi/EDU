@@ -103,4 +103,45 @@ public class RegistrationDataHandler {
         }
         return null;
     }
+
+    public boolean existLesson(String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("existLessonCode");
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("name") != null) return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public boolean makeLesson(Lesson lesson) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeLesson");
+        query = String.format(query, lesson.getLessonCode() + ", " + lesson.getName() +
+                ", " + lesson.getCollegeCode() + ", " + lesson.getUnitNumber() +
+                ", " + lesson.getGrade() + ", " + lesson.getPrerequisites().toString() +
+                ", " + lesson.getTheNeed().toString() + ", [1], " + lesson.getDays().toString() +
+                ", " + lesson.getClassTime() + ", " + lesson.getExamTime());
+        String query2 = Config.getConfig(ConfigType.QUERY).getProperty("makeGroup");
+        query2 = String.format(query2, lesson.getLessonCode() + ", " + lesson.getProfessorCode() +
+                ", " + lesson.getCapacity());
+        boolean b1 = this.dataBaseHandler.updateData(query);
+        boolean b2 = this.dataBaseHandler.updateData(query2);
+        return b1 && b2;
+    }
+
+    public boolean makeGroup(Group group) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeGroup");
+        query = String.format(query, group.getLessonCode() + ", " + group.getProfessorCode() +
+                ", " + group.getCapacity());
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean editLesson(String items, String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateLesson");
+        query = String.format(query, items) + " " + lessonCode;
+        return this.dataBaseHandler.updateData(query);
+    }
 }

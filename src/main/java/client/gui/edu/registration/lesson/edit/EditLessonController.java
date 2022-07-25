@@ -221,6 +221,7 @@ public class EditLessonController implements Initializable {
         String classTime = hour4.getText() + ":" + minute4.getText() +
                 "-" + hour5.getText() + ":" + minute5.getText();
         Request request = new Request(RequestType.EDIT_LESSON);
+        request.addData("lesson", codeField2.getText());
         request.addData("group", group);
         request.addData("days", days);
         request.addData("examTime", examTime);
@@ -315,13 +316,19 @@ public class EditLessonController implements Initializable {
         String examTime = date1.getValue() + "-" + hour3.getText() + ":" + minute3.getText();
         String classTime = hour1.getText() + ":" + minute1.getText() +
                 "-" + hour2.getText() + ":" + minute2.getText();
+        List<Day> days = setInitialPlan();
+        if (isNull(days, examTime, classTime)) return null;
         int unit = Integer.parseInt(unitBox.getValue());
         Grade grade = Grade.valueOf(gradeBox.getValue());
-        List<Day> days = setInitialPlan();
-        Lesson lesson = new Lesson(nameField.getText(), codeField1.getText(),
+        return new Lesson(nameField.getText(), codeField1.getText(),
                 EDU.collegeCode, null, unit, grade, prerequisites,
-                theNeeds, capacity, days, classTime, examTime);
-        return lesson;
+                theNeeds, capacity, days, classTime, examTime, professorField1.getText());
+    }
+
+    private boolean isNull(List<Day> days, String examTime, String classTime) {
+        return nameField.getText() == null || codeField1.getText() == null ||
+                unitBox.getValue() == null || gradeBox.getValue() == null || days == null ||
+                classTime == null || examTime == null || professorField1.getText() == null;
     }
 
     private int getCapacity(String capacityField) {

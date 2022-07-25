@@ -71,13 +71,15 @@ public class MySQLHandler {
         return data.toString();
     }
 
-    public void updateData(String query) {
+    public boolean updateData(String query) {
         try {
             Statement statement = this.connection.createStatement();
             statement.executeQuery(query);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void closeConnection() {

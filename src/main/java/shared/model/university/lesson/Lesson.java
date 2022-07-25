@@ -30,7 +30,7 @@ public class Lesson {
                   List<String> teacherAssistant, int unitNumber,
                   Grade grade, List<String> prerequisites,
                   List<String> theNeed, int capacity, List<Day> days,
-                  String classTime, String examTime) {
+                  String classTime, String examTime, String professorCode) {
         this.name = name;
         this.lessonCode = lessonCode;
         this.collegeCode = collegeCode;
@@ -44,6 +44,7 @@ public class Lesson {
         this.classTime = classTime;
         this.examTime = examTime;
         this.plan = getPlan();
+        this.professorCode = professorCode;
     }
 
     public Lesson(String name, String lessonCode, int unitNumber,
@@ -58,6 +59,7 @@ public class Lesson {
         this.registrationNumber = Integer.parseInt(registrationNumber);
         this.examTime = examTime;
     }
+
 
     public String getName() {
         return name;
