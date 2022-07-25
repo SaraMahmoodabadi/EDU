@@ -2,6 +2,7 @@ package shared.model.university.lesson;
 
 import shared.model.user.student.Grade;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Lesson {
@@ -22,7 +23,8 @@ public class Lesson {
     private String examTime;
     private int registrationNumber;
     private int group;
-    private int professorCode;
+    private String professorCode;
+    private String plan;
 
     public Lesson(String name, String lessonCode, String collegeCode,
                   List<String> teacherAssistant, int unitNumber,
@@ -40,6 +42,20 @@ public class Lesson {
         this.capacity = capacity;
         this.days = days;
         this.classTime = classTime;
+        this.examTime = examTime;
+        this.plan = getPlan();
+    }
+
+    public Lesson(String name, String lessonCode, int unitNumber,
+                  String registrationNumber, String examTime, String days,
+                  String classTime, String prerequisites, String theNeed,) {
+        this.name = name;
+        this.lessonCode = lessonCode;
+        this.unitNumber = unitNumber;
+        this.prerequisites = Collections.singletonList(prerequisites);
+        this.theNeed = Collections.singletonList(theNeed);
+        this.plan = "days: " + days + ", time: " + classTime;
+        this.registrationNumber = Integer.parseInt(registrationNumber);
         this.examTime = examTime;
     }
 
@@ -171,11 +187,16 @@ public class Lesson {
         this.group = group;
     }
 
-    public int getProfessorCode() {
+    public String getProfessorCode() {
         return professorCode;
     }
 
-    public void setProfessorCode(int professorCode) {
+    public void setProfessorCode(String professorCode) {
         this.professorCode = professorCode;
+    }
+
+    public String getPlan() {
+        return "days: " + this.days.toString() +
+                ", time: " + this.classTime;
     }
 }

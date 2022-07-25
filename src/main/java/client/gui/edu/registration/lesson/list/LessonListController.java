@@ -132,7 +132,7 @@ public class LessonListController implements Initializable {
         registrationColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
         professorColumn.setCellValueFactory(new PropertyValueFactory<>("professorCode"));
         examTimeColumn.setCellValueFactory(new PropertyValueFactory<>("examTime"));
-        planColumn.setCellValueFactory(new PropertyValueFactory<>("days"));
+        planColumn.setCellValueFactory(new PropertyValueFactory<>("plan"));
         prerequisitesColumn.setCellValueFactory(new PropertyValueFactory<>("prerequisites"));
         needColumn.setCellValueFactory(new PropertyValueFactory<>("theNeed"));
 

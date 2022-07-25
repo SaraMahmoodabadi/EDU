@@ -2,6 +2,7 @@ package server.network;
 
 import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.UserHandler;
+import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
 import shared.response.Response;
@@ -53,8 +54,6 @@ public class RequestHandler {
 
     private void handleMainRequests() {
         switch (this.request.getRequestType()) {
-            case SHOW_LESSONS_LIST_PAGE:
-                break;
             case SHOW_PROFESSORS_LIST_PAGE:
                 break;
             case SHOW_NEW_USER_PAGE:
@@ -87,8 +86,13 @@ public class RequestHandler {
     }
 
     private void handleRegistrationRequests() {
+        RegistrationManager manager = new RegistrationManager(this.client);
         switch (this.request.getRequestType()) {
+            case SHOW_LESSONS_LIST_PAGE:
+                client.sendResponse(manager.getAllLessons());
+                break;
             case SHOW_DESIRED_LESSONS_LIST:
+                client.sendResponse(manager.getDesiredLessons(request));
                 break;
             case SHOW_EDIT_LESSON_PAGE:
                 break;
