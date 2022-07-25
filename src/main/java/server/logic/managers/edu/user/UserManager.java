@@ -1,9 +1,8 @@
 package server.logic.managers.edu.user;
 
-import server.database.MySQLHandler;
+import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.UserHandler;
 import server.logic.captcha.Captcha;
-import server.logic.captcha.CaptchaHandler;
 import server.network.ClientHandler;
 import shared.model.user.User;
 import shared.model.user.UserType;
@@ -17,17 +16,21 @@ import shared.util.media.ImageHandler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class UserManager {
     private final UserHandler userHandler;
     private Captcha captcha;
-    private ClientHandler clientHandler;
+    private final ClientHandler clientHandler;
+    private final MainDataHandler mainDataHandler;
 
     public UserManager(ClientHandler clientHandler) {
         this.userHandler = new UserHandler(clientHandler.getDataHandler(), clientHandler.getCaptchaHandler());
         this.clientHandler = clientHandler;
+        this.mainDataHandler = new MainDataHandler(clientHandler.getDataHandler());
     }
 
     public Response sendCaptchaImage() {
@@ -76,6 +79,8 @@ public class UserManager {
         response.addData("collegeCode", user.getCollegeCode());
         this.clientHandler.setUserName(user.getUsername());
         this.clientHandler.setUserType(user.getUserType());
+        this.userHandler.updateLastLogin(user.getThisLogin(), user.getUsername());
+        user.setLastLogin(user.getThisLogin());
         if (user.getUserType() == UserType.STUDENT) {
             response.addData("eduStatus", this.userHandler.getStatus(user.getUsername()));
         }
@@ -87,7 +92,7 @@ public class UserManager {
 
     private Response checkLastLogin(Response response, String lastLogin) {
         String thisLogin = LocalDateTime.now().toString();
-        this.userHandler.updateLastLogin(thisLogin, this.clientHandler.getUserName());
+        this.userHandler.updateThisLogin(thisLogin, this.clientHandler.getUserName());
         if (lastLogin.equals("0"))
             return response;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -114,7 +119,6 @@ public class UserManager {
         return response;
     }
 
-    //TODO
     public Response changePassword(Request request) {
         String previousPassword = (String) request.getData("previousPassword");
         String newPassword = (String) request.getData("newPassword");
@@ -132,5 +136,60 @@ public class UserManager {
             this.userHandler.updatePassword(newPassword, this.clientHandler.getUserName());
             return new Response(ResponseStatus.OK);
         }
+    }
+
+    public Response getMainPageData() {
+        User user = this.mainDataHandler.getMainPageData(this.clientHandler.getUserName());
+        if (user != null) {
+            Response response = new Response(ResponseStatus.OK);
+            response.addData("name", user.getFullName());
+            response.addData("emailAddress", user.getEmailAddress());
+            response.addData("lastLogin", user.getLastLogin());
+            response.addData("profileImage", new ImageHandler().encode(user.getImageAddress()));
+            if (this.clientHandler.getUserType() == UserType.STUDENT) return setTableData(response);
+            else return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            return getErrorResponse(errorMessage);
+        }
+    }
+
+    private Response setTableData(Response response) {
+        List<String> table = this.mainDataHandler.getTableData(this.clientHandler.getUserName());
+        if (table != null) {
+            List<String> middleList = new ArrayList<>();
+            List<String> leftList = new ArrayList<>();
+            if (table.get(0) != null) middleList.add(table.get(0));
+            else middleList.add("");
+            leftList.add("");
+            if (table.get(1) != null && table.get(2) != null) {
+                middleList.add("specified");
+                leftList.add(table.get(1) + " " + table.get(2));
+            }
+            else {
+                middleList.add("not specified");
+                leftList.add("");
+            }
+            if (Boolean.parseBoolean(table.get(3))) {
+                middleList.add("issued");
+                leftList.add("your registration permit has been issued");
+            }
+            else {
+                middleList.add("not issued");
+                leftList.add("");
+            }
+            if (table.get(4) != null) {
+                middleList.add("specified");
+                leftList.add(table.get(4));
+            }
+            else {
+                middleList.add("not specified");
+                leftList.add("");
+            }
+            response.addData("middleList", middleList);
+            response.addData("leftList", leftList);
+        }
+        return response;
     }
 }

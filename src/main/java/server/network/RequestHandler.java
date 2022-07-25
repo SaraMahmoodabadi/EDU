@@ -1,5 +1,6 @@
 package server.network;
 
+import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.UserHandler;
 import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
@@ -41,6 +42,9 @@ public class RequestHandler {
                 break;
             case CHANGE_PASSWORD:
                 client.sendResponse(manager.changePassword(request));
+                break;
+            case SHOW_MAIN_PAGE:
+                client.sendResponse(manager.getMainPageData());
                 break;
             default:
                 handleMainRequests();

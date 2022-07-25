@@ -191,7 +191,7 @@ public class MainPageController implements Initializable {
     }
 
     private void getData() {
-        Request request = new Request(RequestType.LOGIN, EDU.userType);
+        Request request = new Request(RequestType.SHOW_MAIN_PAGE, EDU.userType);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());

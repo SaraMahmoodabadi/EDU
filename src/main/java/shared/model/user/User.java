@@ -20,7 +20,6 @@ public class User {
                 UserType userType) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.fullName = firstName + " " + lastName;
         this.nationalCode = nationalCode;
         this.collegeCode = collegeCode;
         this.username = username;
@@ -29,12 +28,20 @@ public class User {
     }
 
     public User(UserType userType, String collegeCode,
-                String lastLogin, String userName, String password) {
+                String thisLogin, String userName, String password) {
         this.userType = userType;
         this.collegeCode = collegeCode;
-        this.lastLogin = lastLogin;
+        this.thisLogin = thisLogin;
         this.username = userName;
         this.password = password;
+    }
+
+    public User(String firstName, String lastName, String email, String lastLogin, String image) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = email;
+        this.lastLogin = lastLogin;
+        this.imageAddress = image;
     }
 
     public String getFirstName() {
@@ -131,5 +138,13 @@ public class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
