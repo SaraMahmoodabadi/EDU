@@ -48,7 +48,7 @@ public class Lesson {
 
     public Lesson(String name, String lessonCode, int unitNumber,
                   String registrationNumber, String examTime, String days,
-                  String classTime, String prerequisites, String theNeed,) {
+                  String classTime, String prerequisites, String theNeed) {
         this.name = name;
         this.lessonCode = lessonCode;
         this.unitNumber = unitNumber;
