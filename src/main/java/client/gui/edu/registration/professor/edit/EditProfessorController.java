@@ -95,12 +95,14 @@ public class EditProfessorController implements Initializable {
         request.addData("email", emailField.getText());
         request.addData("room", roomField.getText());
         request.addData("degree", setDegree());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
     public void remove(ActionEvent actionEvent) {
         Request request = new Request(RequestType.REMOVE_PROFESSOR);
         request.addData("professorCode", professorCode.getText());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 

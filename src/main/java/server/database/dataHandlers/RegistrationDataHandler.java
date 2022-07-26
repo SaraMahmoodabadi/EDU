@@ -272,4 +272,34 @@ public class RegistrationDataHandler {
         }
         return false;
     }
+
+    public String getLessonCollegeCode(String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getLessonCollege") + " " + lessonCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("collegeCode") != null) {
+                    return resultSet.getString("collegeCode");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public String getProfessorCollegeCode(String professorCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorCollege") + " " + professorCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("collegeCode") != null) {
+                    return resultSet.getString("collegeCode");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

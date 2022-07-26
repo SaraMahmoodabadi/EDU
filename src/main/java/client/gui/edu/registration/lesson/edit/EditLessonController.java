@@ -226,12 +226,14 @@ public class EditLessonController implements Initializable {
         request.addData("days", days);
         request.addData("examTime", examTime);
         request.addData("classTime", classTime);
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
     public void removeLesson(ActionEvent actionEvent) {
         Request request = new Request(RequestType.REMOVE_LESSON);
         request.addData("lessonCode", codeField3.getText());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
@@ -239,6 +241,7 @@ public class EditLessonController implements Initializable {
         Request request = new Request(RequestType.REMOVE_LESSON_GROUP);
         request.addData("lessonCode", codeField3.getText());
         request.addData("group", groupField.getText());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
