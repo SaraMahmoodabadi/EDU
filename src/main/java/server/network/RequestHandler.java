@@ -1,7 +1,5 @@
 package server.network;
 
-import server.database.dataHandlers.MainDataHandler;
-import server.database.dataHandlers.UserHandler;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
@@ -19,6 +17,7 @@ public class RequestHandler {
     }
 
     private void handleConnectionRequest() {
+        if (request == null) return;
         UserManager manager = new UserManager(this.client);
         switch (request.getRequestType()) {
             case START_CONNECTION:
@@ -122,12 +121,16 @@ public class RequestHandler {
             case SHOW_ADD_NEW_PROFESSOR_PAGE:
                 break;
             case EDIT_PROFESSOR:
+                this.client.sendResponse(manager.editProfessor(request));
                 break;
             case REMOVE_PROFESSOR:
+                this.client.sendResponse(manager.removeProfessor(request));
                 break;
             case DEPOSAL_EDU_ASSISTANT:
+                this.client.sendResponse(manager.deposal(request));
                 break;
             case APPOINTMENT_EDU_ASSISTANT:
+                this.client.sendResponse(manager.appointment(request));
                 break;
             default:
                 handleNewUserRequests();

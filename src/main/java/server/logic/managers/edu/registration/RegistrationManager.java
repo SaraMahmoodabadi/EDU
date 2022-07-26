@@ -12,13 +12,14 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RegistrationManager {
     private final RegistrationDataHandler dataHandler;
+    private final ClientHandler clientHandler;
 
     public RegistrationManager(ClientHandler clientHandler) {
+        this.clientHandler = clientHandler;
        this.dataHandler = new RegistrationDataHandler(clientHandler.getDataHandler());
     }
 
@@ -105,19 +106,19 @@ public class RegistrationManager {
             String days = request.getData("days").toString();
             String classTime = (String) request.getData("classTime");
             Group group = (Group) request.getData("group");
-            String query = " WHERE ";
+            String query = "";
             int n = 0;
             if (classTime != null) {
                 query += ("classTime = " + classTime);
                 n++;
             }
             if (days != null) {
-                if (n == 1) query += "AND ";
+                if (n == 1) query += ", ";
                 query += ("days = " + days);
                 n++;
             }
             if (examTime != null) {
-                if (n >= 1) query += "AND ";
+                if (n >= 1) query += ", ";
                 query += ("examTime = " + examTime);
             }
             if (group != null) {
@@ -181,5 +182,101 @@ public class RegistrationManager {
         Response response = new Response(ResponseStatus.ERROR);
         response.setErrorMessage(errorMessage);
         return response;
+    }
+
+    public Response editProfessor(Request request) {
+        String professorCode = (String) request.getData("professorCode");
+        String phoneNumber = (String) request.getData("phoneNumber");
+        String email = (String) request.getData("email");
+        String room = (String) request.getData("room");
+        String degree = (String) request.getData("degree");
+        String query = "";
+        int n = 0;
+        if (phoneNumber != null) {
+            query += ("phoneNumber = " + phoneNumber);
+            n++;
+        }
+        if (email != null) {
+            if (n == 1) query += ", ";
+            query += ("emailAddress = " + email);
+            n++;
+        }
+        boolean result1 = true;
+        if (n != 0) {
+            result1 = this.dataHandler.editUser(this.clientHandler.getUserName(), query, professorCode);
+        }
+        int m = 0;
+        if (degree != null) {
+            query += ("degree = " + degree);
+            m++;
+        }
+        if (room != null) {
+            if (m == 1) query += ", ";
+            query += ("roomNumber = " + room);
+            m++;
+        }
+        boolean result2 = true;
+        if (m != 0) {
+            result2 = this.dataHandler.editProfessor(professorCode, query);
+        }
+        if ((m == 0 && n ==0) || (result1 && result2)) {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            return getErrorResponse(errorMessage);
+        }
+        else {
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("professorEdited");
+            Response response = new Response(ResponseStatus.OK);
+            response.setNotificationMessage(note);
+            return response;
+        }
+    }
+
+    public Response deposal(Request request) {
+        String professorCode = (String) request.getData("professorCode");
+        String collegeCode = (String) request.getData("collegeCode");
+        String query = "educationalAssistant = NULL";
+        boolean result = this.dataHandler.deposal(professorCode, query, collegeCode);
+        if (result) {
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            Response response = new Response(ResponseStatus.OK);
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            return getErrorResponse(errorMessage);
+        }
+    }
+
+    public Response appointment(Request request) {
+        String professorCode = (String) request.getData("professorCode");
+        String collegeCode = (String) request.getData("collegeCode");
+        String query = "educationalAssistant = " + professorCode;
+        boolean result = this.dataHandler.appointment(professorCode, query, collegeCode);
+        if (result) {
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            Response response = new Response(ResponseStatus.OK);
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            return getErrorResponse(errorMessage);
+        }
+    }
+
+    public Response removeProfessor(Request request) {
+        String professorCode = (String) request.getData("professorCode");
+        boolean result = this.dataHandler.removeProfessor(professorCode);
+        if (result) {
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            Response response = new Response(ResponseStatus.OK);
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            return getErrorResponse(errorMessage);
+        }
     }
 }

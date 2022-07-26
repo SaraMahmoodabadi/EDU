@@ -72,19 +72,25 @@ public class EditProfessorController implements Initializable {
     }
 
     public void deposal(ActionEvent actionEvent) {
+        if (professorCode.getText() == null) return;
         Request request = new Request(RequestType.DEPOSAL_EDU_ASSISTANT);
         request.addData("professorCode", professorCode.getText());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
     public void appointment(ActionEvent actionEvent) {
+        if (professorCode.getText() == null) return;
         Request request = new Request(RequestType.APPOINTMENT_EDU_ASSISTANT);
         request.addData("professorCode", professorCode.getText());
+        request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }
 
     public void edit(ActionEvent actionEvent) {
+        if (professorCode.getText() == null) return;
         Request request = new Request(RequestType.EDIT_PROFESSOR);
+        request.addData("professorCode", professorCode.getText());
         request.addData("phoneNumber", phoneField.getText());
         request.addData("email", emailField.getText());
         request.addData("room", roomField.getText());
@@ -117,8 +123,9 @@ public class EditProfessorController implements Initializable {
             return MasterDegree.ASSISTANT_PROFESSOR;
         else if (grade.getSelectedToggle().equals(associate))
             return MasterDegree.ASSOCIATE_PROFESSOR;
-        else
+        else if (grade.getSelectedToggle().equals(full))
             return MasterDegree.FULL_PROFESSOR;
+        else return null;
     }
 
     @Override

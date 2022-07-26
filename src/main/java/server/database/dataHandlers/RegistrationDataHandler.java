@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RegistrationDataHandler {
     private final MySQLHandler dataBaseHandler;
@@ -204,5 +205,71 @@ public class RegistrationDataHandler {
             e.printStackTrace();
         }
         return professors;
+    }
+
+    public boolean editProfessor(String professorCode, String items) {
+        if (!existProfessor(professorCode)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateProfessor");
+        query = String.format(query, items) + " " + professorCode;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean editUser(String username, String items, String professorCode) {
+        if (!existProfessor(professorCode)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateUser");
+        query = String.format(query, items) + " " + username;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean appointment(String professorCode, String items, String collegeCode) {
+        if (getAssistant(collegeCode) != null) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateCollege");
+        query = String.format(query, items) + " " + collegeCode;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean deposal(String professorCode, String items, String collegeCode) {
+        if (getAssistant(collegeCode) == null ||
+                !Objects.equals(getAssistant(collegeCode), professorCode)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateCollege");
+        query = String.format(query, items) + " " + collegeCode;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean removeProfessor(String professorCode) {
+        if (!existProfessor(professorCode)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeProfessor") + " " + professorCode;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    private String getAssistant(String collegeCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("educationalAssistantCode")
+                + " " + collegeCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("educationalAssistantCode") != null) {
+                    return resultSet.getString("educationalAssistantCode");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private boolean existProfessor(String professorCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("existProfessor") + " " + professorCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("username") != null) {
+                    return true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
