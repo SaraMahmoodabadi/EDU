@@ -1,13 +1,11 @@
 package server.logic.managers.edu.registration;
 
-import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.RegistrationDataHandler;
-import server.database.dataHandlers.UserHandler;
 import server.network.ClientHandler;
-import shared.model.university.lesson.Day;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;
 import shared.request.Request;
+import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
@@ -141,13 +139,29 @@ public class RegistrationManager {
         return getErrorResponse(errorMessage);
     }
 
-    //TODO
-    public Response getProfessors() {
-        return null;
+    public Response removeLesson(Request request) {
+        boolean result;
+        if (request.getRequestType() == RequestType.REMOVE_LESSON_GROUP) {
+            result = this.dataHandler.removeGroup((String) request.getData("lessonCode"),
+                    (String) request.getData("group"));
+        }
+        else {
+            result = this.dataHandler.removeLesson((String) request.getData("lessonCode"));
+        }
+        if (result) {
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonRemoved");
+            Response response = new Response(ResponseStatus.OK);
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            return getErrorResponse(errorMessage);
+        }
     }
 
     //TODO
-    public Response editProfessor() {
+    public Response getProfessors() {
         return null;
     }
 

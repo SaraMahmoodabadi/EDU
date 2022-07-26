@@ -54,8 +54,6 @@ public class RequestHandler {
 
     private void handleMainRequests() {
         switch (this.request.getRequestType()) {
-            case SHOW_PROFESSORS_LIST_PAGE:
-                break;
             case SHOW_NEW_USER_PAGE:
                 break;
             case SHOW_WEEKLY_SCHEDULE_PAGE:
@@ -97,12 +95,14 @@ public class RequestHandler {
             case SHOW_EDIT_LESSON_PAGE:
                 break;
             case REGISTER_NEW_LESSON:
+                client.sendResponse(manager.addLesson(request));
                 break;
             case EDIT_LESSON:
+                client.sendResponse(manager.editLesson(request));
                 break;
             case REMOVE_LESSON:
-                break;
             case REMOVE_LESSON_GROUP:
+                client.sendResponse(manager.removeLesson(request));
                 break;
             default:
                 handleEduServicesRequests();
@@ -111,6 +111,8 @@ public class RequestHandler {
 
     private void handleEduServicesRequests() {
         switch (this.request.getRequestType()) {
+            case SHOW_PROFESSORS_LIST_PAGE:
+                break;
             case SHOW_DESIRED_PROFESSORS_LIST:
                 break;
             case SHOW_EDIT_PROFESSORS_PAGE:

@@ -144,4 +144,34 @@ public class RegistrationDataHandler {
         query = String.format(query, items) + " " + lessonCode;
         return this.dataBaseHandler.updateData(query);
     }
+
+    public boolean removeGroup(String lessonCode, String groupNumber) {
+        if (!existGroup(lessonCode, groupNumber)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeGroup");
+        query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean removeLesson(String lessonCode) {
+        if (!existLesson(lessonCode)) return false;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeLesson") + " " + lessonCode;
+        String query2 = Config.getConfig(ConfigType.QUERY).getProperty("removeGroup");
+        query2 = String.format(query2, "lessonCode = " + lessonCode);
+        this.dataBaseHandler.updateData(query2);
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public boolean existGroup(String lessonCode, String groupNumber) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("existGroup");
+        query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.getString("professorCode") != null) return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }
