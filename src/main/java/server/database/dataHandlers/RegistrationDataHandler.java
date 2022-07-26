@@ -302,4 +302,22 @@ public class RegistrationDataHandler {
         }
         return null;
     }
+
+    public boolean updateProfessorLessons(String professorCode, List<String> lessons) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateProfessor");
+        query = String.format(query, "lessonsCode = " + lessons) + " " + professorCode;
+        return this.dataBaseHandler.updateData(query);
+    }
+
+    public List<String> getProfessorLessons(String professorCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getUserLessons");
+        query = String.format(query, "professor") + " professorCode = " + professorCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                return (List<String>) resultSet.getArray("lessonsCode");
+            } catch (SQLException ignored) {}
+        }
+        return null;
+    }
 }

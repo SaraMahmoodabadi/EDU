@@ -87,16 +87,16 @@ public class RegistrationManager {
         }
         else {
             if (this.dataHandler.makeLesson(lesson)) {
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonCreated");
-                Response response = new Response(ResponseStatus.OK);
-                response.setNotificationMessage(note);
-                return response;
-            }
-            else {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
-                return getErrorResponse(errorMessage);
+                if (updateProfessorLessons(lesson.getProfessorCode(), lesson.getLessonCode())) {
+                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonCreated");
+                    Response response = new Response(ResponseStatus.OK);
+                    response.setNotificationMessage(note);
+                    return response;
+                }
             }
         }
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        return getErrorResponse(errorMessage);
     }
 
     public Response editLesson(Request request) {
@@ -124,7 +124,8 @@ public class RegistrationManager {
                 query += ("examTime = " + examTime);
             }
             if (group != null) {
-                boolean result = this.dataHandler.makeGroup(group);
+                boolean result = this.dataHandler.makeGroup(group) &&
+                        updateProfessorLessons(group.getProfessorCode(), group.getLessonCode());
                 if (!result) {
                     String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
                     return getErrorResponse(errorMessage);
@@ -287,5 +288,11 @@ public class RegistrationManager {
         }
         String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
         return getErrorResponse(errorMessage);
+    }
+
+    private boolean updateProfessorLessons(String professorCode, String lessonCode) {
+        List<String> lessons = this.dataHandler.getProfessorLessons(professorCode);
+        lessons.add(lessonCode);
+        return this.dataHandler.updateProfessorLessons(professorCode, lessons);
     }
 }
