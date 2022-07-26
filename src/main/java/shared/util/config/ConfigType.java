@@ -5,5 +5,6 @@ public enum ConfigType {
     FXML_FILE,
     GUI_TEXT,
     QUERY,
-    SERVER_MESSAGES
+    SERVER_MESSAGES,
+    SERVER_PATH
 }

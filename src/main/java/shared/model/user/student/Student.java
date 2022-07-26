@@ -22,9 +22,10 @@ public class Student extends User {
 
     public Student(String firstName, String lastName, long nationalCode,
                    String collegeCode, String username, String password,
-                   UserType userType, String studentCode, int enteringYear,
+                   UserType userType, String email, String phoneNumber,
+                   String studentCode, int enteringYear,
                    String supervisorCode, EducationalStatus status, Grade grade) {
-        super(firstName, lastName, nationalCode, collegeCode, username, password, userType);
+        super(firstName, lastName, nationalCode, collegeCode, username, password, userType, email, phoneNumber);
         this.studentCode = studentCode;
         this.enteringYear = enteringYear;
         this.supervisorCode = supervisorCode;

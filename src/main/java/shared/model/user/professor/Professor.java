@@ -15,9 +15,10 @@ public class Professor extends User {
 
     public Professor(String firstName, String lastName, long nationalCode,
                      String collegeCode, String username, String password,
-                     UserType userType, String professorCode, int roomNumber,
+                     UserType userType, String email, String phoneNumber,
+                     String professorCode, int roomNumber,
                      MasterDegree degree, Type type) {
-        super(firstName, lastName, nationalCode, collegeCode, username, password, userType);
+        super(firstName, lastName, nationalCode, collegeCode, username, password, userType, email, phoneNumber);
         this.professorCode = professorCode;
         this.roomNumber = roomNumber;
         this.degree = degree;
@@ -31,6 +32,7 @@ public class Professor extends User {
         this.degree = degree;
         this.type = type;
     }
+
 
     public String getProfessorCode() {
         return professorCode;

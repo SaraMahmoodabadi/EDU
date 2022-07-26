@@ -306,6 +306,7 @@ public class NewUserController implements Initializable {
         Student student = new Student(firstNameField.getText(), lastNameField.getText(),
                 Long.parseLong(nationalCodeField.getText()), EDU.collegeCode,
                 usernameField.getText(), passwordField.getText(), UserType.STUDENT,
+                emailField.getText(), phoneField.getText(),
                 studentCodeField.getText(), Integer.parseInt(EnteringYearField.getText()),
                 superVisorCodeField.getText(), setStatus(), setStudentDegree());
         Request request = new Request(RequestType.REGISTER_NEW_USER);
@@ -318,6 +319,7 @@ public class NewUserController implements Initializable {
         Professor professor = new Professor(firstNameField.getText(), lastNameField.getText(),
                 Long.parseLong(nationalCodeField.getText()), EDU.collegeCode,
                 usernameField.getText(), passwordField.getText(), UserType.PROFESSOR,
+                emailField.getText(), phoneField.getText(),
                 professorCodeField.getText(), Integer.parseInt(roomField.getText()),
                 setProfessorDegree(), Type.PROFESSOR);
         Request request = new Request(RequestType.REGISTER_NEW_USER);

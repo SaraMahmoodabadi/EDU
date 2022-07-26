@@ -1,5 +1,6 @@
 package server.network;
 
+import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.request.Request;
@@ -138,10 +139,12 @@ public class RequestHandler {
     }
 
     private void handleNewUserRequests() {
+        NewUserManager manager = new NewUserManager(this.client);
         switch (this.request.getRequestType()) {
             case SELECT_USER_TYPE:
                 break;
             case REGISTER_NEW_USER:
+                this.client.sendResponse(manager.makeUser(request));
                 break;
             default:
                 handleRequestPageRequests();

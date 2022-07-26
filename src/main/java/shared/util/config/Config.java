@@ -33,6 +33,8 @@ public class Config extends Properties {
                 return config.getProperty(Config.class, "query");
             case SERVER_MESSAGES:
                 return config.getProperty(Config.class, "serverMessages");
+            case SERVER_PATH:
+                return config.getProperty(Config.class, "serverPath");
             default:
         }
         return null;

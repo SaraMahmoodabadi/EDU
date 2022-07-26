@@ -17,7 +17,7 @@ public class User {
 
     public User(String firstName, String lastName, long nationalCode,
                 String collegeCode, String username, String password,
-                UserType userType) {
+                UserType userType, String email, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationalCode = nationalCode;
@@ -25,6 +25,8 @@ public class User {
         this.username = username;
         this.password = password;
         this.userType = userType;
+        this.emailAddress = email;
+        this.phoneNumber = Long.parseLong(phoneNumber);
     }
 
     public User(UserType userType, String collegeCode,

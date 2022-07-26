@@ -7,10 +7,9 @@ import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 public class ImageHandler {
@@ -63,5 +62,13 @@ public class ImageHandler {
             }
         }
         return new ImageView(wr).getImage();
+    }
+
+    public void saveImage(String path, String encoded) {
+        try {
+            Files.write(Paths.get(path), decode(encoded));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
