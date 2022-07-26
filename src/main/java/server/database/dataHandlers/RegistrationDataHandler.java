@@ -3,6 +3,9 @@ package server.database.dataHandlers;
 import server.database.MySQLHandler;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;
+import shared.model.user.professor.MasterDegree;
+import shared.model.user.professor.Professor;
+import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
@@ -173,5 +176,33 @@ public class RegistrationDataHandler {
             }
         }
         return false;
+    }
+
+    public List<Professor> getAllProfessors() {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getAllProfessors");
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+           return makeProfessors(resultSet);
+        }
+        return null;
+    }
+
+    private List<Professor> makeProfessors(ResultSet resultSet) {
+        List<Professor> professors = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+             String fullName = resultSet.getString("firstName") +
+                     resultSet.getString("lastName");
+             String professorCode = resultSet.getString("professorCode");
+             String collegeCode = resultSet.getString("collegeCode");
+             MasterDegree degree = (MasterDegree) resultSet.getObject("degree");
+             Type type = (Type) resultSet.getObject("type");
+             Professor professor = new Professor(fullName, collegeCode, professorCode, degree, type);
+             professors.add(professor);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return professors;
     }
 }

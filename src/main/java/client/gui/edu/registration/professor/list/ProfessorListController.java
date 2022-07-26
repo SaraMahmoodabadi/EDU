@@ -26,6 +26,7 @@ import shared.response.ResponseStatus;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -62,6 +63,7 @@ public class ProfessorListController implements Initializable {
     @FXML
     protected TableColumn<Professor, String> postColumn;
 
+    /**
     public void show(ActionEvent actionEvent) {
         Request request = new Request(RequestType.SHOW_DESIRED_PROFESSORS_LIST);
         request.addData("collegeName", collegeBox.getValue());
@@ -81,7 +83,7 @@ public class ProfessorListController implements Initializable {
             list.getItems().clear();
             list.getItems().addAll(desiredProfessors);
         }
-    }
+    } */
 
     public void edit(ActionEvent actionEvent) {
         EDU.sceneSwitcher.switchScene(actionEvent, "editProfessorPage");
@@ -131,9 +133,10 @@ public class ProfessorListController implements Initializable {
         List<Professor> professors = getData();
         collegeBox.getItems().add("-");
         collegeBox.getItems().addAll(University.getUniversity().getCollegeName());
-        degreeBox.getItems().add(MasterDegree.ASSISTANT_PROFESSOR.toString());
+        degreeBox.getItems().addAll(Arrays.toString(MasterDegree.values()));
+        /**degreeBox.getItems().add(MasterDegree.ASSISTANT_PROFESSOR.toString());
         degreeBox.getItems().add(MasterDegree.ASSOCIATE_PROFESSOR.toString());
-        degreeBox.getItems().add(MasterDegree.FULL_PROFESSOR.toString());
+        degreeBox.getItems().add(MasterDegree.FULL_PROFESSOR.toString());*/
         if (professors != null) {
             setTableData(professors);
         }

@@ -44,6 +44,11 @@ public class User {
         this.imageAddress = image;
     }
 
+    public User(String fullName, String collegeCode) {
+        this.fullName = fullName;
+        this.collegeCode = collegeCode;
+    }
+
     public String getFirstName() {
         return firstName;
     }

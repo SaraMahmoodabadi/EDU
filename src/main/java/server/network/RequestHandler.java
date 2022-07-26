@@ -110,8 +110,10 @@ public class RequestHandler {
     }
 
     private void handleEduServicesRequests() {
+        RegistrationManager manager = new RegistrationManager(this.client);
         switch (this.request.getRequestType()) {
             case SHOW_PROFESSORS_LIST_PAGE:
+                this.client.sendResponse(manager.getProfessors());
                 break;
             case SHOW_DESIRED_PROFESSORS_LIST:
                 break;

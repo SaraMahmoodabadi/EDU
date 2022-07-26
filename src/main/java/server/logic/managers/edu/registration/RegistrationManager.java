@@ -4,6 +4,7 @@ import server.database.dataHandlers.RegistrationDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;
+import shared.model.user.professor.Professor;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -11,6 +12,7 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegistrationManager {
@@ -160,9 +162,19 @@ public class RegistrationManager {
         }
     }
 
-    //TODO
     public Response getProfessors() {
-        return null;
+        List<Professor> professors = this.dataHandler.getAllProfessors();
+        if (professors != null) {
+            Response response = new Response(ResponseStatus.OK);
+            for (int i = 0; i < professors.size(); i++) {
+                response.addData("professor" + i, professors.get(i));
+            }
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            return getErrorResponse(errorMessage);
+        }
     }
 
     private Response getErrorResponse(String errorMessage) {
