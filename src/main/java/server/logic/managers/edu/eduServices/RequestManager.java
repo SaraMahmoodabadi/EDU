@@ -170,10 +170,12 @@ public class RequestManager {
     public Response getAnswerRequest(Request request) {
         if (request.getRequestType() == RequestType.REGISTER_REQUEST_ANSWER) {
             boolean isMinor = request.getData("type") == Type.MINOR;
+            Type type = (Type) request.getData("type");
             boolean result = this.pDataHandler.registerRequestAnswer
                     ((String) request.getData("studentCode"),
                             this.client.getUserName(),
-                            (Boolean) request.getData("result"), isMinor);
+                            (Boolean) request.getData("result"),
+                            isMinor, String.valueOf(type));
             if (result) {
                 Response response = new Response(ResponseStatus.OK);
                 String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");

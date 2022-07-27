@@ -1,6 +1,7 @@
 package server.database.dataHandlers.eduServises;
 
 import server.database.MySQLHandler;
+import shared.model.message.request.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
@@ -14,25 +15,35 @@ public class ProfessorRequestDataHandler {
         this.databaseHandler = databaseHandler;
     }
 
-    public boolean registerRecommendationAnswer(String studentCode, String firstBlank,
-                                                String secondBlank, String thirdBlank, String username) {
+    public boolean registerRecommendationAnswer(String studentCode, String firstBlank, String secondBlank,
+                                                String thirdBlank, String username) {
         if (!isValidProfessorCode(studentCode, username)) return false;
+        String professorCode = getProfessorCode(username);
+        if (professorCode == null) return false;
         String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
         finalQuery = String.format(finalQuery, "request",  "firstBlank = " + firstBlank +
                 ", secondBlank = " + secondBlank +
-                ", thirdBlank = " + thirdBlank) + " studentCode = " + studentCode;
+                ", thirdBlank = " + thirdBlank) + " studentCode = " + studentCode + " AND type = " +
+                Type.RECOMMENDATION + " AND professorCode = " + professorCode;
         return this.databaseHandler.updateData(finalQuery);
     }
 
-    public boolean registerRequestAnswer(String studentCode, String username, boolean result, boolean isMinor) {
+    public boolean registerRequestAnswer(String studentCode, String username, boolean result,
+                                         boolean isMinor, String requestType) {
+        String professorCode = getProfessorCode(username);
+        if (professorCode == null) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
-        String request = String.format(query, "request", "result = " + result) + " studentCode = " + studentCode;
+        String request = String.format(query, "request", "result = " + result) +
+                " studentCode = " + studentCode +
+                " AND type = " + requestType + " AND professorCode = " + professorCode;
         if (isMinor) {
             if (isValidProfessorCode(studentCode, username)) {
                 query = request;
             }
             else if (isAnotherCollege(studentCode, username)) {
-                query = String.format(query, "request", "secondResult = " + result) + " studentCode = " + studentCode;
+                query = String.format(query, "request", "secondResult = " + result) +
+                        " studentCode = " + studentCode + " AND type = " + requestType +
+                        " AND anotherCollegeProfessorCode = " + professorCode;
             }
             else return false;
         }
@@ -73,6 +84,18 @@ public class ProfessorRequestDataHandler {
             } catch (SQLException ignored) {}
         }
         return false;
+    }
+
+    private String getProfessorCode(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        query = String.format(query, "professorCode", "professor") + " username = " + username;
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                return resultSet.getString("professorCode");
+            } catch (SQLException ignored) {}
+        }
+        return null;
     }
 
 }
