@@ -34,4 +34,8 @@ public class Request {
         return this.data.get(dataName);
     }
 
+    public HashMap<String, Object> getData() {
+        return this.data;
+    }
+
 }

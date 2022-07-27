@@ -191,10 +191,15 @@ public class RequestHandler {
                 this.client.sendResponse(manager.getLessonTemporaryScores(request));
                 break;
             case REGISTER_PROTEST_ANSWER:
+                this.client.sendResponse(manager.setProtestAnswer(request));
                 break;
+            case REGISTER_SCORE:
+                this.client.sendResponse(manager.setScore(request));
             case REGISTER_ALL_SCORES:
+                this.client.sendResponse(manager.setScores(request));
                 break;
             case FINALIZE_SCORES:
+                this.client.sendResponse(manager.finalizeScores(request));
                 break;
             case SHOW_STUDENT_SCORES:
                 break;

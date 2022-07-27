@@ -6,13 +6,13 @@ public class Score {
     private int lessonGroup;
     private final String studentCode;
     private String professorCode;
-    private double score;
+    private String score;
     private ScoreType type;
     private String protest;
     private String protestAnswer;
 
     public Score(String lessonCode, int lessonGroup, String studentCode,
-                 String professorCode ,double score, ScoreType type) {
+                 String professorCode , String score, ScoreType type) {
         this.lessonCode = lessonCode;
         this.lessonGroup = lessonGroup;
         this.studentCode = studentCode;
@@ -21,7 +21,7 @@ public class Score {
         this.type = type;
     }
 
-    public Score(String lessonCode, String studentCode, double score,
+    public Score(String lessonCode, String studentCode, String score,
                  String protest, String protestAnswer) {
         this.lessonCode = lessonCode;
         this.studentCode = studentCode;
@@ -46,11 +46,11 @@ public class Score {
         return professorCode;
     }
 
-    public double getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(String score) {
         this.score = score;
     }
 

@@ -3,7 +3,6 @@ package server.database.dataHandlers.score;
 import server.database.MySQLHandler;
 import shared.model.university.lesson.score.Score;
 import shared.model.university.lesson.score.ScoreType;
-import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
@@ -32,7 +31,7 @@ public class TemporaryScoresDataHandler {
                 try {
                     while (resultSet.next()) {
                         String lessonCode = resultSet.getString("lessonCode");
-                        double score = resultSet.getDouble("score");
+                        String score = resultSet.getString("score");
                         String protest = resultSet.getString("protest");
                         String protestAnswer = resultSet.getString("protestAnswer");
                         Score studentScore = new Score(lessonCode, studentCode, score, protest, protestAnswer);
@@ -74,7 +73,7 @@ public class TemporaryScoresDataHandler {
                 try {
                     while (resultSet.next()) {
                         String studentCode = resultSet.getString("studentCode");
-                        double score = resultSet.getDouble("score");
+                        String score = resultSet.getString("score");
                         String protest = resultSet.getString("protest");
                         String protestAnswer = resultSet.getString("protestAnswer");
                         Score studentScore = new Score(lessonCode, studentCode, score, protest, protestAnswer);
@@ -129,6 +128,27 @@ public class TemporaryScoresDataHandler {
         String studentCode = getStudentCode(username);
         String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
         query = String.format(query, "score", "protest = " + protest)
+                + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean setProtestAnswer(String protestAnswer, String lessonCode, String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        query = String.format(query, "score", "protestAnswer = " + protestAnswer)
+                + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean setScore(String score, String lessonCode, String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        query = String.format(query, "score", "score = " + score)
+                + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean finalizeScores(String score, String lessonCode, String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        query = String.format(query, "score", "type = " + ScoreType.FINAL)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
     }

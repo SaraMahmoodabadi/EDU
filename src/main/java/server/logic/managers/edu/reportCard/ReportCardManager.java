@@ -11,7 +11,10 @@ import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReportCardManager {
     private final ClientHandler client;
@@ -44,7 +47,10 @@ public class ReportCardManager {
                 (String) request.getData("protest"), score.getLessonCode(),
                 this.client.getUserName());
         if (result) {
-            return new Response(ResponseStatus.OK);
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            response.setNotificationMessage(note);
+            return response;
         }
         else {
             String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
@@ -66,25 +72,84 @@ public class ReportCardManager {
         return getErrorResponse(errorMessage);
     }
 
-    //TODO
-    public List<Score> getFinalScores() {
-        return null;
+    public Response setProtestAnswer(Request request) {
+        Score score = (Score) request.getData("score");
+        boolean result = this.dataHandler.setProtestAnswer(
+                (String) request.getData("protestAnswer"), score.getLessonCode(),
+                score.getStudentCode());
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            return getErrorResponse(errorMessage);
+        }
     }
 
-
-    //TODO
-    public void setProtestAnswer() {
-
+    public Response setScore(Request request) {
+        Score score = (Score) request.getData("score");
+        boolean result = this.dataHandler.setScore(
+                (String) request.getData("score"), score.getLessonCode(),
+                score.getStudentCode());
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            return getErrorResponse(errorMessage);
+        }
     }
 
-    //TODO
-    public void setScore() {
-
+    public Response setScores(Request request) {
+        HashMap<String, Object> data = request.getData();
+        boolean result = true;
+        for (Map.Entry<String,Object> entry : data.entrySet()) {
+            if (entry.getKey().startsWith("score")) {
+                if (((Score) entry.getValue()).getScore() == null) break;
+                result = this.dataHandler.setScore((String) request.getData("score"),
+                        ((Score) entry.getValue()).getLessonCode(), ((Score) entry.getValue()).getStudentCode());
+                if (!result) break;
+            }
+        }
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            return getErrorResponse(errorMessage);
+        }
     }
 
-    //TODO
-    public void finalizeScores() {
-
+    public Response finalizeScores(Request request) {
+        HashMap<String, Object> data = request.getData();
+        boolean result = true;
+        for (Map.Entry<String,Object> entry : data.entrySet()) {
+            if (entry.getKey().startsWith("score")) {
+                if (((Score) entry.getValue()).getScore() == null) break;
+                result = this.dataHandler.finalizeScores((String) request.getData("score"),
+                        ((Score) entry.getValue()).getLessonCode(), this.client.getUserName());
+                if (!result) break;
+            }
+        }
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            return getErrorResponse(errorMessage);
+        }
     }
 
     //TODO

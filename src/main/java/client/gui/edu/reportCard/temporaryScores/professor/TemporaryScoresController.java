@@ -69,10 +69,11 @@ public class TemporaryScoresController implements Initializable {
     protected ImageView backImage;
     private List<Score> scores;
     private List<Score> updatedScores;
+    private boolean registerResult = false;
     //TODO: to ping change updatedScores list (just get protest)
 
     public void show(ActionEvent actionEvent) {
-        checkNullItems();
+        if (checkNullItems()) return;
         Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.PROFESSOR);
         request.addData("lessonCode", lessonCodeField.getText());
         Response response = EDU.serverController.getResponse();
@@ -97,7 +98,7 @@ public class TemporaryScoresController implements Initializable {
         }
         Score newScore = table.getSelectionModel().getSelectedItem();
         if (scoreField.getText() != null) {
-            double score;
+            Double score;
             try {
                 score = Double.parseDouble(scoreField.getText());
             }
@@ -112,9 +113,14 @@ public class TemporaryScoresController implements Initializable {
                 return;
             }
             updatedScores.remove(newScore);
-            newScore.setScore(score);
+            newScore.setScore(String.valueOf(score));
             updatedScores.add(newScore);
             updateTable(updatedScores);
+            if (hadScore()) {
+                Request request = new Request(RequestType.REGISTER_ALL_SCORES);
+                request.addData("score" , newScore);
+                showRequestResult(request);
+            }
         }
     }
 
@@ -137,13 +143,27 @@ public class TemporaryScoresController implements Initializable {
     public void registerAllScores(ActionEvent actionEvent) {
         Request request = new Request(RequestType.REGISTER_ALL_SCORES);
         for (int i = 1; i < updatedScores.size(); i++) {
+            if (updatedScores.get(i).getScore() == null) {
+                String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullScores");
+                AlertMonitor.showAlert(Alert.AlertType.ERROR, error);
+                return;
+            }
             request.addData("score" + i, updatedScores.get(i));
         }
         showRequestResult(request);
     }
 
     public void finalizeScores(ActionEvent actionEvent) {
-        checkNullItems();
+        if (checkNullItems()) return;
+        for (Score score : scores) {
+            if (score.getScore() == null) {
+                if (registerResult) {
+                    String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty("finalizeScores");
+                    AlertMonitor.showAlert(Alert.AlertType.ERROR, error);
+                    return;
+                }
+            }
+        }
         Request request = new Request(RequestType.FINALIZE_SCORES);
         request.addData("lessonCode", lessonCodeField);
         showRequestResult(request);
@@ -159,6 +179,7 @@ public class TemporaryScoresController implements Initializable {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
+            if (request.getRequestType() == RequestType.REGISTER_ALL_SCORES) registerResult = true;
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
         }
     }
@@ -175,11 +196,20 @@ public class TemporaryScoresController implements Initializable {
         table.getItems().addAll(scores);
     }
 
-    private void checkNullItems() {
+    private boolean checkNullItems() {
         if (lessonCodeField.getText() == null) {
             String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullItem");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
+            return false;
         }
+        return true;
+    }
+
+    private boolean hadScore() {
+        for (Score score : scores) {
+            if ( Double.parseDouble(score.getScore()) > 0.0) return true;
+        }
+        return false;
     }
 
     @Override
