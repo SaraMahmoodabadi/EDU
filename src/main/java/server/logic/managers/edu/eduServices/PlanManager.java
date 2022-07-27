@@ -1,6 +1,6 @@
 package server.logic.managers.edu.eduServices;
 
-import server.database.dataHandlers.PlanDataHandler;
+import server.database.dataHandlers.eduServises.PlanDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
 import shared.response.Response;

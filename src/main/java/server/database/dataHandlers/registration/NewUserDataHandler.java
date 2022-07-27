@@ -1,4 +1,4 @@
-package server.database.dataHandlers;
+package server.database.dataHandlers.registration;
 
 import server.database.MySQLHandler;
 import shared.util.config.Config;

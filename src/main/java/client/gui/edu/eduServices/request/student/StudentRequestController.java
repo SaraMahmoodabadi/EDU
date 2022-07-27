@@ -59,9 +59,12 @@ public class StudentRequestController implements Initializable {
     protected ImageView backImage;
     @FXML
     protected TextField professorCode;
+    @FXML
+    protected TextArea result;
     private Grade grade;
 
     public void register(ActionEvent actionEvent) {
+        if (requestBox.getValue() == null) return;
         shared.request.Request request = new shared.request.Request(RequestType.REGISTER_REQUEST);
         if (Objects.equals(requestBox.getValue(), Type.RECOMMENDATION.toString())) {
             if (professorCode.getText() == null) return;
@@ -72,9 +75,11 @@ public class StudentRequestController implements Initializable {
             request.addData("major", majorBox.getValue());
         }
         request.addData("type", requestBox.getValue());
+        request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
-            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+            if (response.getData("result") != null)
+                result.setText((String) response.getData("result"));
         }
         else {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -111,13 +116,14 @@ public class StudentRequestController implements Initializable {
             grade = (Grade) response.getData("grade");
             makeBoxes();
             hide();
+            /**
             List<Request> requests = new ArrayList<>();
             response.getData().forEach((K, V) -> {
                 if (K.startsWith("request")) {
                     requests.add((Request) V);
                 }
             });
-            return requests;
+            return requests;*/
         }
         return null;
     }

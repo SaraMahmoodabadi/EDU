@@ -1,4 +1,4 @@
-package server.database.dataHandlers;
+package server.database.dataHandlers.eduServises;
 
 import server.database.MySQLHandler;
 import shared.model.university.lesson.Day;

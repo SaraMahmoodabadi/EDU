@@ -1,6 +1,6 @@
 package server.logic.managers.edu.registration;
 
-import server.database.dataHandlers.NewUserDataHandler;
+import server.database.dataHandlers.registration.NewUserDataHandler;
 import server.network.ClientHandler;
 import shared.model.user.User;
 import shared.model.user.UserType;

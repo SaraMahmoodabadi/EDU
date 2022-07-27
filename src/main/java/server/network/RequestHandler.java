@@ -1,9 +1,11 @@
 package server.network;
 
 import server.logic.managers.edu.eduServices.PlanManager;
+import server.logic.managers.edu.eduServices.RequestManager;
 import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.user.UserManager;
+import shared.model.user.UserType;
 import shared.request.Request;
 import shared.response.Response;
 
@@ -56,12 +58,6 @@ public class RequestHandler {
     private void handleMainRequests() {
         switch (this.request.getRequestType()) {
             case SHOW_NEW_USER_PAGE:
-                break;
-            case SHOW_WEEKLY_SCHEDULE_PAGE:
-                break;
-            case SHOW_EXAM_LIST_PAGE:
-                break;
-            case SHOW_REQUESTS_PAGE:
                 break;
             case SHOW_UNIT_SELECTION_PAGE:
                 break;
@@ -118,10 +114,6 @@ public class RequestHandler {
                 break;
             case SHOW_DESIRED_PROFESSORS_LIST:
                 break;
-            case SHOW_EDIT_PROFESSORS_PAGE:
-                break;
-            case SHOW_ADD_NEW_PROFESSOR_PAGE:
-                break;
             case EDIT_PROFESSOR:
                 this.client.sendResponse(manager.editProfessor(request));
                 break;
@@ -167,8 +159,14 @@ public class RequestHandler {
     }
 
     private void handleRequestPageRequests() {
+        RequestManager manager = new RequestManager(this.client);
         switch (this.request.getRequestType()) {
+            case SHOW_REQUESTS_PAGE:
+                if (this.client.getUserType() == UserType.STUDENT)
+                    this.client.sendResponse(manager.getGrade());
+                break;
             case REGISTER_REQUEST:
+                this.client.sendResponse(manager.createRequest(request));
                 break;
             case REGISTER_RECOMMENDATION:
                 break;
