@@ -4,6 +4,7 @@ import server.logic.managers.edu.eduServices.PlanManager;
 import server.logic.managers.edu.eduServices.RequestManager;
 import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
+import server.logic.managers.edu.reportCard.ReportCardManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.model.user.UserType;
 import shared.request.Request;
@@ -60,8 +61,6 @@ public class RequestHandler {
             case SHOW_NEW_USER_PAGE:
                 break;
             case SHOW_UNIT_SELECTION_PAGE:
-                break;
-            case SHOW_TEMPORARY_SCORES_PAGE:
                 break;
             case SHOW_EDU_STATUS_PAGE:
                 break;
@@ -180,10 +179,16 @@ public class RequestHandler {
     }
 
     private void handleReportCardRequests() {
+        ReportCardManager manager = new ReportCardManager(this.client);
         switch (this.request.getRequestType()) {
+            case SHOW_TEMPORARY_SCORES_PAGE:
+                this.client.sendResponse(manager.getStudentTemporaryScores(request));
+                break;
             case REGISTER_PROTEST:
+                this.client.sendResponse(manager.setProtest(request));
                 break;
             case SHOW_LESSON_SCORES:
+                this.client.sendResponse(manager.getLessonTemporaryScores(request));
                 break;
             case REGISTER_PROTEST_ANSWER:
                 break;

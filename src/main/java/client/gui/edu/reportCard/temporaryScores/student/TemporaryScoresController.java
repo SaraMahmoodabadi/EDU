@@ -53,6 +53,7 @@ public class TemporaryScoresController implements Initializable {
     protected Button back;
     @FXML
     protected ImageView backImage;
+    List<Score> scores;
 
     public void register(ActionEvent actionEvent) {
         if (table.getSelectionModel().getSelectedItem() == null) {
@@ -69,7 +70,7 @@ public class TemporaryScoresController implements Initializable {
                 Request request = new Request(RequestType.REGISTER_PROTEST);
                 request.addData("score", score);
                 request.addData("protest", protestArea.getText());
-                showRequestResult(request);
+                showRequestResult(request, score, protestArea.getText());
             }
         }
     }
@@ -78,14 +79,22 @@ public class TemporaryScoresController implements Initializable {
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
-    private void showRequestResult(Request request) {
+    private void showRequestResult(Request request, Score score, String protest) {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
-            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+            scores.remove(score);
+            score.setProtest(protest);
+            scores.add(score);
+            updateTable(this.scores);
         }
+    }
+
+    private void updateTable(List<Score> scores) {
+        table.getItems().clear();
+        table.getItems().addAll(scores);
     }
 
     private List<Score> gerData() {
@@ -116,7 +125,7 @@ public class TemporaryScoresController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         makeTable();
-        List<Score> scores = gerData();
+        this.scores = gerData();
         if (scores != null) {
             table.getItems().addAll(scores);
         }

@@ -3,9 +3,9 @@ package shared.model.university.lesson.score;
 public class Score {
 
     private final String lessonCode;
-    private final int lessonGroup;
+    private int lessonGroup;
     private final String studentCode;
-    private final String professorCode;
+    private String professorCode;
     private double score;
     private ScoreType type;
     private String protest;
@@ -19,6 +19,15 @@ public class Score {
         this.professorCode = professorCode;
         this.score = score;
         this.type = type;
+    }
+
+    public Score(String lessonCode, String studentCode, double score,
+                 String protest, String protestAnswer) {
+        this.lessonCode = lessonCode;
+        this.studentCode = studentCode;
+        this.score = score;
+        this.protest = protest;
+        this.protestAnswer = protestAnswer;
     }
 
     public String getLessonCode() {
