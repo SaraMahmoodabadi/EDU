@@ -5,13 +5,19 @@ import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import javafx.scene.text.TextAlignment;
 import shared.model.university.lesson.Day;
 import shared.model.university.lesson.Lesson;
 import shared.request.Request;
@@ -77,29 +83,33 @@ public class WeeklyPlanController implements Initializable {
     }
 
     private void putLesson(Lesson lesson) {
+        String name = lesson.getName();
         String time = lesson.getClassTime();
         int h1 = Integer.parseInt(time.split("-")[0].split(":")[0]);
         int m1 = Integer.parseInt(time.split("-")[0].split(":")[1]);
         int h2 = Integer.parseInt(time.split("-")[1].split(":")[0]);
         int m2 = Integer.parseInt(time.split("-")[1].split(":")[1]);
         List<Day> days = lesson.getDays();
-        makePlace(h1, m1, h2, m2, days);
+        makePlace(h1, m1, h2, m2, days, name);
     }
 
     //TODO: Add constants to file
-    private void makePlace(int h1, int m1, int h2, int m2, List<Day> days) {
+    private void makePlace(int h1, int m1, int h2, int m2, List<Day> days, String name) {
         int time = (h2 - h1) * 60 + (m2 - m1);
         double width = (double) (time * 62 ) / 60.0;
         double x = 250 + (h1 * 62) + (m1 * 62) / 60.0;
         for (Day day : days) {
-            Rectangle lessonRectangle = new Rectangle();
-            lessonRectangle.setOpacity(0.5);
-            lessonRectangle.setFill(Color.valueOf("#b151b8"));
-            lessonRectangle.setStroke(Color.valueOf("#b151b8"));
-            lessonRectangle.setHeight(75);
-            lessonRectangle.setWidth(width);
-            lessonRectangle.setX(x);
-            lessonRectangle.setY(getY(day));
+            Label lessonLabel = new Label();
+            lessonLabel.setText(name);
+            lessonLabel.setTextAlignment(TextAlignment.CENTER);
+            lessonLabel.setTextFill(Color.valueOf("#b151b8"));
+            lessonLabel.setStyle(String.valueOf(Color.valueOf("#ffd100")));
+            lessonLabel.setBackground(new Background(new BackgroundFill
+                    (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
+            lessonLabel.setPrefHeight(75);
+            lessonLabel.setPrefWidth(width);
+            lessonLabel.setScaleX(x);
+            lessonLabel.setScaleY(getY(day));
         }
     }
 

@@ -9,9 +9,11 @@ import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -223,6 +225,7 @@ public class RegistrationDataHandler {
 
     public boolean appointment(String professorCode, String items, String collegeCode) {
         if (getAssistant(collegeCode) != null) return false;
+        if (!getProfessorCollegeCode(professorCode).equals(collegeCode)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty("updateCollege");
         query = String.format(query, items) + " " + collegeCode;
         return this.dataBaseHandler.updateData(query);
@@ -315,9 +318,39 @@ public class RegistrationDataHandler {
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                return (List<String>) resultSet.getArray("lessonsCode");
+                Array lessons = resultSet.getArray("lessonsCode");
+                String[] lessonsCode = (String[]) lessons.getArray();
+                return Arrays.asList(lessonsCode);
             } catch (SQLException ignored) {}
         }
         return null;
+    }
+
+    public List<String> getProfessorsByLesson(String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorByLesson");
+        query = query + " lessonCode = " + lessonCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        List<String> professors = new ArrayList<>();
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    professors.add(resultSet.getString("professorCode"));
+                }
+            } catch (SQLException ignored) {}
+        }
+        return professors;
+    }
+
+    public String getProfessorByLesson(String lessonCode, String groupNumber) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorByLesson");
+        query = query + " lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        String professor = null;
+        if (resultSet != null) {
+            try {
+                professor = resultSet.getString("professorCode");
+            } catch (SQLException ignored) {}
+        }
+        return professor;
     }
 }

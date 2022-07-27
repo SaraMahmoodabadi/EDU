@@ -14,7 +14,7 @@ import shared.util.config.ConfigType;
 import shared.util.media.ImageHandler;
 
 public class NewUserManager {
-    private NewUserDataHandler dataHandler;
+    private final NewUserDataHandler dataHandler;
 
     public NewUserManager(ClientHandler client) {
         this.dataHandler = new NewUserDataHandler(client.getDataHandler());

@@ -60,6 +60,12 @@ public class Lesson {
         this.examTime = examTime;
     }
 
+    public Lesson(String name, List<Day> days, String classTime) {
+        this.name = name;
+        this.days = days;
+        this.classTime = classTime;
+        this.plan = getPlan();
+    }
 
     public String getName() {
         return name;
