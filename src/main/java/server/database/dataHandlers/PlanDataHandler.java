@@ -67,5 +67,34 @@ public class PlanDataHandler {
         return null;
     }
 
+    public List<Lesson> getUserExams(String userType, String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getUserLessons");
+        query = String.format(query, userType) + userType + "Code = " + getUserCode(userType, username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                Array lessons = resultSet.getArray("lessonsCode");
+                String[] lessonsCode = (String[]) lessons.getArray();
+                return getLessonsExam(Arrays.asList(lessonsCode));
+            } catch (SQLException ignored) {}
+        }
+        return null;
+    }
 
+    private List<Lesson> getLessonsExam(List<String> lessonsCode) {
+        List<Lesson> lessons = new ArrayList<>();
+        for (String lessonCode : lessonsCode) {
+            String query = Config.getConfig(ConfigType.QUERY).getProperty("getExam") + " " + lessonCode;
+            ResultSet resultSet = this.databaseHandler.getResultSet(query);
+            if (resultSet != null) {
+                try {
+                    String examTime = resultSet.getString("examTime");
+                    String name = resultSet.getString("name");
+                    Lesson lesson = new Lesson(lessonCode, name, examTime);
+                    lessons.add(lesson);
+                } catch (SQLException ignored) {}
+            }
+        }
+        return lessons;
+    }
 }

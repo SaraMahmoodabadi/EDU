@@ -1,5 +1,6 @@
 package server.network;
 
+import server.logic.managers.edu.eduServices.PlanManager;
 import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.user.UserManager;
@@ -145,6 +146,20 @@ public class RequestHandler {
                 break;
             case REGISTER_NEW_USER:
                 this.client.sendResponse(manager.makeUser(request));
+                break;
+            default:
+                handleGetPlanRequests();
+        }
+    }
+
+    private void handleGetPlanRequests() {
+        PlanManager manager = new PlanManager(this.client);
+        switch (this.request.getRequestType()) {
+            case SHOW_WEEKLY_SCHEDULE_PAGE:
+                this.client.sendResponse(manager.getWeeklyPlan());
+                break;
+            case SHOW_EXAM_LIST_PAGE:
+                this.client.sendResponse(manager.getExamList());
                 break;
             default:
                 handleRequestPageRequests();

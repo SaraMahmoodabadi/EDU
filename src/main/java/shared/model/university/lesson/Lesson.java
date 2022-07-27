@@ -67,6 +67,12 @@ public class Lesson {
         this.plan = getPlan();
     }
 
+    public Lesson(String lessonCode, String name, String examTime) {
+        this.lessonCode = lessonCode;
+        this.name = name;
+        this.examTime = examTime;
+    }
+
     public String getName() {
         return name;
     }
