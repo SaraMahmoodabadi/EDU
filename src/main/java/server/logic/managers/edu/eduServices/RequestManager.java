@@ -1,10 +1,12 @@
 package server.logic.managers.edu.eduServices;
 
+import server.database.dataHandlers.eduServises.ProfessorRequestDataHandler;
 import server.database.dataHandlers.eduServises.StudentRequestsDataHandler;
 import server.network.ClientHandler;
 import shared.model.message.request.Type;
 import shared.model.user.student.Grade;
 import shared.request.Request;
+import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
@@ -14,12 +16,14 @@ import java.util.List;
 import java.util.Random;
 
 public class RequestManager {
-    private StudentRequestsDataHandler sDataHandler;
-    private ClientHandler client;
+    private final StudentRequestsDataHandler sDataHandler;
+    private final ProfessorRequestDataHandler pDataHandler;
+    private final ClientHandler client;
 
     public RequestManager(ClientHandler clientHandler) {
         this.client = clientHandler;
         this.sDataHandler = new StudentRequestsDataHandler(clientHandler.getDataHandler());
+        this.pDataHandler = new ProfessorRequestDataHandler(clientHandler.getDataHandler());
     }
 
     public Response getGrade() {
@@ -145,8 +149,40 @@ public class RequestManager {
         return getErrorResponse(errorMessage);
     }
 
-    public Response getAnswerRequest() {
-        return null;
+    public Response getAnswerRecommendation(Request request) {
+        if (request.getRequestType() == RequestType.REGISTER_RECOMMENDATION) {
+            boolean result = this.pDataHandler.registerRecommendationAnswer
+                    ((String) request.getData("studentCode"),
+                    (String) request.getData("firstBlank"),
+                    (String) request.getData("secondBlank"),
+                    (String) request.getData("thirdBlank"), this.client.getUserName());
+            if (result) {
+                Response response = new Response(ResponseStatus.OK);
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+                response.setNotificationMessage(note);
+                return response;
+            }
+        }
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        return getErrorResponse(errorMessage);
+    }
+
+    public Response getAnswerRequest(Request request) {
+        if (request.getRequestType() == RequestType.REGISTER_REQUEST_ANSWER) {
+            boolean isMinor = request.getData("type") == Type.MINOR;
+            boolean result = this.pDataHandler.registerRequestAnswer
+                    ((String) request.getData("studentCode"),
+                            this.client.getUserName(),
+                            (Boolean) request.getData("result"), isMinor);
+            if (result) {
+                Response response = new Response(ResponseStatus.OK);
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+                response.setNotificationMessage(note);
+                return response;
+            }
+        }
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        return getErrorResponse(errorMessage);
     }
 
     private Response getErrorResponse(String errorMessage) {

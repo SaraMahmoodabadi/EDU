@@ -169,8 +169,10 @@ public class RequestHandler {
                 this.client.sendResponse(manager.createRequest(request));
                 break;
             case REGISTER_RECOMMENDATION:
+                this.client.sendResponse(manager.getAnswerRecommendation(request));
                 break;
             case REGISTER_REQUEST_ANSWER:
+                this.client.sendResponse(manager.getAnswerRequest(request));
                 break;
             default:
                 handleReportCardRequests();
