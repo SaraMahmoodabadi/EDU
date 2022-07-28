@@ -8,12 +8,10 @@ import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TemporaryScoresDataHandler {
     private final MySQLHandler databaseHandler;
@@ -151,7 +149,7 @@ public class TemporaryScoresDataHandler {
         return this.databaseHandler.updateData(query);
     }
 
-    public boolean finalizeScores(String score, String lessonCode, String studentCode) {
+    public boolean finalizeScores(String lessonCode, String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
         query = String.format(query, "score", "type = " + ScoreType.FINAL)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
@@ -242,6 +240,22 @@ public class TemporaryScoresDataHandler {
             } catch (SQLException ignored) {}
         }
         return professors;
+    }
+
+    public List<String> getStudentCodes(String username, String lessonCode) {
+        String professorCode = getProfessorCode(username);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        query = String.format(query, "students", "group") + "lessonCode = " + lessonCode +
+                " AND professorCode = " + professorCode;
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                Array array = resultSet.getArray("students");
+                String[] newArray = (String[]) array.getArray();
+                return Arrays.asList(newArray);
+            } catch (SQLException ignored) {}
+        }
+        return null;
     }
 
 }

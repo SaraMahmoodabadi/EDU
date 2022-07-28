@@ -74,8 +74,8 @@ public class ReportCardManager {
             }
             return getLessonSummary(scores, response);
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
-        return getErrorResponse(errorMessage);
+        else return getStudentCodes
+                ((String) request.getData("lessonCode"), this.client.getUserName());
     }
 
     public Response setProtestAnswer(Request request) {
@@ -143,8 +143,8 @@ public class ReportCardManager {
             if (entry.getKey().startsWith("score")) {
                 studentsCode.add(((Score) entry.getValue()).getStudentCode());
                 if (((Score) entry.getValue()).getScore() == null) break;
-                result = this.dataHandler.finalizeScores((String) request.getData("score"),
-                        ((Score) entry.getValue()).getLessonCode(), this.client.getUserName());
+                result = this.dataHandler.finalizeScores(((Score) entry.getValue()).getLessonCode(),
+                        this.client.getUserName());
                 if (!result) break;
             }
         }
@@ -213,6 +213,20 @@ public class ReportCardManager {
         Response response = new Response(ResponseStatus.ERROR);
         response.setErrorMessage(errorMessage);
         return response;
+    }
+
+    private Response getStudentCodes(String lessonCode, String username) {
+        List<String> students = this.dataHandler.getStudentCodes(username, lessonCode);
+        if (students != null) {
+            Response response = new Response(ResponseStatus.OK);
+            for (int i = 0; i < students.size(); i++) {
+                response.addData("score" + i,
+                        new Score(lessonCode, students.get(i), null, null, null));
+            }
+            return response;
+        }
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        return getErrorResponse(errorMessage);
     }
 
 }
