@@ -109,7 +109,7 @@ public class TemporaryScoresController implements Initializable {
         if (professorNameField.getText() == null) showNullAlert();
         else {
             Request request = new Request(RequestType.SHOW_LESSON_SCORES);
-            request.addData("professorMa,e", professorNameField.getText());
+            request.addData("professorName", professorNameField.getText());
             showRequestResult(request);
         }
     }
@@ -167,6 +167,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     private void showRequestResult(Request request) {
+        request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());

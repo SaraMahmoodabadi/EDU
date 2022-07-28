@@ -182,6 +182,7 @@ public class RequestHandler {
         ReportCardManager manager = new ReportCardManager(this.client);
         switch (this.request.getRequestType()) {
             case SHOW_TEMPORARY_SCORES_PAGE:
+            case SHOW_STUDENT_SCORES:
                 this.client.sendResponse(manager.getStudentTemporaryScores(request));
                 break;
             case REGISTER_PROTEST:
@@ -201,9 +202,8 @@ public class RequestHandler {
             case FINALIZE_SCORES:
                 this.client.sendResponse(manager.finalizeScores(request));
                 break;
-            case SHOW_STUDENT_SCORES:
-                break;
             case SHOW_PROFESSOR_SCORES:
+                this.client.sendResponse(manager.getProfessorScores(request));
                 break;
             default:
                 handleProfileRequests();

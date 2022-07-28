@@ -30,6 +30,22 @@ public class Score {
         this.protestAnswer = protestAnswer;
     }
 
+    public Score(String lessonCode, String studentCode, String score) {
+        this.lessonCode = lessonCode;
+        this.studentCode = studentCode;
+        this.score = score;
+    }
+
+    public Score(String lessonCode, String studentCode, String professorCode,
+                 String score, String protest, String protestAnswer) {
+        this.lessonCode = lessonCode;
+        this.studentCode = studentCode;
+        this.professorCode = professorCode;
+        this.score = score;
+        this.protest = protest;
+        this.protestAnswer = protestAnswer;
+    }
+
     public String getLessonCode() {
         return lessonCode;
     }

@@ -3,6 +3,7 @@ package server.database.dataHandlers.score;
 import server.database.MySQLHandler;
 import shared.model.university.lesson.score.Score;
 import shared.model.university.lesson.score.ScoreType;
+import shared.model.user.UserType;
 import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
@@ -10,7 +11,9 @@ import shared.util.config.ConfigType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TemporaryScoresDataHandler {
     private final MySQLHandler databaseHandler;
@@ -19,8 +22,10 @@ public class TemporaryScoresDataHandler {
         this.databaseHandler = databaseHandler;
     }
 
-    public List<Score> getStudentScores(String username) {
-        String studentCode = getStudentCode(username);
+    public List<Score> getStudentScores(String username, UserType userType, String studentCode) {
+        if (userType == UserType.STUDENT) {
+            studentCode = getStudentCode(username);
+        }
         List<Score> scores = new ArrayList<>();
         if (studentCode != null) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
@@ -152,4 +157,91 @@ public class TemporaryScoresDataHandler {
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
     }
+
+    public Map<Score, Integer> getFinalScores(String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getDataWithJoin");
+        query = String.format(query, "s.score, s.lessonCode, l.unitNumber",
+                "score s", "lesson l", "s.lessonCode = l.lessonCode") +
+                " studentCode = " + studentCode + " AND type = " + ScoreType.FINAL;
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        Map<Score, Integer> scores = new HashMap<>();
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    String score = resultSet.getString("score");
+                    String lessonCode = resultSet.getString("lessonCode");
+                    Integer unitNumber = resultSet.getInt("unitNumber");
+                    Score studentScore = new Score(lessonCode, studentCode, score);
+                    scores.put(studentScore, unitNumber);
+                }
+            } catch (SQLException ignored) {}
+        }
+        return scores;
+    }
+
+    public void registerRate(double rate, String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        query = String.format(query, "student", "rate = " + rate)
+                + " studentCode = " + studentCode;
+        this.databaseHandler.updateData(query);
+    }
+
+    public String getStudentCollege(String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getDataWithJoin");
+        query = String.format(query, "u.collegeCode", "user u", "student s",
+                "s.username = u.username") + " studentCode = " + studentCode;
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                return resultSet.getString("collegeCode");
+            } catch (SQLException ignored) {}
+        }
+        return null;
+    }
+
+    public List<Score> getProfessorScores(String professorName, String collegeCode) {
+        List<Score> scores = new ArrayList<>();
+        List<String> professors = getProfessors(professorName, collegeCode);
+        for (String professor : professors) {
+            String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+            query = String.format(query, "*", "score") +
+                    " professorCode = " + professor + " AND type = " + ScoreType.TEMPORARY;
+            ResultSet resultSet = this.databaseHandler.getResultSet(query);
+            if (resultSet != null) {
+                try {
+                    while (resultSet.next()) {
+                        String studentCode = resultSet.getString("studentCode");
+                        String lessonCode = resultSet.getString("lessonCode");
+                        String score = resultSet.getString("score");
+                        String protest = resultSet.getString("protest");
+                        String protestAnswer = resultSet.getString("protestAnswer");
+                        Score studentScore = new Score(lessonCode, studentCode, professor,
+                                score, protest, protestAnswer);
+                        scores.add(studentScore);
+                    }
+                } catch (SQLException ignored) {}
+            }
+        }
+        return scores;
+    }
+
+    private List<String> getProfessors(String name, String collegeCode) {
+        List<String> professors = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        query = String.format(query, "professorCode, firstName, lastName", "user")
+                + " collegeCode = " + collegeCode;
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    String firstName = resultSet.getString("firstName");
+                    String lastName = resultSet.getString("lastName");
+                    String professorCode = resultSet.getString("professorCode");
+                    if (name.equals(firstName + " " + lastName)) professors.add(professorCode);
+                }
+            } catch (SQLException ignored) {}
+        }
+        return professors;
+    }
+
 }

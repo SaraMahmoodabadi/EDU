@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReportCardManager {
     private final ClientHandler client;
@@ -26,10 +25,17 @@ public class ReportCardManager {
     }
 
     public Response getStudentTemporaryScores(Request request) {
-        List<Score> scores = new ArrayList<>();
-        if (this.client.getUserType() == UserType.STUDENT) {
-            scores = this.dataHandler.getStudentScores(this.client.getUserName());
+        String studentCode = "";
+        if (this.client.getUserType() == UserType.PROFESSOR) {
+            if (request.getData("collegeCode").equals
+                    (this.dataHandler.getStudentCollege((String) request.getData("studentCode")))) {
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+                return getErrorResponse(errorMessage);
+            }
+            studentCode = (String) request.getData("studentCode");
         }
+        List<Score> scores = this.dataHandler.getStudentScores(this.client.getUserName(),
+                this.client.getUserType(), studentCode);
         if (scores != null) {
             Response response = new Response(ResponseStatus.OK);
             for (int i = 0; i < scores.size(); i++) {
@@ -131,9 +137,11 @@ public class ReportCardManager {
 
     public Response finalizeScores(Request request) {
         HashMap<String, Object> data = request.getData();
+        List<String> studentsCode = new ArrayList<>();
         boolean result = true;
         for (Map.Entry<String,Object> entry : data.entrySet()) {
             if (entry.getKey().startsWith("score")) {
+                studentsCode.add(((Score) entry.getValue()).getStudentCode());
                 if (((Score) entry.getValue()).getScore() == null) break;
                 result = this.dataHandler.finalizeScores((String) request.getData("score"),
                         ((Score) entry.getValue()).getLessonCode(), this.client.getUserName());
@@ -141,6 +149,7 @@ public class ReportCardManager {
             }
         }
         if (result) {
+            calculateRate(studentsCode);
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
             response.setNotificationMessage(note);
@@ -152,7 +161,34 @@ public class ReportCardManager {
         }
     }
 
-    //TODO
+    private synchronized void calculateRate(List<String> students) {
+        for (String student : students) {
+            Map<Score, Integer> scores = this.dataHandler.getFinalScores(student);
+            int unitSum = 0;
+            double scoreSum = 0.0;
+            for (Map.Entry<Score,Integer> entry : scores.entrySet()) {
+                scoreSum += Double.parseDouble(entry.getKey().getScore());
+                unitSum += entry.getValue();
+            }
+            double rate = scoreSum / unitSum;
+            this.dataHandler.registerRate(rate, student);
+        }
+    }
+
+    public Response getProfessorScores(Request request) {
+        List<Score> scores = this.dataHandler.getProfessorScores((String) request.getData("professorName"),
+               (String) request.getData("collegeCode"));
+        if (scores != null) {
+            Response response = new Response(ResponseStatus.OK);
+            for (int i = 0; i < scores.size(); i++) {
+                response.addData("score" + i, scores.get(i));
+            }
+            return response;
+        }
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        return getErrorResponse(errorMessage);
+    }
+
     public List<String> getLessonSummary() {
         return null;
     }
