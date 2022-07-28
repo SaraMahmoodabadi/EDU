@@ -195,7 +195,7 @@ public class ReportCardManager {
         int numberPassed = 0;
         for (Score score : scores) {
             sum += Double.parseDouble(score.getScore());
-            if (Double.parseDouble(score.getScore()) > 10) {
+            if (Double.parseDouble(score.getScore()) >= 10) {
                 sumPassed += Double.parseDouble(score.getScore());
                 numberPassed++;
             }
@@ -207,21 +207,6 @@ public class ReportCardManager {
         response.addData("numberPassed", numberPassed);
         response.addData("numberFailed", scores.size() - numberPassed);
         return response;
-    }
-
-    //TODO
-    public int getPassedLessonsNumber() {
-        return 0;
-    }
-
-    //TODO
-    public double getRate() {
-        return 0;
-    }
-
-    //TODO
-    public void getInformation() {
-
     }
 
     private Response getErrorResponse(String errorMessage) {
