@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.professor;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import shared.model.university.lesson.Lesson;
 import shared.model.university.lesson.score.Score;
 import shared.model.user.UserType;
 import shared.request.Request;
@@ -70,17 +72,21 @@ public class TemporaryScoresController implements Initializable {
     private List<Score> scores;
     private List<Score> updatedScores;
     private boolean registerResult = false;
+    private boolean stop;
+    private Request request;
+    private String lessonCode;
     //TODO: to ping change updatedScores list (just get protest)
 
     public void show(ActionEvent actionEvent) {
         if (checkNullItems()) return;
-        Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.PROFESSOR);
+        request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.PROFESSOR);
         request.addData("lessonCode", lessonCodeField.getText());
         Response response = EDU.serverController.getResponse();
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
+            lessonCode = lessonCodeField.getText();
             scores = new ArrayList<>();
             response.getData().forEach((K, V) -> {
                 if (K.startsWith("score")) {
@@ -117,7 +123,7 @@ public class TemporaryScoresController implements Initializable {
             updatedScores.add(newScore);
             updateTable(updatedScores);
             if (hadScore()) {
-                Request request = new Request(RequestType.REGISTER_ALL_SCORES);
+                request = new Request(RequestType.REGISTER_ALL_SCORES);
                 request.addData("score" , newScore);
                 showRequestResult(request);
             }
@@ -133,7 +139,7 @@ public class TemporaryScoresController implements Initializable {
             return;
         }
         if (protestAnswerArea.getText() != null) {
-            Request request = new Request(RequestType.REGISTER_PROTEST_ANSWER);
+            request = new Request(RequestType.REGISTER_PROTEST_ANSWER);
             request.addData("score", score);
             request.addData("protestAnswer", protestAnswerArea.getText());
             showRequestResult(request);
@@ -141,7 +147,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     public void registerAllScores(ActionEvent actionEvent) {
-        Request request = new Request(RequestType.REGISTER_ALL_SCORES);
+        request = new Request(RequestType.REGISTER_ALL_SCORES);
         for (int i = 1; i < updatedScores.size(); i++) {
             if (updatedScores.get(i).getScore() == null) {
                 String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullScores");
@@ -170,6 +176,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -207,13 +214,46 @@ public class TemporaryScoresController implements Initializable {
 
     private boolean hadScore() {
         for (Score score : scores) {
-            if ( Double.parseDouble(score.getScore()) > 0.0) return true;
+            if ( score.getScore() != null || !score.getScore().equals("")) return true;
         }
         return false;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    if (lessonCode == null) continue;
+                    Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.PROFESSOR);
+                    request.addData("lessonCode", lessonCodeField.getText());
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Score> scores = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("score")) {
+                                    scores.add((Score) V);
+                                }
+                            });
+                            for (Score score : scores) {
+                                if (score.getScore() != null && !score.getScore().equals("")) {
+                                    updateTable(scores);
+                                }
+                                else break;
+                            }
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeTable();
+        updateData();
     }
 }

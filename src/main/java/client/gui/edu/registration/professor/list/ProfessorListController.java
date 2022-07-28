@@ -3,6 +3,7 @@ package client.gui.edu.registration.professor.list;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 import shared.model.university.college.University;
+import shared.model.university.lesson.Lesson;
 import shared.model.user.UserType;
 import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Professor;
@@ -62,10 +64,12 @@ public class ProfessorListController implements Initializable {
     protected TableColumn<Professor, String> degreeColumn;
     @FXML
     protected TableColumn<Professor, String> postColumn;
+    private boolean stop;
+    Request request;
 
     /**
     public void show(ActionEvent actionEvent) {
-        Request request = new Request(RequestType.SHOW_DESIRED_PROFESSORS_LIST);
+        request = new Request(RequestType.SHOW_DESIRED_PROFESSORS_LIST);
         request.addData("collegeName", collegeBox.getValue());
         request.addData("degree", degreeBox.getValue());
         request.addData("professorCode", codeField.getText());
@@ -86,10 +90,12 @@ public class ProfessorListController implements Initializable {
     } */
 
     public void edit(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "editProfessorPage");
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -102,7 +108,7 @@ public class ProfessorListController implements Initializable {
     }
 
     private List<Professor> getData() {
-        Request request = new Request(RequestType.SHOW_PROFESSORS_LIST_PAGE);
+        request = new Request(RequestType.SHOW_PROFESSORS_LIST_PAGE);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -127,8 +133,33 @@ public class ProfessorListController implements Initializable {
         list.getItems().addAll(professors);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Professor> professors = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("professor")) {
+                                    professors.add((Professor) V);
+                                }
+                            });
+                            list.getItems().clear();
+                            list.getItems().addAll(professors);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         hide();
         List<Professor> professors = getData();
         collegeBox.getItems().add("-");
@@ -140,5 +171,6 @@ public class ProfessorListController implements Initializable {
         if (professors != null) {
             setTableData(professors);
         }
+        updateData();
     }
 }

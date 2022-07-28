@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.eduAssistant;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import shared.model.university.lesson.score.Score;
+import shared.model.user.UserType;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -84,11 +86,13 @@ public class TemporaryScoresController implements Initializable {
     protected Label numberFailedLabel;
     @FXML
     protected Label averagePassedLabel;
+    private boolean stop;
+    private Request request;
 
     public void showLessonScores(ActionEvent actionEvent) {
         if (lessonCodeField.getText() == null) showNullAlert();
         else {
-            Request request = new Request(RequestType.SHOW_LESSON_SCORES);
+            request = new Request(RequestType.SHOW_LESSON_SCORES);
             request.addData("lessonCode", lessonCodeField.getText());
             showRequestResult(request);
         }
@@ -98,7 +102,7 @@ public class TemporaryScoresController implements Initializable {
         hideLessonSummary();
         if (studentCodeField.getText() == null) showNullAlert();
         else {
-            Request request = new Request(RequestType.SHOW_LESSON_SCORES);
+            request = new Request(RequestType.SHOW_LESSON_SCORES);
             request.addData("studentCode", studentCodeField.getText());
             showRequestResult(request);
         }
@@ -108,13 +112,14 @@ public class TemporaryScoresController implements Initializable {
         hideLessonSummary();
         if (professorNameField.getText() == null) showNullAlert();
         else {
-            Request request = new Request(RequestType.SHOW_LESSON_SCORES);
+            request = new Request(RequestType.SHOW_LESSON_SCORES);
             request.addData("professorName", professorNameField.getText());
             showRequestResult(request);
         }
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -191,9 +196,34 @@ public class TemporaryScoresController implements Initializable {
         table.getItems().addAll(scores);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Score> scores = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("score")) {
+                                    scores.add((Score) V);
+                                }
+                            });
+                            updateTable(scores);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeTable();
         hideLessonSummary();
+        updateData();
     }
 }

@@ -1,6 +1,7 @@
 package client.gui.edu.eduServices.examList;
 
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,8 +41,11 @@ public class ExamListController implements Initializable {
     protected Button back;
     @FXML
     protected ImageView backImage;
+    private Request request;
+    private boolean stop;
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -52,7 +56,7 @@ public class ExamListController implements Initializable {
     }
 
     private List<Lesson> getData() {
-        Request request = new Request(RequestType.SHOW_EXAM_LIST_PAGE);
+        request = new Request(RequestType.SHOW_EXAM_LIST_PAGE);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             List<Lesson> lessons = new ArrayList<>();
@@ -66,10 +70,36 @@ public class ExamListController implements Initializable {
         return null;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Lesson> lessons = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("lesson")) {
+                                    lessons.add((Lesson) V);
+                                }
+                            });
+                            table.getItems().clear();
+                            table.getItems().addAll(lessons);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeTable();
         List<Lesson> lessons = getData();
         if (lessons != null) table.getItems().addAll(lessons);
+        updateData();
     }
 }

@@ -2,6 +2,7 @@ package client.gui.edu.eduServices.weeklyPlan;
 
 import client.gui.EDU;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,6 +27,7 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -65,13 +67,16 @@ public class WeeklyPlanController implements Initializable {
     protected Button back;
     @FXML
     protected ImageView backImage;
+    private Request request;
+    private boolean stop;
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
     private void getPlan() {
-        Request request = new Request(RequestType.SHOW_WEEKLY_SCHEDULE_PAGE);
+        request = new Request(RequestType.SHOW_WEEKLY_SCHEDULE_PAGE);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             response.getData().forEach((K, V) -> {
@@ -139,8 +144,31 @@ public class WeeklyPlanController implements Initializable {
         return y;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("lesson")) {
+                                    putLesson((Lesson) V);
+                                }
+                            });
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         getPlan();
+        updateData();
     }
 }

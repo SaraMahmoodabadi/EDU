@@ -2,6 +2,7 @@ package client.gui.edu.registration.lesson.list;
 
 import client.gui.EDU;
 import client.gui.AlertMonitor;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +19,8 @@ import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -68,10 +71,11 @@ public class LessonListController implements Initializable {
     TableColumn<Lesson, String> examTimeColumn;
     @FXML
     TableColumn<Lesson, List<String>> planColumn;
-
+    private boolean stop;
+    Request request;
 
     public void show(ActionEvent actionEvent) {
-        Request request = new Request(RequestType.SHOW_DESIRED_LESSONS_LIST);
+        request = new Request(RequestType.SHOW_DESIRED_LESSONS_LIST);
         request.addData("collegeName", collegeName.getValue());
         request.addData("unitNumber", unitBox.getValue());
         request.addData("lessonCode", lessonCode.getText());
@@ -92,10 +96,12 @@ public class LessonListController implements Initializable {
     }
 
     public void edit(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "editLessonPage");
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -108,7 +114,7 @@ public class LessonListController implements Initializable {
     }
 
     private List<Lesson> getData() {
-        Request request = new Request(RequestType.SHOW_LESSONS_LIST_PAGE);
+        request = new Request(RequestType.SHOW_LESSONS_LIST_PAGE);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -139,8 +145,33 @@ public class LessonListController implements Initializable {
         list.getItems().addAll(lessons);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Lesson> desiredLessons = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("lesson")) {
+                                    desiredLessons.add((Lesson) V);
+                                }
+                            });
+                            list.getItems().clear();
+                            list.getItems().addAll(desiredLessons);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         hide();
         List<Lesson> lessons = getData();
         collegeName.getItems().add("-");
@@ -149,5 +180,6 @@ public class LessonListController implements Initializable {
         if (lessons != null) {
             setTableData(lessons);
         }
+        updateData();
     }
 }

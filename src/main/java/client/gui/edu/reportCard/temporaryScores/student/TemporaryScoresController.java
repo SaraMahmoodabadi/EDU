@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import shared.model.university.lesson.score.Score;
 import shared.model.user.UserType;
+import shared.model.user.professor.Professor;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -54,6 +56,8 @@ public class TemporaryScoresController implements Initializable {
     @FXML
     protected ImageView backImage;
     List<Score> scores;
+    private boolean stop;
+    private Request request;
 
     public void register(ActionEvent actionEvent) {
         if (table.getSelectionModel().getSelectedItem() == null) {
@@ -67,7 +71,7 @@ public class TemporaryScoresController implements Initializable {
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
             }
             else {
-                Request request = new Request(RequestType.REGISTER_PROTEST);
+                request = new Request(RequestType.REGISTER_PROTEST);
                 request.addData("score", score);
                 request.addData("protest", protestArea.getText());
                 showRequestResult(request, score, protestArea.getText());
@@ -76,6 +80,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
@@ -122,12 +127,37 @@ public class TemporaryScoresController implements Initializable {
         protestResultColumn.setCellValueFactory(new PropertyValueFactory<>("protestAnswer"));
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Score> scores = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("score")) {
+                                    scores.add((Score) V);
+                                }
+                            });
+                            updateTable(scores);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeTable();
         this.scores = gerData();
         if (scores != null) {
             table.getItems().addAll(scores);
         }
+        updateData();
     }
 }
