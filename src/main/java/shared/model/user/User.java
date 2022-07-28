@@ -51,6 +51,17 @@ public class User {
         this.collegeCode = collegeCode;
     }
 
+    public User(String firstname, String lastname, long nationalCode,
+                String college, String email, long phone, String image) {
+        this.firstName = firstname;
+        this.lastLogin = lastname;
+        this.nationalCode = nationalCode;
+        this.collegeCode = college;
+        this.emailAddress = email;
+        this.phoneNumber = phone;
+        this.imageAddress = image;
+    }
+
     public String getFirstName() {
         return firstName;
     }

@@ -33,6 +33,15 @@ public class Professor extends User {
         this.type = type;
     }
 
+    public Professor(String firstName, String lastName, long nationalCode, String collegeCode,
+                     String emailAddress, long phoneNumber, String imageAddress, String professorCode,
+                     int roomNumber, MasterDegree degree) {
+        super(firstName, lastName, nationalCode, collegeCode, emailAddress, phoneNumber, imageAddress);
+        this.professorCode = professorCode;
+        this.roomNumber = roomNumber;
+        this.degree = degree;
+    }
+
 
     public String getProfessorCode() {
         return professorCode;

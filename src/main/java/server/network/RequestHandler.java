@@ -2,6 +2,7 @@ package server.network;
 
 import server.logic.managers.edu.eduServices.PlanManager;
 import server.logic.managers.edu.eduServices.RequestManager;
+import server.logic.managers.edu.profile.ProfileManager;
 import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.reportCard.EDUStatusManager;
@@ -68,8 +69,6 @@ public class RequestHandler {
             case SHOW_MESSAGES_PAGE:
                 break;
             case SHOW_MESSENGER:
-                break;
-            case SHOW_PROFILE_PAGE:
                 break;
             case LOGOUT:
                 break;
@@ -214,10 +213,16 @@ public class RequestHandler {
     }
 
     private void handleProfileRequests() {
+        ProfileManager manager = new ProfileManager(this.client);
         switch (this.request.getRequestType()) {
+            case SHOW_PROFILE_PAGE:
+                this.client.sendResponse(manager.getInformation());
+                break;
             case REGISTER_EMAIL:
+                this.client.sendResponse(manager.changeEmailAddress(request));
                 break;
             case REGISTER_PHONE_NUMBER:
+                this.client.sendResponse(manager.changePhoneNumber(request));
                 break;
         }
     }
