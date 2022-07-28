@@ -1,6 +1,5 @@
 package client.gui.edu.reportCard.eduStatus;
 
-import client.gui.AlertMonitor;
 import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,6 +69,7 @@ public class EduStatusController implements Initializable {
         if (studentCodeField.getText() != null) {
             Request request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
             request.addData("studentCode", studentCodeField.getText());
+            request.addData("collegeCode", EDU.collegeCode);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) setData(response);
         }
@@ -79,6 +79,7 @@ public class EduStatusController implements Initializable {
         if (studentNameField.getText() != null) {
             Request request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
             request.addData("studentName", studentNameField.getText());
+            request.addData("collegeCode", EDU.collegeCode);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) setData(response);
         }
@@ -114,6 +115,8 @@ public class EduStatusController implements Initializable {
                 scores.add((Score) V);
             }
         });
+        numberPassedLabel.setText((String) response.getData("numberPassed"));
+        averageLabel.setText((String) response.getData("average"));
         table.getItems().clear();
         table.getItems().addAll(scores);
     }
