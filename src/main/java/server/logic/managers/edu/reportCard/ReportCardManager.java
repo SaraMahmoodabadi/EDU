@@ -72,7 +72,7 @@ public class ReportCardManager {
             for (int i = 0; i < scores.size(); i++) {
                 response.addData("score" + i, scores.get(i));
             }
-            return response;
+            return getLessonSummary(scores, response);
         }
         String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
         return getErrorResponse(errorMessage);
@@ -189,8 +189,24 @@ public class ReportCardManager {
         return getErrorResponse(errorMessage);
     }
 
-    public List<String> getLessonSummary() {
-        return null;
+    public Response getLessonSummary(List<Score> scores, Response response) {
+        double sum = 0.0;
+        double sumPassed = 0.0;
+        int numberPassed = 0;
+        for (Score score : scores) {
+            sum += Double.parseDouble(score.getScore());
+            if (Double.parseDouble(score.getScore()) > 10) {
+                sumPassed += Double.parseDouble(score.getScore());
+                numberPassed++;
+            }
+        }
+        double average = sum / scores.size();
+        double averagePassed = sumPassed / numberPassed;
+        response.addData("average", average);
+        response.addData("averagePassed", averagePassed);
+        response.addData("numberPassed", numberPassed);
+        response.addData("numberFailed", scores.size() - numberPassed);
+        return response;
     }
 
     //TODO
