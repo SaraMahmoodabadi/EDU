@@ -140,7 +140,8 @@ public class RegistrationDataHandler {
 
     public boolean makeGroup(Group group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty("makeGroup");
-        query = String.format(query, group.getLessonCode() + ", " + group.getProfessorCode() +
+        query = String.format(query, generateGroupNumber(group.getLessonCode()),
+                group.getLessonCode() + ", " + group.getProfessorCode() +
                 ", " + group.getCapacity());
         return this.dataBaseHandler.updateData(query);
     }
@@ -352,5 +353,27 @@ public class RegistrationDataHandler {
             } catch (SQLException ignored) {}
         }
         return professor;
+    }
+
+    private int generateGroupNumber(String lessonCode) {
+        String query = Config.getConfig
+                (ConfigType.QUERY).getProperty("getAllGroups") + " " + lessonCode;
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        List<Integer> groups = new ArrayList<>();
+        if (resultSet != null) {
+            try {
+                while (resultSet.next()) {
+                    int n = resultSet.getInt("groupNumber");
+                    groups.add(n);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 1; i <= groups.size() + 1; i++) {
+            if (!groups.contains(i)) return i;
+        }
+        return 1;
     }
 }
