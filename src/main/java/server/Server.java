@@ -14,7 +14,7 @@ public class Server {
     private static int clientCount = 0;
     private ServerSocket serverSocket;
     private boolean running;
-    private Token token;
+    private final Token token;
 
     public Server(int port){
         this.port = port;

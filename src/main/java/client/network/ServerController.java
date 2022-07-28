@@ -1,5 +1,6 @@
 package client.network;
 
+import client.gui.EDU;
 import org.codehaus.jackson.map.ObjectMapper;
 import shared.request.Request;
 import shared.request.RequestType;
@@ -17,6 +18,7 @@ public class ServerController {
     private Scanner scanner;
     private final int port;
     private final ObjectMapper objectMapper;
+    private String token;
 
     public ServerController(int port) {
         this.port = port;
@@ -29,6 +31,8 @@ public class ServerController {
             Socket socket = new Socket(InetAddress.getLocalHost(), port);
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
+            getToken();
+            new EDU(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,6 +40,7 @@ public class ServerController {
 
     public Response sendRequest(Request request) {
         try {
+            request.addData("token", this.token);
             String requestString = this.objectMapper.writeValueAsString(request);
             this.printStream.println(requestString);
             this.printStream.flush();
@@ -53,6 +58,11 @@ public class ServerController {
            e.printStackTrace();
        }
        return response;
+   }
+
+   private void getToken() {
+        Response response = getResponse();
+        this.token = (String) response.getData("token");
    }
 
 }

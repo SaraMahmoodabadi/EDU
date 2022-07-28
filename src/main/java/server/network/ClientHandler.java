@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientHandler {
-    private MySQLHandler dataHandler;
+    private final MySQLHandler dataHandler;
     private PrintStream printStream;
     private Scanner scanner;
     private ObjectMapper objectMapper;
@@ -35,6 +35,7 @@ public class ClientHandler {
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
             this.objectMapper = Jackson.getNetworkObjectMapper();
+            sendToken();
             makeListenerThread();
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,13 +74,20 @@ public class ClientHandler {
                 String requestString = this.scanner.nextLine();
                 try {
                     Request request = this.objectMapper.readValue(requestString, Request.class);
-                    handleRequest(request);
+                    if (request.getData("token").equals(this.token))
+                        handleRequest(request);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
+    }
+
+    private void sendToken() {
+        Response response = new Response();
+        response.addData("token", this.token);
+        sendResponse(response);
     }
 
     private void handleRequest(Request request) {
