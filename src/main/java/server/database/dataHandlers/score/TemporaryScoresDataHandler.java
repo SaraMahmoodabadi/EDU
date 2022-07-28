@@ -149,6 +149,15 @@ public class TemporaryScoresDataHandler {
         return this.databaseHandler.updateData(query);
     }
 
+    public boolean registerScore(String score, String lessonCode, String studentCode, String username) {
+        String professorCode = getProfessorCode(username);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty("insertData");
+        query = String.format(query, "score", "lessonCode, studentCode, " +
+                "professorCode, score, type", lessonCode + ", " + studentCode +", " + professorCode +
+                ", " + score + ", " + ScoreType.TEMPORARY);
+        return this.databaseHandler.updateData(query);
+    }
+
     public boolean finalizeScores(String lessonCode, String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
         query = String.format(query, "score", "type = " + ScoreType.FINAL)

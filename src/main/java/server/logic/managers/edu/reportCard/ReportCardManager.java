@@ -114,12 +114,13 @@ public class ReportCardManager {
 
     public Response setScores(Request request) {
         HashMap<String, Object> data = request.getData();
-        boolean result = true;
+        boolean result = false;
         for (Map.Entry<String,Object> entry : data.entrySet()) {
             if (entry.getKey().startsWith("score")) {
                 if (((Score) entry.getValue()).getScore() == null) break;
-                result = this.dataHandler.setScore((String) request.getData("score"),
-                        ((Score) entry.getValue()).getLessonCode(), ((Score) entry.getValue()).getStudentCode());
+                result = this.dataHandler.registerScore((String) request.getData("score"),
+                        ((Score) entry.getValue()).getLessonCode(),
+                        ((Score) entry.getValue()).getStudentCode(), this.client.getUserName());
                 if (!result) break;
             }
         }
