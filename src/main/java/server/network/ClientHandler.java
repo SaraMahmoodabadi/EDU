@@ -7,11 +7,13 @@ import server.logic.captcha.CaptchaHandler;
 import shared.model.user.UserType;
 import shared.request.Request;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.Jackson;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ClientHandler {
@@ -20,6 +22,7 @@ public class ClientHandler {
     private Scanner scanner;
     private ObjectMapper objectMapper;
     private final Server server;
+    private final Socket socket;
     private final int clientID;
     private final String token;
     private final CaptchaHandler captchaHandler;
@@ -31,12 +34,12 @@ public class ClientHandler {
         this.server = server;
         this.token = token.generateToken();
         this.captchaHandler = new CaptchaHandler();
+        this.socket = socket;
         try {
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
             this.objectMapper = Jackson.getNetworkObjectMapper();
             sendToken();
-            makeListenerThread();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,24 +71,30 @@ public class ClientHandler {
     }
 
     //TODO : handle end of connection
-    private void makeListenerThread() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                String requestString = this.scanner.nextLine();
-                try {
-                    Request request = this.objectMapper.readValue(requestString, Request.class);
-                    if (request.getData("token").equals(this.token))
-                        handleRequest(request);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    public void makeListenerThread() {
+        while (true) {
+            String requestString;
+            try {
+                requestString = this.scanner.nextLine();
+            } catch (NoSuchElementException e) {
+                break;
             }
-        });
-        thread.start();
+            try {
+                Request request = this.objectMapper.readValue(requestString, Request.class);
+                if (request.getData("token").equals(this.token))
+                    handleRequest(request);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        this.server.disconnect(this);
+        try {
+            this.socket.close();
+        } catch (IOException ignored) {}
     }
 
     private void sendToken() {
-        Response response = new Response();
+        Response response = new Response(ResponseStatus.OK);
         response.addData("token", this.token);
         sendResponse(response);
     }

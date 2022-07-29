@@ -60,12 +60,13 @@ public class LoginController implements Initializable {
     protected Text startText;
     @FXML
     protected Circle person;
+    Response response;
 
 
     public void recaptcha(ActionEvent actionEvent) {
         Request request = new Request(RequestType.START_CONNECTION);
-        Response response = EDU.serverController.sendRequest(request);
-        Object image = response.getData("captcha image");
+        response = EDU.serverController.sendRequest(request);
+        Object image = response.getData("captchaImage");
         this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
     }
 
@@ -75,6 +76,7 @@ public class LoginController implements Initializable {
         request.addData("username", this.username.getText());
         request.addData("password", this.password.getText());
         request.addData("captcha", this.captchaText.getText());
+        request.addData("captchaValue", response.getData("captchaValue"));
         Response response = EDU.serverController.sendRequest(request);
         changeScene(actionEvent, response);
     }
@@ -93,9 +95,10 @@ public class LoginController implements Initializable {
                checkWithdrawal(response);
             }
             if (EDU.userType == UserType.PROFESSOR) {
-                EDU.professorType = (Type) response.getData("professorType");
+                EDU.professorType = Type.valueOf((String) response.getData("professorType"));
             }
-            if (response.getNotificationMessage().equals
+            if (response.getNotificationMessage() != null &&
+                    response.getNotificationMessage().equals
                     (Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "changePassword"))) {
                 EDU.sceneSwitcher.switchScene(actionEvent, "changePasswordPage");
             }
@@ -136,7 +139,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Response response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
+        response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
         Object image = response.getData("captchaImage");
         this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
     }

@@ -18,12 +18,7 @@ public class Token {
     public String generateToken() {
         byte[] bytes = new byte[24];
         secureRandom.nextBytes(bytes);
-        String token;
-        do {
-            token = base64Encoder.encodeToString(bytes);
-            this.tokens.add(token);
-        } while (this.tokens.contains(token));
-        return token;
+        return base64Encoder.encodeToString(bytes);
     }
 
     public void removeToken(String token) {

@@ -100,34 +100,39 @@ public class MainPageController implements Initializable {
     protected ListView<String> middleList;
     @FXML
     protected ListView<String> leftList;
-    private Stage stage;
 
     public void showLessonsList(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "lessonListPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "lessonListPage");
     }
 
     public void showProfessorsList(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "professorListPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "professorListPage");
     }
 
     public void showNewUserPage(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "newUserPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "newUserPage");
     }
 
     public void showWeeklySchedule(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "weeklyPlanPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "weeklyPlanPage");
     }
 
     public void showExamList(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "examListPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "examListPage");
     }
 
     public void showRequests(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
         if (EDU.userType == UserType.STUDENT) {
-            EDU.sceneSwitcher.switchScenes(this.stage, "studentRequestPage");
+            EDU.sceneSwitcher.switchScenes(stage, "studentRequestPage");
         }
         else if (EDU.userType == UserType.PROFESSOR) {
-            EDU.sceneSwitcher.switchScenes(this.stage, "professorRequestPage");
+            EDU.sceneSwitcher.switchScenes(stage, "professorRequestPage");
         }
     }
 
@@ -135,21 +140,23 @@ public class MainPageController implements Initializable {
     }
 
     public void showTemporaryScores(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
         if (EDU.userType == UserType.STUDENT) {
-            EDU.sceneSwitcher.switchScenes(this.stage, "studentTemporaryScoresPage");
+            EDU.sceneSwitcher.switchScenes(stage, "studentTemporaryScoresPage");
         }
         else if (EDU.userType == UserType.PROFESSOR){
             if (EDU.professorType == Type.EDUCATIONAL_ASSISTANT) {
-                EDU.sceneSwitcher.switchScenes(this.stage, "eduAssistantTemporaryScoresPage");
+                EDU.sceneSwitcher.switchScenes(stage, "eduAssistantTemporaryScoresPage");
             }
             else {
-                EDU.sceneSwitcher.switchScenes(this.stage, "professorTemporaryScoresPage");
+                EDU.sceneSwitcher.switchScenes(stage, "professorTemporaryScoresPage");
             }
         }
     }
 
     public void showEducationalStatus(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "eduStatusPage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "eduStatusPage");
     }
 
     public void showCourseware(ActionEvent actionEvent) {
@@ -162,7 +169,8 @@ public class MainPageController implements Initializable {
     }
 
     public void showProfile(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScenes(this.stage, "profilePage");
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "profilePage");
     }
 
     public void logOut(ActionEvent actionEvent) {
@@ -230,7 +238,6 @@ public class MainPageController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.stage = (Stage) (logOut.getScene().getWindow());;
         hideFields();
         getData();
     }

@@ -52,7 +52,7 @@
       <Line endX="-31.0" layoutX="965.0" layoutY="238.0" opacity="0.5" startX="-100.0" strokeWidth="5.0" />
       <Rectangle fx:id="rightRectangle" arcHeight="5.0" arcWidth="5.0" fill="#b151b8" height="800.0" opacity="0.3" stroke="BLACK" strokeType="INSIDE" width="600.0" />
       <ImageView fx:id="captchaImage" fitHeight="60.0" fitWidth="150.0" layoutX="824.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="recaptcha" layoutX="981.0" layoutY="425.0" mnemonicParsing="false" onAction="#recaptcha" prefHeight="40.0" prefWidth="46.0" style="-fx-background-image: recaptchaLogo.png; -fx-background-color: #b151b8;">
+      <Button fx:id="recaptcha" layoutX="981.0" layoutY="425.0" mnemonicParsing="false" onAction="#recaptcha" prefHeight="40.0" prefWidth="46.0">
          <graphic>
             <ImageView fx:id="recaptchaImage" pickOnBounds="true" preserveRatio="true">
                <image>

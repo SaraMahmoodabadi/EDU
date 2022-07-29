@@ -14,11 +14,11 @@ public class MySQLHandler {
 
     private void register() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         }
         catch(ClassNotFoundException ex) {
             System.out.println("Error: unable to load driver class!");
-            System.exit(1);
+            //System.exit(1);
         }
     }
 
@@ -74,7 +74,7 @@ public class MySQLHandler {
     public boolean updateData(String query) {
         try {
             Statement statement = this.connection.createStatement();
-            statement.executeQuery(query);
+            statement.executeUpdate(query);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

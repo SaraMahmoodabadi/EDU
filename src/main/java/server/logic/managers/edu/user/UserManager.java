@@ -39,6 +39,7 @@ public class UserManager {
             String image = new ImageHandler().encode(captcha.getCaptchaImageAddress());
             Response response = new Response(ResponseStatus.OK);
             response.addData("captchaImage", image);
+            response.addData("captchaValue", captcha.getCaptchaValue());
             return response;
         }
         else {
@@ -53,8 +54,9 @@ public class UserManager {
         String username = String.valueOf(request.getData("username"));
         String password = String.valueOf(request.getData("password"));
         String captchaValue = String.valueOf(request.getData("captcha"));
+        String captchaValue2 = String.valueOf(request.getData("captchaValue"));
         String errorMessage;
-        if (isMatched(captchaValue)) {
+        if (isMatched(captchaValue, captchaValue2)) {
             User user = this.userHandler.getInformation(username);
             if (user != null && user.getPassword().equals(password)) {
                 return getOKResponse(user);
@@ -69,8 +71,8 @@ public class UserManager {
         return getErrorResponse(errorMessage);
     }
 
-    private boolean isMatched(String captchaValue) {
-        return this.captcha.getCaptchaValue().equals(captchaValue);
+    private boolean isMatched(String captchaValue, String captchaValue2) {
+        return captchaValue2.equals(captchaValue);
     }
 
     private Response getOKResponse(User user) {

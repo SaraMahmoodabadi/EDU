@@ -12,7 +12,7 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        int port = Config.getConfig(ConfigType.NETWORK).getProperty(Integer.class, "clientPort");
+        int port = Integer.parseInt(Config.getConfig(ConfigType.NETWORK).getProperty(String.class, "clientPort"));
         Client client = new Client(port);
         client.start();
     }

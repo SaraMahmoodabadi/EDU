@@ -26,9 +26,11 @@ public class UserHandler {
         String query = getCaptcha + " " + captchaID;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         try {
-            String captchaImageAddress = resultSet.getString("captchaImageValue");
-            String captchaValue = resultSet.getString("captchaValue");
-            return new Captcha(captchaImageAddress, captchaValue);
+            if (resultSet.next()) {
+                String captchaImageAddress = resultSet.getString("captchaImageAddress");
+                String captchaValue = resultSet.getString("captchaValue");
+                return new Captcha(captchaImageAddress, captchaValue);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -37,15 +39,17 @@ public class UserHandler {
 
     public User getInformation(String userName){
         String getPassword = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getInformation");
-        String query = getPassword + " " + userName;
+        String query = getPassword + " '" + userName + "'";
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                String thisLogin = resultSet.getString("thisLogin");
-                String password = resultSet.getString("password");
-                String collegeCode = resultSet.getString("collegeCode");
-                UserType userType = UserType.valueOf(resultSet.getString("userType"));
-                return new User(userType, collegeCode, thisLogin, userName, password);
+                if (resultSet.next()) {
+                    String thisLogin = resultSet.getString("thisLogin");
+                    String password = resultSet.getString("password");
+                    String collegeCode = resultSet.getString("collegeCode");
+                    UserType userType = UserType.valueOf(resultSet.getString("userType"));
+                    return new User(userType, collegeCode, thisLogin, userName, password);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -55,11 +59,13 @@ public class UserHandler {
 
     public String getStatus(String username) {
         String status = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getStatus");
-        String query = status + " " + username;
+        String query = status + " '" + username + "'";
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                return resultSet.getString("status");
+                if (resultSet.next()) {
+                    return resultSet.getString("status");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -69,11 +75,13 @@ public class UserHandler {
 
     public String getProfessorType(String username) {
         String status = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorType");
-        String query = status + " " + username;
+        String query = status + " '" + username + "'";
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                return resultSet.getString("type");
+                if (resultSet.next()) {
+                    return resultSet.getString("type");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -83,19 +91,19 @@ public class UserHandler {
 
     public void updatePassword(String password, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updatePassword");
-        String query = String.format(updatedData, password) + " " + userName;
+        String query = String.format(updatedData, password) + " '" + userName + "'";
         this.dataBaseHandler.updateData(query);
     }
 
     public void updateThisLogin(String thisLogin, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateThisLogin");
-        String query = String.format(updatedData, thisLogin) + " " + userName;
+        String query = String.format(updatedData, thisLogin) + " '" + userName + "'";
         this.dataBaseHandler.updateData(query);
     }
 
     public void updateLastLogin(String lastLogin, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateLastLogin");
-        String query = String.format(updatedData, lastLogin) + " " + userName;
+        String query = String.format(updatedData, lastLogin) + " '" + userName + "'";
         this.dataBaseHandler.updateData(query);
     }
 

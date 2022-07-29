@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
     private final int port;
@@ -38,11 +39,16 @@ public class Server {
                 clientCount++;
                 Socket socket = this.serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientCount, this, socket, this.token);
+                new Thread(clientHandler::makeListenerThread).start();
                 this.clients.add(clientHandler);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void disconnect(ClientHandler clientHandler) {
+        this.clients.remove(clientHandler);
     }
 
 

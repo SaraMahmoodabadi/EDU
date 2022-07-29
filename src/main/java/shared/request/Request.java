@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class Request {
 
     private RequestType requestType;
-    private HashMap<String, Object> data;
+    private HashMap<String, Object> data = new HashMap<>();
     private UserType userType;
 
     public Request() {}
@@ -20,6 +20,7 @@ public class Request {
 
     public Request(RequestType requestType) {
         this.requestType = requestType;
+        this.data = new HashMap<>();
     }
 
     public RequestType getRequestType() {

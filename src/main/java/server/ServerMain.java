@@ -5,7 +5,8 @@ import shared.util.config.ConfigType;
 
 public class ServerMain {
     public static void main(String[] args) {
-        int port = Config.getConfig(ConfigType.NETWORK).getProperty(Integer.class, "serverPort");
+        int port = Integer.parseInt(Config.getConfig(ConfigType.NETWORK).
+                getProperty(String.class, "serverPort"));
         Server server = new Server(port);
         server.start();
     }
