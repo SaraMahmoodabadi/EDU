@@ -20,7 +20,7 @@ public class ProfessorRequestDataHandler {
         if (!isValidProfessorCode(studentCode, username)) return false;
         String professorCode = getProfessorCode(username);
         if (professorCode == null) return false;
-        String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         finalQuery = String.format(finalQuery, "request",  "firstBlank = " + firstBlank +
                 ", secondBlank = " + secondBlank +
                 ", thirdBlank = " + thirdBlank) + " studentCode = " + studentCode + " AND type = " +
@@ -32,7 +32,7 @@ public class ProfessorRequestDataHandler {
                                          boolean isMinor, String requestType) {
         String professorCode = getProfessorCode(username);
         if (professorCode == null) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         String request = String.format(query, "request", "result = " + result) +
                 " studentCode = " + studentCode +
                 " AND type = " + requestType + " AND professorCode = " + professorCode;
@@ -55,7 +55,7 @@ public class ProfessorRequestDataHandler {
     }
 
     private boolean isValidProfessorCode(String studentCode, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "professorCode", "student") +  " studentCode = " + studentCode;
         String query2 = String.format(query, "professorCode", "professor") + " username = " + username;
         ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
@@ -70,7 +70,7 @@ public class ProfessorRequestDataHandler {
     }
 
     private boolean isAnotherCollege(String studentCode, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "professorCode", "student") +  " studentCode = " + studentCode;
         String query2 = String.format(query, "professorCode", "professor") + " username = " + username;
         String query3 = String.format(query, "anotherCollegeProfessorCode", "student") +  " studentCode = " + studentCode;
@@ -87,7 +87,7 @@ public class ProfessorRequestDataHandler {
     }
 
     private String getProfessorCode(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "professorCode", "professor") + " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {

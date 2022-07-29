@@ -61,13 +61,13 @@ public class TemporaryScoresController implements Initializable {
 
     public void register(ActionEvent actionEvent) {
         if (table.getSelectionModel().getSelectedItem() == null) {
-            String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullChoice");
+            String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullChoice");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
         }
         else {
             Score score = table.getSelectionModel().getSelectedItem();
             if (score == null || protestArea.getText() == null) {
-                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullItem");
+                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullItem");
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
             }
             else {

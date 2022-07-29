@@ -29,7 +29,7 @@ public class ReportCardManager {
         if (this.client.getUserType() == UserType.PROFESSOR) {
             if (request.getData("collegeCode").equals
                     (this.dataHandler.getStudentCollege((String) request.getData("studentCode")))) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
             studentCode = (String) request.getData("studentCode");
@@ -43,7 +43,7 @@ public class ReportCardManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 
@@ -54,12 +54,12 @@ public class ReportCardManager {
                 this.client.getUserName());
         if (result) {
             Response response = new Response(ResponseStatus.OK);
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return getErrorResponse(errorMessage);
         }
     }
@@ -85,12 +85,12 @@ public class ReportCardManager {
                 score.getStudentCode());
         if (result) {
             Response response = new Response(ResponseStatus.OK);
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return getErrorResponse(errorMessage);
         }
     }
@@ -102,12 +102,12 @@ public class ReportCardManager {
                 score.getStudentCode());
         if (result) {
             Response response = new Response(ResponseStatus.OK);
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return getErrorResponse(errorMessage);
         }
     }
@@ -126,12 +126,12 @@ public class ReportCardManager {
         }
         if (result) {
             Response response = new Response(ResponseStatus.OK);
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return getErrorResponse(errorMessage);
         }
     }
@@ -152,12 +152,12 @@ public class ReportCardManager {
         if (result) {
             calculateRate(studentsCode);
             Response response = new Response(ResponseStatus.OK);
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return getErrorResponse(errorMessage);
         }
     }
@@ -186,7 +186,7 @@ public class ReportCardManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -226,7 +226,7 @@ public class ReportCardManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 

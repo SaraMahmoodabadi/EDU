@@ -37,14 +37,14 @@ public class NewUserManager {
                         student.getEnteringYear() + " ," + student.getSupervisorCode() + ", " +
                         student.getStatus() + ", " + student.getGrade();
                 if (this.dataHandler.makeNewStudent(items)) {
-                   String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("userCreated");
+                   String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "userCreated");
                    return getOKResponse(note);
                 }
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
                 return getErrorResponse(errorMessage);
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("duplicateInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "duplicateInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -56,14 +56,14 @@ public class NewUserManager {
                         professor.getRoomNumber() + ", " + professor.getDegree() + ", " +
                         professor.getType() + ", ";
                 if (this.dataHandler.makeNewProfessor(items)) {
-                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("userCreated");
+                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "userCreated");
                     return getOKResponse(note);
                 }
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
                 return getErrorResponse(errorMessage);
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("duplicateInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "duplicateInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -74,7 +74,7 @@ public class NewUserManager {
                 user.getNationalCode() + ", " + user.getCollegeCode() + ", " +
                 user.getUsername() + ", " + user.getPassword() + ", " +
                 user.getEmailAddress() + ", " + user.getPhoneNumber();
-        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty("userImage");
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "userImage");
         new ImageHandler().saveImage(path, profile);
         items = items + ", " + path;
         return this.dataHandler.makeNewUser(items);

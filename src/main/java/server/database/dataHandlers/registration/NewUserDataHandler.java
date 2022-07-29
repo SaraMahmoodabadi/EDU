@@ -15,25 +15,25 @@ public class NewUserDataHandler {
     }
 
     public boolean makeNewUser(String items) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeNewUser");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeNewUser");
         query = String.format(query, items);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean makeNewProfessor(String items) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeNewProfessor");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeNewProfessor");
         query = String.format(query, items);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean makeNewStudent(String items) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeNewStudent");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeNewStudent");
         query = String.format(query, items);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean existProfessorCode(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existUserData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
         query = String.format(query, "username", "professorCode = " + professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -47,7 +47,7 @@ public class NewUserDataHandler {
     }
 
     public boolean existStudentCode(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existUserData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
         query = String.format(query, "username", "professorCode = " + studentCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -61,7 +61,7 @@ public class NewUserDataHandler {
     }
 
     public boolean existUsername(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existUserData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
         query = String.format(query, "firstName", "username = " + username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -75,7 +75,7 @@ public class NewUserDataHandler {
     }
 
     public boolean existNationalCode(String nationalCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existUserData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
         query = String.format(query, "username", "nationalCode = " + nationalCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {

@@ -25,7 +25,7 @@ public class RegistrationDataHandler {
     }
 
     public List<Lesson> getAllLessons() {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getAllLessons");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getAllLessons");
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             return makeLessons(resultSet);
@@ -34,7 +34,7 @@ public class RegistrationDataHandler {
     }
 
     public List<Lesson> getDesiredLessons(String items) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getAllLessons") + " " + items;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getAllLessons") + " " + items;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             return makeLessons(resultSet);
@@ -76,7 +76,7 @@ public class RegistrationDataHandler {
 
     private List<Group> getGroups(String lessonCode) {
         String query = Config.getConfig
-                (ConfigType.QUERY).getProperty("getAllGroups") + " " + lessonCode;
+                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + lessonCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             List<Group> groups = new ArrayList<>();
@@ -98,7 +98,7 @@ public class RegistrationDataHandler {
     }
 
     public String getCollegeCode(String collegeName){
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getCollegeCode") + " " + collegeName;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getCollegeCode") + " " + collegeName;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -111,7 +111,7 @@ public class RegistrationDataHandler {
     }
 
     public boolean existLesson(String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existLessonCode");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existLessonCode");
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -124,13 +124,13 @@ public class RegistrationDataHandler {
     }
 
     public boolean makeLesson(Lesson lesson) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeLesson");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeLesson");
         query = String.format(query, lesson.getLessonCode() + ", " + lesson.getName() +
                 ", " + lesson.getCollegeCode() + ", " + lesson.getUnitNumber() +
                 ", " + lesson.getGrade() + ", " + lesson.getPrerequisites().toString() +
                 ", " + lesson.getTheNeed().toString() + ", [1], " + lesson.getDays().toString() +
                 ", " + lesson.getClassTime() + ", " + lesson.getExamTime());
-        String query2 = Config.getConfig(ConfigType.QUERY).getProperty("makeGroup");
+        String query2 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
         query2 = String.format(query2, lesson.getLessonCode() + ", " + lesson.getProfessorCode() +
                 ", " + lesson.getCapacity());
         boolean b1 = this.dataBaseHandler.updateData(query);
@@ -139,7 +139,7 @@ public class RegistrationDataHandler {
     }
 
     public boolean makeGroup(Group group) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("makeGroup");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
         query = String.format(query, generateGroupNumber(group.getLessonCode()),
                 group.getLessonCode() + ", " + group.getProfessorCode() +
                 ", " + group.getCapacity());
@@ -147,29 +147,29 @@ public class RegistrationDataHandler {
     }
 
     public boolean editLesson(String items, String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateLesson");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateLesson");
         query = String.format(query, items) + " " + lessonCode;
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeGroup(String lessonCode, String groupNumber) {
         if (!existGroup(lessonCode, groupNumber)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeGroup");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeGroup");
         query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeLesson(String lessonCode) {
         if (!existLesson(lessonCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeLesson") + " " + lessonCode;
-        String query2 = Config.getConfig(ConfigType.QUERY).getProperty("removeGroup");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeLesson") + " " + lessonCode;
+        String query2 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeGroup");
         query2 = String.format(query2, "lessonCode = " + lessonCode);
         this.dataBaseHandler.updateData(query2);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean existGroup(String lessonCode, String groupNumber) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existGroup");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existGroup");
         query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -183,7 +183,7 @@ public class RegistrationDataHandler {
     }
 
     public List<Professor> getAllProfessors() {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getAllProfessors");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getAllProfessors");
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
            return makeProfessors(resultSet);
@@ -212,14 +212,14 @@ public class RegistrationDataHandler {
 
     public boolean editProfessor(String professorCode, String items) {
         if (!existProfessor(professorCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateProfessor");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateProfessor");
         query = String.format(query, items) + " " + professorCode;
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean editUser(String username, String items, String professorCode) {
         if (!existProfessor(professorCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateUser");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateUser");
         query = String.format(query, items) + " " + username;
         return this.dataBaseHandler.updateData(query);
     }
@@ -227,7 +227,7 @@ public class RegistrationDataHandler {
     public boolean appointment(String professorCode, String items, String collegeCode) {
         if (getAssistant(collegeCode) != null) return false;
         if (!getProfessorCollegeCode(professorCode).equals(collegeCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateCollege");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateCollege");
         query = String.format(query, items) + " " + collegeCode;
         return this.dataBaseHandler.updateData(query);
     }
@@ -235,19 +235,19 @@ public class RegistrationDataHandler {
     public boolean deposal(String professorCode, String items, String collegeCode) {
         if (getAssistant(collegeCode) == null ||
                 !Objects.equals(getAssistant(collegeCode), professorCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateCollege");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateCollege");
         query = String.format(query, items) + " " + collegeCode;
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeProfessor(String professorCode) {
         if (!existProfessor(professorCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("removeProfessor") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeProfessor") + " " + professorCode;
         return this.dataBaseHandler.updateData(query);
     }
 
     private String getAssistant(String collegeCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("educationalAssistantCode")
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "educationalAssistantCode")
                 + " " + collegeCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -263,7 +263,7 @@ public class RegistrationDataHandler {
     }
 
     private boolean existProfessor(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("existProfessor") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existProfessor") + " " + professorCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -278,7 +278,7 @@ public class RegistrationDataHandler {
     }
 
     public String getLessonCollegeCode(String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getLessonCollege") + " " + lessonCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getLessonCollege") + " " + lessonCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -293,7 +293,7 @@ public class RegistrationDataHandler {
     }
 
     public String getProfessorCollegeCode(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorCollege") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorCollege") + " " + professorCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -308,13 +308,13 @@ public class RegistrationDataHandler {
     }
 
     public boolean updateProfessorLessons(String professorCode, List<String> lessons) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateProfessor");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateProfessor");
         query = String.format(query, "lessonsCode = " + lessons) + " " + professorCode;
         return this.dataBaseHandler.updateData(query);
     }
 
     public List<String> getProfessorLessons(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getUserLessons");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
         query = String.format(query, "professor") + " professorCode = " + professorCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -328,7 +328,7 @@ public class RegistrationDataHandler {
     }
 
     public List<String> getProfessorsByLesson(String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorByLesson");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorByLesson");
         query = query + " lessonCode = " + lessonCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         List<String> professors = new ArrayList<>();
@@ -343,7 +343,7 @@ public class RegistrationDataHandler {
     }
 
     public String getProfessorByLesson(String lessonCode, String groupNumber) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getProfessorByLesson");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorByLesson");
         query = query + " lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         String professor = null;
@@ -357,7 +357,7 @@ public class RegistrationDataHandler {
 
     private int generateGroupNumber(String lessonCode) {
         String query = Config.getConfig
-                (ConfigType.QUERY).getProperty("getAllGroups") + " " + lessonCode;
+                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + lessonCode;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         List<Integer> groups = new ArrayList<>();
         if (resultSet != null) {

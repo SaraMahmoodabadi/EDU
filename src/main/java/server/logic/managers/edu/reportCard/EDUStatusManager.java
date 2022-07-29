@@ -33,7 +33,7 @@ public class EDUStatusManager {
                 studentCode = this.dataHandler.getStudentCode(studentName, collegeCode);
             }
             if (!this.dataHandler.getCollegeCode(studentCode).equals(collegeCode)) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
         }

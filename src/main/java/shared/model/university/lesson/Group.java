@@ -1,10 +1,14 @@
 package shared.model.university.lesson;
 
+import java.util.List;
+
 public class Group {
     private String lessonCode;
     private int groupNumber;
     private String professorCode;
     private int capacity;
+    private int registrationNumber;
+    private List<String> students;
 
     public Group(String lessonCode, int capacity, String professorCode) {
         this.lessonCode = lessonCode;
@@ -42,5 +46,21 @@ public class Group {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public int getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(int registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public List<String> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<String> students) {
+        this.students = students;
     }
 }

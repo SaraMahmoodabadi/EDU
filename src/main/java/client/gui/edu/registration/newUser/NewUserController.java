@@ -157,7 +157,7 @@ public class NewUserController implements Initializable {
 
     public void register(ActionEvent actionEvent) {
         if (isNull()) {
-            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullError");
+            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullError");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
         }
         else if(isValid(nationalCodeField.getText()) &&
@@ -296,7 +296,7 @@ public class NewUserController implements Initializable {
             int n = Integer.parseInt(number);
             if (n >= 0) return true;
         } catch (NumberFormatException e) {
-            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).getProperty("numberError");
+            String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "numberError");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
         }
         return false;
@@ -348,7 +348,7 @@ public class NewUserController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        imageCode = Config.getConfig(ConfigType.CLIENT_IMAGE).getProperty("defaultProfile");
+        imageCode = Config.getConfig(ConfigType.CLIENT_IMAGE).getProperty(String.class, "defaultProfile");
         setToggleGroups();
         makeDisable();
     }

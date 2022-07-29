@@ -43,7 +43,7 @@ public class UserManager {
         }
         else {
             Response response = new Response(ResponseStatus.ERROR);
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
             response.setErrorMessage(errorMessage);
             return response;
         }
@@ -60,11 +60,11 @@ public class UserManager {
                 return getOKResponse(user);
             }
             else {
-                errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("loginError");
+                errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "loginError");
             }
         }
         else {
-            errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("captchaError");
+            errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "captchaError");
         }
         return getErrorResponse(errorMessage);
     }
@@ -104,7 +104,7 @@ public class UserManager {
             long diff = time2.getTime() - time1.getTime();
             long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
             if (seconds >= 10800) {
-                String message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("changePassword");
+                String message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "changePassword");
                 response.setNotificationMessage(message);
             }
         } catch (ParseException e) {
@@ -125,11 +125,11 @@ public class UserManager {
         User user = this.userHandler.getInformation(this.clientHandler.getUserName());
         String password = user.getPassword();
         if (!previousPassword.equals(password)) {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("wrongPassword");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "wrongPassword");
             return getErrorResponse(errorMessage);
         }
         else if (previousPassword.equals(newPassword)){
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("duplicatePassword");;
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "duplicatePassword");;
             return getErrorResponse(errorMessage);
         }
         else {
@@ -150,7 +150,7 @@ public class UserManager {
             else return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
             return getErrorResponse(errorMessage);
         }
     }

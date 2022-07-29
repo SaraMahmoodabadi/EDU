@@ -31,12 +31,12 @@ public class ProfileManager {
         boolean result = this.dataHandler.updateEmail(this.client.getUserName(),
                 (String) request.getData("email"));
         if (result) {
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -44,12 +44,12 @@ public class ProfileManager {
         boolean result = this.dataHandler.updatePhone(this.client.getUserName(),
                 (String) request.getData("phoneNumber"));
         if (result) {
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -62,7 +62,7 @@ public class ProfileManager {
             response.addData("profile", profile);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 
@@ -75,7 +75,7 @@ public class ProfileManager {
             response.addData("profile", profile);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 

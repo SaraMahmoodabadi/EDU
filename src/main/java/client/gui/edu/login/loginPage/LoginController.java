@@ -96,7 +96,7 @@ public class LoginController implements Initializable {
                 EDU.professorType = (Type) response.getData("professorType");
             }
             if (response.getNotificationMessage().equals
-                    (Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("changePassword"))) {
+                    (Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "changePassword"))) {
                 EDU.sceneSwitcher.switchScene(actionEvent, "changePasswordPage");
             }
             else {

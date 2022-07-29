@@ -109,12 +109,12 @@ public class TemporaryScoresController implements Initializable {
                 score = Double.parseDouble(scoreField.getText());
             }
             catch (Exception e) {
-                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("numberError");
+                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "numberError");
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
                 return;
             }
             if (score > 20 || score < 0) {
-                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("invalidScore");
+                String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "invalidScore");
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
                 return;
             }
@@ -150,7 +150,7 @@ public class TemporaryScoresController implements Initializable {
         request = new Request(RequestType.REGISTER_ALL_SCORES);
         for (int i = 1; i < updatedScores.size(); i++) {
             if (updatedScores.get(i).getScore() == null) {
-                String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullScores");
+                String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullScores");
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, error);
                 return;
             }
@@ -164,7 +164,7 @@ public class TemporaryScoresController implements Initializable {
         for (Score score : scores) {
             if (score.getScore() == null) {
                 if (registerResult) {
-                    String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty("finalizeScores");
+                    String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "finalizeScores");
                     AlertMonitor.showAlert(Alert.AlertType.ERROR, error);
                     return;
                 }
@@ -205,7 +205,7 @@ public class TemporaryScoresController implements Initializable {
 
     private boolean checkNullItems() {
         if (lessonCodeField.getText() == null) {
-            String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullItem");
+            String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullItem");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
             return false;
         }

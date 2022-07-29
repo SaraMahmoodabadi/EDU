@@ -33,7 +33,7 @@ public class RequestManager {
             response.addData("grade", grade);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 
@@ -57,7 +57,7 @@ public class RequestManager {
     }
 
     private Response sendCertificate() {
-        String result = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("certificate");
+        String result = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "certificate");
         List<String> info = this.sDataHandler.getCertificateInfo(this.client.getUserName());
         if (info != null) {
             result = String.format(result, info.get(0) + " " + info.get(1), info.get(2), info.get(3));
@@ -65,7 +65,7 @@ public class RequestManager {
             response.addData("result", result);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -95,7 +95,7 @@ public class RequestManager {
         else {
             year = 2023;
         }
-        String result = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("defenceTime") +
+        String result = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "defenceTime") +
                 " " + year + "-" + month + "-" + day;
         Response response = new Response(ResponseStatus.OK);
         response.addData("result", result);
@@ -105,7 +105,7 @@ public class RequestManager {
     private Response registerMinor(Request request) {
         double rate = this.sDataHandler.getRate(this.client.getUserName());
         if (rate < 17) {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lowRate");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lowRate");
             return getErrorResponse(errorMessage);
         }
         String items = "studentCode, professorCode, type, anotherCollegeProfessorCode";
@@ -117,7 +117,7 @@ public class RequestManager {
             response.addData("result", result);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -131,7 +131,7 @@ public class RequestManager {
             response.addData("result", result);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -145,7 +145,7 @@ public class RequestManager {
             response.addData("result", result);
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -158,12 +158,12 @@ public class RequestManager {
                     (String) request.getData("thirdBlank"), this.client.getUserName());
             if (result) {
                 Response response = new Response(ResponseStatus.OK);
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -178,12 +178,12 @@ public class RequestManager {
                             isMinor, String.valueOf(type));
             if (result) {
                 Response response = new Response(ResponseStatus.OK);
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 

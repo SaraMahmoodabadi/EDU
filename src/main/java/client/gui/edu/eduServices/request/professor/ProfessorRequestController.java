@@ -114,7 +114,7 @@ public class ProfessorRequestController implements Initializable {
     }
 
     private void showNullAlert(String errorName) {
-        String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(errorName);
+        String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, errorName);
         AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
     }
 

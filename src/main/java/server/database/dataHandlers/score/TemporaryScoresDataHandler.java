@@ -26,7 +26,7 @@ public class TemporaryScoresDataHandler {
         }
         List<Score> scores = new ArrayList<>();
         if (studentCode != null) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
             query = String.format(query, "*", "score") +
                     " studentCode = " + studentCode + " AND type = " + ScoreType.TEMPORARY;
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
@@ -47,7 +47,7 @@ public class TemporaryScoresDataHandler {
     }
 
     private String getStudentCode(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "studentCode", "student") +  " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -63,7 +63,7 @@ public class TemporaryScoresDataHandler {
         String professorCode = getProfessorCode(username);
         List<Score> scores = new ArrayList<>();
         if (professorCode != null) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
             query = String.format(query, "*", "score") +
                     " lessonCode = " + lessonCode  + " AND type = " + ScoreType.TEMPORARY;
             String condition = " AND professorCode = " + professorCode;
@@ -89,7 +89,7 @@ public class TemporaryScoresDataHandler {
     }
 
     private String getProfessorCode(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "professorCode", "professor") +  " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -101,7 +101,7 @@ public class TemporaryScoresDataHandler {
     }
 
     private Type getProfessorType(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "type", "professor") +  " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -113,7 +113,7 @@ public class TemporaryScoresDataHandler {
     }
 
     private boolean isInSameCollege(String lessonCode, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "collegeCode", "user") +  " username = " + username;
         ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
         String query2 = String.format(query, "collegeCode", "lesson") +  " lessonCode = " + lessonCode;
@@ -129,21 +129,21 @@ public class TemporaryScoresDataHandler {
 
     public boolean setProtest(String protest, String lessonCode, String username) {
         String studentCode = getStudentCode(username);
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "score", "protest = " + protest)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
     }
 
     public boolean setProtestAnswer(String protestAnswer, String lessonCode, String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "score", "protestAnswer = " + protestAnswer)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
     }
 
     public boolean setScore(String score, String lessonCode, String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "score", "score = " + score)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
@@ -151,7 +151,7 @@ public class TemporaryScoresDataHandler {
 
     public boolean registerScore(String score, String lessonCode, String studentCode, String username) {
         String professorCode = getProfessorCode(username);
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("insertData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "score", "lessonCode, studentCode, " +
                 "professorCode, score, type", lessonCode + ", " + studentCode +", " + professorCode +
                 ", " + score + ", " + ScoreType.TEMPORARY);
@@ -159,14 +159,14 @@ public class TemporaryScoresDataHandler {
     }
 
     public boolean finalizeScores(String lessonCode, String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "score", "type = " + ScoreType.FINAL)
                 + " lessonCode = " + lessonCode + " AND studentCode = " + studentCode;
         return this.databaseHandler.updateData(query);
     }
 
     public Map<Score, Integer> getFinalScores(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getDataWithJoin");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "s.score, s.lessonCode, l.unitNumber",
                 "score s", "lesson l", "s.lessonCode = l.lessonCode") +
                 " studentCode = " + studentCode + " AND type = " + ScoreType.FINAL;
@@ -187,14 +187,14 @@ public class TemporaryScoresDataHandler {
     }
 
     public void registerRate(double rate, String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("updateData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "student", "rate = " + rate)
                 + " studentCode = " + studentCode;
         this.databaseHandler.updateData(query);
     }
 
     public String getStudentCollege(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getDataWithJoin");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "u.collegeCode", "user u", "student s",
                 "s.username = u.username") + " studentCode = " + studentCode;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
@@ -210,7 +210,7 @@ public class TemporaryScoresDataHandler {
         List<Score> scores = new ArrayList<>();
         List<String> professors = getProfessors(professorName, collegeCode);
         for (String professor : professors) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
             query = String.format(query, "*", "score") +
                     " professorCode = " + professor + " AND type = " + ScoreType.TEMPORARY;
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
@@ -234,7 +234,7 @@ public class TemporaryScoresDataHandler {
 
     private List<String> getProfessors(String name, String collegeCode) {
         List<String> professors = new ArrayList<>();
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "professorCode, firstName, lastName", "user")
                 + " collegeCode = " + collegeCode;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
@@ -253,7 +253,7 @@ public class TemporaryScoresDataHandler {
 
     public List<String> getStudentCodes(String username, String lessonCode) {
         String professorCode = getProfessorCode(username);
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "students", "group") + "lessonCode = " + lessonCode +
                 " AND professorCode = " + professorCode;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);

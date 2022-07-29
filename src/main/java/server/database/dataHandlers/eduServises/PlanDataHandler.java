@@ -21,7 +21,7 @@ public class PlanDataHandler {
     }
 
     public List<Lesson> getUserWeeklyPlan(String userType, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getUserLessons");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
         query = String.format(query, userType) + userType + "Code = " + getUserCode(userType, username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -38,7 +38,7 @@ public class PlanDataHandler {
     private List<Lesson> getLessonsWeeklyPlan(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty("getWeeklyPlan") + " " + lessonCode;
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getWeeklyPlan") + " " + lessonCode;
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
             if (resultSet != null) {
                 try {
@@ -56,7 +56,7 @@ public class PlanDataHandler {
     }
 
     private String getUserCode(String userType, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, userType + "Code", userType) + " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -68,7 +68,7 @@ public class PlanDataHandler {
     }
 
     public List<Lesson> getUserExams(String userType, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getUserLessons");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
         query = String.format(query, userType) + userType + "Code = " + getUserCode(userType, username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -84,7 +84,7 @@ public class PlanDataHandler {
     private List<Lesson> getLessonsExam(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty("getExam") + " " + lessonCode;
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getExam") + " " + lessonCode;
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
             if (resultSet != null) {
                 try {

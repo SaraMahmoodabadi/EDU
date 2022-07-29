@@ -18,7 +18,7 @@ public class MainDataHandler {
     }
 
     public User getMainPageData(String userName) {
-        String information = Config.getConfig(ConfigType.QUERY).getProperty("getMainPageData");
+        String information = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getMainPageData");
         String query = information + " " + userName;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -37,7 +37,7 @@ public class MainDataHandler {
     }
 
     public List<String> getTableData(String userName) {
-        String information = Config.getConfig(ConfigType.QUERY).getProperty("getMainPageTable");
+        String information = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getMainPageTable");
         String query = information + " " + userName;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {

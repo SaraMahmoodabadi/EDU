@@ -21,7 +21,7 @@ public class StudentRequestsDataHandler {
     }
 
     public Grade getStudentGrade(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getStudentGrade");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getStudentGrade");
         query = query + " " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -33,7 +33,7 @@ public class StudentRequestsDataHandler {
     }
 
     public List<String> getCertificateInfo(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getCertificateInformation");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getCertificateInformation");
         query = query + " " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -49,7 +49,7 @@ public class StudentRequestsDataHandler {
     }
 
     public boolean registerMinor(String items, String collegeCode, String major, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "studentCode", "student") +  " username = " + username;
         String query2 = String.format(query, "educationalAssistantCode", "college") + " collegeCode = " + collegeCode;
         String query3 = String.format(query, "educationalAssistantCode", "college") + " name = " + major;
@@ -57,7 +57,7 @@ public class StudentRequestsDataHandler {
         ResultSet resultSet2 = this.databaseHandler.getResultSet(query2);
         ResultSet resultSet3 = this.databaseHandler.getResultSet(query3);
         if (resultSet1 != null && resultSet2 != null && resultSet3 != null) {
-            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty("registerRequest");
+            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
             try {
                 finalQuery = String.format(finalQuery, items, resultSet1.getString("studentCode") +
                         ", " + resultSet2.getString("educationalAssistantCode") + ", " +
@@ -69,7 +69,7 @@ public class StudentRequestsDataHandler {
     }
 
     public Double getRate(String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "rate", "student") +  " username = " + username;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
@@ -83,13 +83,13 @@ public class StudentRequestsDataHandler {
     }
 
     public boolean registerRecommendation(String items, String professorCode, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "studentCode", "student") +  " username = " + username;
         String query2 = String.format(query, "username", "professor") + " professorCode = " + professorCode;
         ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
         ResultSet resultSet2 = this.databaseHandler.getResultSet(query2);
         if (resultSet1 != null && resultSet2 != null) {
-            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty("registerRequest");
+            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
             try {
                 finalQuery = String.format(finalQuery, items, resultSet1.getString("studentCode") +
                         ", " + professorCode + ", " +
@@ -101,13 +101,13 @@ public class StudentRequestsDataHandler {
     }
 
     public boolean registerWithdrawal(String items, String collegeCode, String username) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty("getOneData");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         String query1 = String.format(query, "studentCode", "student") +  " username = " + username;
         String query2 = String.format(query, "educationalAssistantCode", "college") + " collegeCode = " + collegeCode;
         ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
         ResultSet resultSet2 = this.databaseHandler.getResultSet(query2);
         if (resultSet1 != null && resultSet2 != null) {
-            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty("registerRequest");
+            String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
             try {
                 finalQuery = String.format(finalQuery, items, resultSet1.getString("studentCode") +
                         ", " +  resultSet2.getString("educationalAssistantCode") + ", " +

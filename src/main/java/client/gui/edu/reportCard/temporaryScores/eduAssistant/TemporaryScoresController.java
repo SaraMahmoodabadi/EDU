@@ -133,7 +133,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     private void showNullAlert() {
-        String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty("nullItem");
+        String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullItem");
         AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
     }
 

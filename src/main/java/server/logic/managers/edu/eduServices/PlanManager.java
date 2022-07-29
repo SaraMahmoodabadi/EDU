@@ -29,7 +29,7 @@ public class PlanManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 
@@ -61,7 +61,7 @@ public class PlanManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 

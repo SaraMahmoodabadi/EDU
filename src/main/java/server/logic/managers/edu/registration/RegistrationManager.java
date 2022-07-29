@@ -34,7 +34,7 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
             return getErrorResponse(errorMessage);
         }
     }
@@ -75,7 +75,7 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
             return getErrorResponse(errorMessage);
         }
     }
@@ -83,20 +83,20 @@ public class RegistrationManager {
     public Response addLesson(Request request) {
         Lesson lesson = (Lesson) request.getData("lesson");
         if (this.dataHandler.existLesson(lesson.getLessonCode())) {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("duplicateLessonCode");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "duplicateLessonCode");
             return getErrorResponse(errorMessage);
         }
         else {
             if (this.dataHandler.makeLesson(lesson)) {
                 if (addProfessorLesson(lesson.getProfessorCode(), lesson.getLessonCode())) {
-                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonCreated");
+                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonCreated");
                     Response response = new Response(ResponseStatus.OK);
                     response.setNotificationMessage(note);
                     return response;
                 }
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("error");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return getErrorResponse(errorMessage);
     }
 
@@ -128,21 +128,21 @@ public class RegistrationManager {
                 boolean result = this.dataHandler.makeGroup(group) &&
                         addProfessorLesson(group.getProfessorCode(), group.getLessonCode());
                 if (!result) {
-                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
                     return getErrorResponse(errorMessage);
                 }
             }
             if (n != 0) {
                 boolean result = this.dataHandler.editLesson(query, lessonCode);
                 if (result) {
-                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonEdited");
+                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonEdited");
                     Response response = new Response(ResponseStatus.OK);
                     response.setNotificationMessage(note);
                     return response;
                 }
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -163,13 +163,13 @@ public class RegistrationManager {
                 removeProfessorsLesson(professor, lessonCode);
             }
             if (result) {
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("lessonRemoved");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonRemoved");
                 Response response = new Response(ResponseStatus.OK);
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -183,7 +183,7 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
             return getErrorResponse(errorMessage);
         }
     }
@@ -232,17 +232,17 @@ public class RegistrationManager {
                 result2 = this.dataHandler.editProfessor(professorCode, query);
             }
             if ((m == 0 && n == 0) || (result1 && result2)) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
             else {
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("professorEdited");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "professorEdited");
                 Response response = new Response(ResponseStatus.OK);
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -252,13 +252,13 @@ public class RegistrationManager {
         String query = "educationalAssistant = NULL";
         boolean result = this.dataHandler.deposal(professorCode, query, collegeCode);
         if (result) {
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
             return getErrorResponse(errorMessage);
         }
     }
@@ -269,13 +269,13 @@ public class RegistrationManager {
         String query = "educationalAssistant = " + professorCode;
         boolean result = this.dataHandler.appointment(professorCode, query, collegeCode);
         if (result) {
-            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
             return getErrorResponse(errorMessage);
         }
     }
@@ -286,13 +286,13 @@ public class RegistrationManager {
         if (collegeCode.equals(this.dataHandler.getProfessorCollegeCode(professorCode))) {
             boolean result = this.dataHandler.removeProfessor(professorCode);
             if (result) {
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("done");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
                 Response response = new Response(ResponseStatus.OK);
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty("invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
