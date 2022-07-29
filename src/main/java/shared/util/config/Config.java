@@ -35,9 +35,11 @@ public class Config extends Properties {
                 return config.getProperty(Config.class, "serverMessages");
             case SERVER_PATH:
                 return config.getProperty(Config.class, "serverPath");
+            case NETWORK:
+                return config.getProperty(Config.class, "network");
             default:
+                return getMainConfig();
         }
-        return null;
     }
 
     public <E> E getProperty(Class<E> c, String propertyName) {

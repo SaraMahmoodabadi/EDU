@@ -6,5 +6,6 @@ public enum ConfigType {
     GUI_TEXT,
     QUERY,
     SERVER_MESSAGES,
-    SERVER_PATH
+    SERVER_PATH,
+    NETWORK
 }

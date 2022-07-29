@@ -2,6 +2,8 @@ package client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
 
 public class ClientMain extends Application {
     public static void main(String[] args) {
@@ -10,7 +12,7 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        int port = 0;
+        int port = Integer.parseInt(Config.getConfig(ConfigType.NETWORK).getProperty("clientPort"));;
         Client client = new Client(port);
         client.start();
     }
