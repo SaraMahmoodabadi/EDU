@@ -57,5 +57,7 @@ public enum RequestType {
     REGISTER_EMAIL,
     REGISTER_PHONE_NUMBER,
 
+    SET_UNIT_SELECTION_TIME,
+
     END_CONNECTION
 }

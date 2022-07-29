@@ -1,20 +1,21 @@
 package shared.util.config;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Constructor;
+import java.io.*;
 import java.util.Optional;
 import java.util.Properties;
 
 public class Config extends Properties {
     private static String configPath = "src/main/java/shared/util/config/config.properties";
     private static Config config;
+    private Properties properties;
 
-    private Config(String address) {
+    public Config(String address) {
         try {
-            Reader fileReader = new FileReader(address);
-            this.load(fileReader);
+            properties = new Properties();
+            FileInputStream ip = new FileInputStream(address);
+            properties.load(ip);
+           /** Reader fileReader = new FileReader(address);
+            this.load(fileReader);*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -24,26 +25,27 @@ public class Config extends Properties {
         Config config = getMainConfig();
         switch (type) {
             case CLIENT_IMAGE:
-                return config.getProperty(Config.class, "clientImage");
+                return new Config(config.getProperty(String.class, "clientImage"));
             case FXML_FILE:
-                return config.getProperty(Config.class, "fxmlFiles");
+                return new Config(config.getProperty(String.class, "fxmlFiles"));
             case GUI_TEXT:
-                return config.getProperty(Config.class, "guiText");
+                return new Config(config.getProperty(String.class, "guiText"));
             case QUERY:
-                return config.getProperty(Config.class, "query");
+                return new Config(config.getProperty(String.class, "query"));
             case SERVER_MESSAGES:
-                return config.getProperty(Config.class, "serverMessages");
+                return new Config(config.getProperty(String.class, "serverMessages"));
             case SERVER_PATH:
-                return config.getProperty(Config.class, "serverPath");
+                return new Config(config.getProperty(String.class, "serverPath"));
             case NETWORK:
-                return config.getProperty(Config.class, "network");
+                return new Config(config.getProperty(String.class, "network"));
             default:
                 return getMainConfig();
         }
     }
 
     public <E> E getProperty(Class<E> c, String propertyName) {
-        return getObject(c, propertyName);
+        return (E) properties.getProperty(propertyName);
+        //return getObject(c, propertyName);
     }
 
     public <E> Optional<E> getOptionalProperty(Class<E> c, String propertyName) {
@@ -55,14 +57,15 @@ public class Config extends Properties {
     }
 
     private <E> E getObject(Class<E> c, String value) {
-        E e = null;
+        /**E e = null;
         try {
             Constructor<E> constructor = c.getConstructor(String.class);
             e = constructor.newInstance(value);
         } catch (ReflectiveOperationException reflectiveOperationException) {
             reflectiveOperationException.printStackTrace();
         }
-        return e;
+        return e;*/
+        return null;
     }
 
     private static Config getMainConfig() {
