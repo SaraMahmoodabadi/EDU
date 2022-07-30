@@ -15,7 +15,7 @@ import shared.response.ResponseStatus;
 public class LessonTable {
     String lessonCode;
     String name;
-    String group;
+    int group;
     String exam;
     Grade grade;
     CheckBox mark;
@@ -26,7 +26,7 @@ public class LessonTable {
     CheckBox take;
     CheckBox request;
 
-    public LessonTable(String lessonCode, String name, String group,
+    public LessonTable(String lessonCode, String name, int group,
                        String exam, Grade grade, boolean isSelected) {
         this.lessonCode = lessonCode;
         this.name = name;

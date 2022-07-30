@@ -1,17 +1,23 @@
 package client.gui.edu.eduServices.unitSelection.student;
 
+import client.gui.AlertMonitor;
 import client.gui.EDU;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import shared.model.university.college.University;
+import shared.model.university.lesson.Lesson;
+import shared.model.user.student.Grade;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class StudentUnitSelectionController implements Initializable {
     @FXML
@@ -19,19 +25,19 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected ComboBox<String> collegeBox;
     @FXML
-    protected TableView<?> table1;
+    protected TableView<LessonTable> table1;
     @FXML
-    protected TableColumn<?, ?> nameColumn1;
+    protected TableColumn<LessonTable, String> nameColumn1;
     @FXML
-    protected TableColumn<?, ?> groupColumn1;
+    protected TableColumn<LessonTable, Integer> groupColumn1;
     @FXML
-    protected TableColumn<?, ?> gradeColumn1;
+    protected TableColumn<LessonTable, Grade> gradeColumn1;
     @FXML
-    protected TableColumn<?, ?> examColumn1;
+    protected TableColumn<LessonTable, String> examColumn1;
     @FXML
-    protected TableColumn<?, ?> markColumn1;
+    protected TableColumn<LessonTable, CheckBox> markColumn1;
     @FXML
-    protected TableColumn<?, ?> optionsColumn1;
+    protected TableColumn<LessonTable, Scene> optionsColumn1;
     @FXML
     protected TableColumn<?, ?> receivedColumn1;
     @FXML
@@ -43,19 +49,19 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected Button show;
     @FXML
-    protected TableView<?> table2;
+    protected TableView<LessonTable> table2;
     @FXML
-    protected TableColumn<?, ?> nameColumn2;
+    protected TableColumn<LessonTable, String> nameColumn2;
     @FXML
-    protected TableColumn<?, ?> groupColumn2;
+    protected TableColumn<LessonTable, Integer> groupColumn2;
     @FXML
-    protected TableColumn<?, ?> gradeColumn2;
+    protected TableColumn<LessonTable, Grade> gradeColumn2;
     @FXML
-    protected TableColumn<?, ?> examColumn2;
+    protected TableColumn<LessonTable, String> examColumn2;
     @FXML
-    protected TableColumn<?, ?> markColumn2;
+    protected TableColumn<LessonTable, CheckBox> markColumn2;
     @FXML
-    protected TableColumn<?, ?> optionsColumn2;
+    protected TableColumn<LessonTable, Scene> optionsColumn2;
     @FXML
     protected TableColumn<?, ?> receivedColumn2;
     private ToggleGroup group;
@@ -67,9 +73,8 @@ public class StudentUnitSelectionController implements Initializable {
         request = new Request(RequestType.GET_LESSONS_IN_UNIT_SELECTION);
         request.addData("college", collegeBox.getValue());
         request.addData("sort", setSort());
-        showResponse(request);
+        showResponse(request, 1);
     }
-
 
     public void back(ActionEvent event) {
         EDU.sceneSwitcher.switchScene(event, "mainPage");
@@ -80,11 +85,21 @@ public class StudentUnitSelectionController implements Initializable {
     }
 
     private void makeTable1() {
-
+        nameColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        groupColumn1.setCellValueFactory(new PropertyValueFactory<>("group"));
+        gradeColumn1.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        examColumn1.setCellValueFactory(new PropertyValueFactory<>("exam"));
+        markColumn1.setCellValueFactory(new PropertyValueFactory<>("mark"));
+        optionsColumn1.setCellValueFactory(new PropertyValueFactory<>("scene"));
     }
 
     private void makeTable2() {
-
+        nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+        groupColumn2.setCellValueFactory(new PropertyValueFactory<>("group"));
+        gradeColumn2.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        examColumn2.setCellValueFactory(new PropertyValueFactory<>("exam"));
+        markColumn2.setCellValueFactory(new PropertyValueFactory<>("mark"));
+        optionsColumn2.setCellValueFactory(new PropertyValueFactory<>("scene"));
     }
 
     private void addToggle() {
@@ -103,9 +118,40 @@ public class StudentUnitSelectionController implements Initializable {
         else return "grade";
     }
 
-    //TODO
-    private void showResponse(Request request) {
+    private void showResponse(Request request, int table) {
         Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) showData(response.getData(), table);
+        else {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+    }
+
+    private void showData(HashMap<String, Object> data, int table) {
+        List<LessonTable> lessonTableList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            if (entry.getKey().startsWith("lessonR")) {
+                Lesson lesson = (Lesson) entry.getValue();
+                LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
+                        lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
+                        lesson.getGrade(), true);
+                lessonTableList.add(lessonTable);
+            }
+            else if (entry.getKey().startsWith("lessonN")) {
+                Lesson lesson = (Lesson) entry.getValue();
+                LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
+                        lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
+                        lesson.getGrade(), false);
+                lessonTableList.add(lessonTable);
+            }
+        }
+        if (table == 1) {
+            table1.getItems().clear();
+            table1.getItems().addAll(lessonTableList);
+        }
+        else if (table == 2) {
+            table2.getItems().clear();
+            table2.getItems().addAll(lessonTableList);
+        }
     }
 
     @Override
@@ -115,6 +161,6 @@ public class StudentUnitSelectionController implements Initializable {
         makeTable1();
         makeTable2();
         request = new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE);
-        showResponse(request);
+        showResponse(request, 2);
     }
 }
