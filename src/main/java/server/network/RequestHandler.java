@@ -7,6 +7,7 @@ import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.reportCard.EDUStatusManager;
 import server.logic.managers.edu.reportCard.ReportCardManager;
+import server.logic.managers.edu.unitSelection.UnitSelectionTimeManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.model.user.UserType;
 import shared.request.Request;
@@ -124,7 +125,19 @@ public class RequestHandler {
                 this.client.sendResponse(manager.appointment(request));
                 break;
             default:
-                handleNewUserRequests();
+                handleUnitSelectionRequests();
+        }
+    }
+
+    private void handleUnitSelectionRequests() {
+        UnitSelectionTimeManager timeManager = new UnitSelectionTimeManager(this.client);
+        switch (this.request.getRequestType()) {
+            case SET_UNIT_SELECTION_TIME:
+                this.client.sendResponse(timeManager.setTime(request));
+                break;
+            case SHOW_STUDENT_UNIT_SELECTION_PAGE:
+                break;
+            default: handleNewUserRequests();
         }
     }
 

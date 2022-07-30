@@ -19,29 +19,27 @@ public class MainDataHandler {
 
     public User getMainPageData(String userName) {
         String information = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getMainPageData");
-        String query = information + " " + userName;
+        String query = information + " " + getStringFormat(userName);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 String firstName = resultSet.getString("firstName");
                 String lastName = resultSet.getString("lastName");
                 String email = resultSet.getString("emailAddress");
                 String lastLogin = resultSet.getString("lastLogin");
                 String image = resultSet.getString("imageAddress");
                 return new User(firstName, lastName, email, lastLogin, image);
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        }
+        } catch (SQLException ignored) {}
         return null;
     }
 
     public List<String> getTableData(String userName) {
         String information = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getMainPageTable");
-        String query = information + " " + userName;
+        String query = information + " " + getStringFormat(userName);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 String firstName = resultSet.getString("firstName");
                 String lastName = resultSet.getString("lastName");
                 String status = resultSet.getString("status");
@@ -54,11 +52,27 @@ public class MainDataHandler {
                 tableList.add(registrationLicense);
                 tableList.add(registrationTime);
                 return tableList;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException ignored) {}
+        return null;
+    }
+
+    public String getUnitSelectionTime(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "unitSelectionTime", "student") + "username = " + getStringFormat(username);
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("unitSelectionTime");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 
 }

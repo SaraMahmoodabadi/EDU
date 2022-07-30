@@ -211,6 +211,11 @@ public class MainPageController implements Initializable {
             Object image = response.getData("profileImage");
             this.profileImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
             if (EDU.userType == UserType.STUDENT) {
+                boolean result = (boolean) response.getData("isUnitSelectionTime");
+                if (!result) {
+                    unitSelection.setVisible(false);
+                    unitSelection.setDisable(true);
+                }
                 this.role.setText(EDU.userType.toString().toLowerCase());
                 getTableData(response);
             } else {

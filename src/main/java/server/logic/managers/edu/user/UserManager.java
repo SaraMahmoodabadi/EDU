@@ -15,6 +15,7 @@ import shared.util.media.ImageHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,6 +159,7 @@ public class UserManager {
     }
 
     private Response setTableData(Response response) {
+        response.addData("isUnitSelectionTime", isUnitSelectionTime());
         List<String> table = this.mainDataHandler.getTableData(this.clientHandler.getUserName());
         if (table != null) {
             List<String> middleList = new ArrayList<>();
@@ -193,5 +195,11 @@ public class UserManager {
             response.addData("leftList", leftList);
         }
         return response;
+    }
+
+    private boolean isUnitSelectionTime() {
+        String unitSelectionTime = this.mainDataHandler.getUnitSelectionTime(this.clientHandler.getUserName());
+        String date  = String.valueOf(LocalDate.now());
+        return date.equals(unitSelectionTime);
     }
 }
