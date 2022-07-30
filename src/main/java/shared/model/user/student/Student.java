@@ -19,7 +19,6 @@ public class Student extends User {
     private List<String> professorsCode;
     private EducationalStatus status;
     private Grade grade;
-    private String unitSelectionTime;
 
     public Student(String firstName, String lastName, long nationalCode,
                    String collegeCode, String username, String password,
@@ -133,11 +132,4 @@ public class Student extends User {
         this.grade = grade;
     }
 
-    public String getUnitSelectionTime() {
-        return unitSelectionTime;
-    }
-
-    public void setUnitSelectionTime(String unitSelectionTime) {
-        this.unitSelectionTime = unitSelectionTime;
-    }
 }

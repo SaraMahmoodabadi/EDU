@@ -103,9 +103,11 @@ public class StudentUnitSelectionController implements Initializable {
     }
 
     private void addToggle() {
+        group = new ToggleGroup();
         alphabeticButton.setToggleGroup(group);
         gradeButton.setToggleGroup(group);
         examTimeButton.setToggleGroup(group);
+        group.selectToggle(alphabeticButton);
     }
 
     private void setBox() {

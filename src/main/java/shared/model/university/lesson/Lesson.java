@@ -73,6 +73,14 @@ public class Lesson {
         this.examTime = examTime;
     }
 
+    public Lesson(String lessonCode, String name, String examTime, Grade grade, int group) {
+        this.lessonCode = lessonCode;
+        this.name = name;
+        this.examTime = examTime;
+        this.grade = grade;
+        this.group = group;
+    }
+
     public String getName() {
         return name;
     }
