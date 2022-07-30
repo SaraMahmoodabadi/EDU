@@ -15,10 +15,11 @@ public class Student extends User {
     private boolean registrationLicense;
     private String registrationTime;
     private List<Score> scores;
-    private List<List<String>> lessons;
+    private List<String> lessons;
     private List<String> professorsCode;
     private EducationalStatus status;
     private Grade grade;
+    private String unitSelectionTime;
 
     public Student(String firstName, String lastName, long nationalCode,
                    String collegeCode, String username, String password,
@@ -100,11 +101,11 @@ public class Student extends User {
         this.scores = scores;
     }
 
-    public List<List<String>> getLessons() {
+    public List<String> getLessons() {
         return lessons;
     }
 
-    public void setLessons(List<List<String>> lessons) {
+    public void setLessons(List<String> lessons) {
         this.lessons = lessons;
     }
 
@@ -130,5 +131,13 @@ public class Student extends User {
 
     public void setGrade(Grade grade) {
         this.grade = grade;
+    }
+
+    public String getUnitSelectionTime() {
+        return unitSelectionTime;
+    }
+
+    public void setUnitSelectionTime(String unitSelectionTime) {
+        this.unitSelectionTime = unitSelectionTime;
     }
 }

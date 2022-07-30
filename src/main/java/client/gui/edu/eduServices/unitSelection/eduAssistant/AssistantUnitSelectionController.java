@@ -39,6 +39,8 @@ public class AssistantUnitSelectionController implements Initializable {
         Request request = new Request(RequestType.SET_UNIT_SELECTION_TIME);
         request.addData("filter", setFilter());
         request.addData("value", setValue());
+        request.addData("date", date.getValue());
+        request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
