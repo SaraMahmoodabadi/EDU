@@ -199,6 +199,7 @@ public class UserManager {
 
     private boolean isUnitSelectionTime() {
         String unitSelectionTime = this.mainDataHandler.getUnitSelectionTime(this.clientHandler.getUserName());
+        if (unitSelectionTime == null) return false;
         String date  = String.valueOf(LocalDate.now());
         return date.equals(unitSelectionTime);
     }
