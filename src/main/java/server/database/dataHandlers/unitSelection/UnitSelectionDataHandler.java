@@ -20,7 +20,8 @@ public class UnitSelectionDataHandler {
         List<String> students = getStudentCodes(collegeCode);
         for (String student : students) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-            query = String.format(query, "student", "unitSelectionTime = " + getStringFormat(time)) + items;
+            query = String.format(query, "student", "unitSelectionTime = " + getStringFormat(time)) + items +
+            " AND studentCode = " + getStringFormat(student);
             if (!this.databaseHandler.updateData(query)) return false;
         }
         return true;
