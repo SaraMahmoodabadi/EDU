@@ -25,6 +25,7 @@ public class Lesson {
     private int group;
     private String professorCode;
     private String plan;
+    private int term;
 
     public Lesson(String name, String lessonCode, String collegeCode,
                   List<String> teacherAssistant, int unitNumber,
@@ -215,6 +216,14 @@ public class Lesson {
 
     public void setProfessorCode(String professorCode) {
         this.professorCode = professorCode;
+    }
+
+    public int getTerm() {
+        return term;
+    }
+
+    public void setTerm(int term) {
+        this.term = term;
     }
 
     public String getPlan() {

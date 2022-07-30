@@ -25,7 +25,7 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected ComboBox<String> collegeBox;
     @FXML
-    protected TableView<LessonTable> table1;
+    protected static TableView<LessonTable> table1;
     @FXML
     protected TableColumn<LessonTable, String> nameColumn1;
     @FXML
@@ -49,7 +49,7 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected Button show;
     @FXML
-    protected TableView<LessonTable> table2;
+    protected static TableView<LessonTable> table2;
     @FXML
     protected TableColumn<LessonTable, String> nameColumn2;
     @FXML
@@ -131,18 +131,32 @@ public class StudentUnitSelectionController implements Initializable {
     private void showData(HashMap<String, Object> data, int table) {
         List<LessonTable> lessonTableList = new ArrayList<>();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
-            if (entry.getKey().startsWith("lessonR")) {
+            if (entry.getKey().startsWith("lessonRM")) {
                 Lesson lesson = (Lesson) entry.getValue();
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), true);
+                        lesson.getGrade(), true, true);
                 lessonTableList.add(lessonTable);
             }
-            else if (entry.getKey().startsWith("lessonN")) {
+            else if (entry.getKey().startsWith("lessonNM")) {
                 Lesson lesson = (Lesson) entry.getValue();
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), false);
+                        lesson.getGrade(), false, true);
+                lessonTableList.add(lessonTable);
+            }
+            else if (entry.getKey().startsWith("lessonRN")) {
+                Lesson lesson = (Lesson) entry.getValue();
+                LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
+                        lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
+                        lesson.getGrade(), false, false);
+                lessonTableList.add(lessonTable);
+            }
+            else if (entry.getKey().startsWith("lessonNN")) {
+                Lesson lesson = (Lesson) entry.getValue();
+                LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
+                        lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
+                        lesson.getGrade(), false, false);
                 lessonTableList.add(lessonTable);
             }
         }
@@ -154,6 +168,26 @@ public class StudentUnitSelectionController implements Initializable {
             table2.getItems().clear();
             table2.getItems().addAll(lessonTableList);
         }
+    }
+
+    static void removeData(LessonTable lesson) {
+        List<LessonTable> list = table1.getItems();
+        list.remove(lesson);
+        table1.getItems().clear();
+        table1.getItems().addAll(list);
+        list = table2.getItems();
+        list.remove(lesson);
+        table2.getItems().addAll(lesson);
+    }
+
+    static void addData(LessonTable lesson) {
+        List<LessonTable> list = table1.getItems();
+        list.add(lesson);
+        table1.getItems().clear();
+        table1.getItems().addAll(list);
+        list = table2.getItems();
+        list.add(lesson);
+        table2.getItems().addAll(lesson);
     }
 
     @Override

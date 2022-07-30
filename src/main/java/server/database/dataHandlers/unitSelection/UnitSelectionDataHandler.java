@@ -1,6 +1,7 @@
 package server.database.dataHandlers.unitSelection;
 
 import server.database.MySQLHandler;
+import shared.model.message.request.Type;
 import shared.model.university.lesson.Lesson;
 import shared.model.university.lesson.score.Score;
 import shared.model.university.lesson.score.ScoreType;
@@ -91,8 +92,11 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
-                String lessonsArray = lessons.substring(1, lessons.length() - 1);
-                return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                if (lessons != null) {
+                    String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                }
+                else return new ArrayList<>();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,8 +111,11 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("markedLessons");
-                String lessonsArray = lessons.substring(1, lessons.length() - 1);
-                return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                if (lessons != null) {
+                    String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                }
+                else return new ArrayList<>();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -211,6 +218,166 @@ public class UnitSelectionDataHandler {
         query = String.format(query, "student", "lessonsCode = " + getStringFormat(lessons.toString())) +
                 " username = " + getStringFormat(username);
         return this.databaseHandler.updateData(query);
+    }
+
+    public Grade getStudentGrade(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "grade", "student") + " username = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return Grade.valueOf(resultSet.getString("grade"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void removeStudentFromGroup(String lessonCode, String group, String username) {
+        String studentCode = getStudentCode(username);
+        List<String> students = getGroupStudents(lessonCode, group);
+        if (students != null) students.remove(studentCode);
+        else students = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "group", "students = " + getStringFormat(students.toString()))
+                + " lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(group);
+        this.databaseHandler.updateData(query);
+    }
+
+    public void addStudentToGroup(String lessonCode, String group, String username) {
+        String studentCode = getStudentCode(username);
+        List<String> students = getGroupStudents(lessonCode, group);
+        if (students == null) students = new ArrayList<>();
+        students.add(studentCode);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "group", "students = " + getStringFormat(students.toString()))
+                + " lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(group);
+        this.databaseHandler.updateData(query);
+    }
+
+    public List<String> getGroupStudents(String lessonCode, String group) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "students", "group") + " lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(group);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String lessons = resultSet.getString("students");
+                if (lessons != null) {
+                    String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                }
+                else return new ArrayList<>();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int getGroupCapacity(String lessonCode, String group) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "capacity", "group") + " lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(group);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+               return resultSet.getInt("capacity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Lesson getLesson(String lessonCode, int group) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "name, examTime, grade", "lesson") +
+                " lessonCode = " + getStringFormat(lessonCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String name  = resultSet.getString("name");
+                String examTime = resultSet.getString("examTime");
+                Grade grade = Grade.valueOf(resultSet.getString("grade"));
+                return new Lesson(lessonCode, name, examTime, grade, group);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<String> getPrerequisites(String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "prerequisites", "lesson") + " lessonCode = " + getStringFormat(lessonCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String lessons = resultSet.getString("prerequisites");
+                if (lessons != null) {
+                    String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonsArray.split(",")));
+                }
+                else return new ArrayList<>();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getLessonData(String item, String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, item, "lesson") + " lessonCode = " + getStringFormat(lessonCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean requestGetLesson(String username, String lessonCode) {
+        String studentCode = getStudentCode(username);
+        String collegeCode = getCollege(username);
+        String professorCode = getAssistant(collegeCode);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "request", "studentCode, professorCode, type, information" ,
+                getStringFormat(studentCode) + ", " + getStringFormat(professorCode) + ", " + Type.TAKE_LESSON + ", " +
+                lessonCode);
+        return this.databaseHandler.updateData(query);
+    }
+
+    private String getAssistant(String collegeCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "educationalAssistantCode", "college") +
+                " collegeCode = " + getStringFormat(collegeCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("educationalAssistantCode");
+            }
+        } catch (SQLException ignored) {}
+        return null;
+    }
+
+    private String getCollege(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "collegeCode", "user") + " username = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("collegeCode");
+            }
+        } catch (SQLException ignored) {}
+        return null;
     }
 
     private String getStringFormat(String value) {

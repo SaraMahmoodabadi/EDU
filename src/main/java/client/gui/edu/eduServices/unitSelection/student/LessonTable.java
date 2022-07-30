@@ -4,6 +4,7 @@ import client.gui.AlertMonitor;
 import client.gui.EDU;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
 import shared.model.user.student.Grade;
@@ -11,6 +12,8 @@ import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
+
+import java.util.List;
 
 public class LessonTable {
     String lessonCode;
@@ -21,28 +24,29 @@ public class LessonTable {
     CheckBox mark;
     Scene scene;
     HBox hBox;
-    CheckBox remove;
-    CheckBox changeGroup;
-    CheckBox take;
-    CheckBox request;
+    Button remove;
+    Button changeGroup;
+    Button take;
+    Button request;
 
     public LessonTable(String lessonCode, String name, int group,
-                       String exam, Grade grade, boolean isSelected) {
+                       String exam, Grade grade, boolean isSelected, boolean isMarked) {
         this.lessonCode = lessonCode;
         this.name = name;
         this.group = group;
         this.exam = exam;
         this.grade = grade;
         this.mark = new CheckBox("mark");
+        if (isMarked) this.mark.setSelected(true);
         addEventToMark();
         if (isSelected) {
-            remove = new CheckBox("remove");
-            changeGroup = new CheckBox("change group");
+            remove = new Button("remove");
+            changeGroup = new Button("change group");
             setBox(remove, changeGroup);
         }
         else {
-            take = new CheckBox("take");
-            request = new CheckBox("request to take");
+            take = new Button("take");
+            request = new Button("request to take");
             setBox(take, request);
         }
         addEventToRemove();
@@ -51,7 +55,7 @@ public class LessonTable {
         addEventToRequest();
     }
 
-    private void setBox(CheckBox checkBox1, CheckBox checkBox2) {
+    private void setBox(Button checkBox1, Button checkBox2) {
         hBox = new HBox(checkBox1, checkBox2);
         scene = new Scene(hBox, 200, 50);
     }
@@ -62,10 +66,18 @@ public class LessonTable {
 
     private void addEventToMark() {
         mark.setOnAction(event -> {
-            Request request = new Request(RequestType.MARK_LESSON);
-            request.addData("lessonCode", lessonCode);
-            request.addData("group", group);
-            EDU.serverController.sendRequest(request);
+            if (isMarked()) {
+                Request request = new Request(RequestType.MARK_LESSON);
+                request.addData("lessonCode", lessonCode);
+                request.addData("group", group);
+                EDU.serverController.sendRequest(request);
+            }
+            else {
+                Request request = new Request(RequestType.UN_MARK_LESSON);
+                request.addData("lessonCode", lessonCode);
+                request.addData("group", group);
+                EDU.serverController.sendRequest(request);
+            }
         });
     }
 
@@ -78,6 +90,7 @@ public class LessonTable {
         });
     }
 
+    //todo : show groups
     private void addEventToChange() {
         changeGroup.setOnAction(event -> {
             Request request = new Request(RequestType.CHANGE_GROUP_UNIT_SELECTION);
@@ -109,11 +122,15 @@ public class LessonTable {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             if (request.getRequestType() == RequestType.TAKE_LESSON_UNIT_SELECTION) {
+                StudentUnitSelectionController.removeData(this);
                 HBox hBox = new HBox(remove, changeGroup);
                 this.scene.setRoot(hBox);
+                StudentUnitSelectionController.addData(this);
             } else if (request.getRequestType() == RequestType.REMOVE_LESSON_UNIT_SELECTION) {
+                StudentUnitSelectionController.removeData(this);
                 HBox hBox = new HBox(take, this.request);
                 this.scene.setRoot(hBox);
+                StudentUnitSelectionController.addData(this);
             }
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
         }

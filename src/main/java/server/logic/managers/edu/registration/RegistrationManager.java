@@ -5,6 +5,7 @@ import server.network.ClientHandler;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;
 import shared.model.user.professor.Professor;
+import shared.model.user.professor.Type;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -252,6 +253,8 @@ public class RegistrationManager {
         String query = "educationalAssistant = NULL";
         boolean result = this.dataHandler.deposal(professorCode, query, collegeCode);
         if (result) {
+            String items = " type = " + Type.PROFESSOR;
+            this.dataHandler.editProfessor(professorCode, items);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
@@ -269,6 +272,8 @@ public class RegistrationManager {
         String query = "educationalAssistant = " + professorCode;
         boolean result = this.dataHandler.appointment(professorCode, query, collegeCode);
         if (result) {
+            String items = " type = " + Type.EDUCATIONAL_ASSISTANT;
+            this.dataHandler.editProfessor(professorCode, items);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);

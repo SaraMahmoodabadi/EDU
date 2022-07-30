@@ -13,6 +13,7 @@ public class Request {
     private boolean secondResult;
     private String finalResult;
     private String date;
+    private String information;
 
     public Request(Type type, String studentCode, String professorCode) {
         this.type = type;
@@ -106,5 +107,13 @@ public class Request {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
     }
 }

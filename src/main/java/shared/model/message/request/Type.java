@@ -6,5 +6,6 @@ public enum Type {
     WITHDRAWAL,
     MINOR,
     THESIS_DEFENCE,
-    DORMITORY
+    DORMITORY,
+    TAKE_LESSON
 }
