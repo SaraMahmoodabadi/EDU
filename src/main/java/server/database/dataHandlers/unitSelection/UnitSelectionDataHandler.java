@@ -380,6 +380,19 @@ public class UnitSelectionDataHandler {
         return null;
     }
 
+    public List<String> getGroups(String lessonCode) {
+        List<String> groups = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "groupNumber", "group") + " lessonCode = " + getStringFormat(lessonCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            while (resultSet.next()) {
+                groups.add(resultSet.getString("groupNumber"));
+            }
+        } catch (SQLException ignored) {}
+        return groups;
+    }
+
     private String getStringFormat(String value) {
         return "'" + value + "'";
     }

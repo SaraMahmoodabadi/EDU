@@ -200,7 +200,26 @@ public class UnitSelectionManager {
         }
     }
 
-    public Response takeLesson(Request request) {
+    public Response getLessonGroups(Request request) {
+        String group = (String) request.getData("group");
+        String lessonCode = (String) request.getData("lessonCode");
+        List<String> groups = this.dataHandler.getGroups(lessonCode);
+        if (groups == null || (groups.size() == 1)) {
+            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                    (String.class, "changeGroupError");
+            return sendErrorResponse(error);
+        } else {
+            Response response = new Response(ResponseStatus.OK);
+            for (int i = 0; i < groups.size(); i++) {
+                if (!group.equals(groups.get(i))) {
+                    response.addData("group" + i, groups.get(i));
+                }
+            }
+            return response;
+        }
+    }
+
+    public synchronized Response takeLesson(Request request) {
         if (checkLessonIsTaken(request)) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                     (String.class, "lessonTakenError");
@@ -393,11 +412,6 @@ public class UnitSelectionManager {
                     (String.class, "lessonCapacityError");
             return sendErrorResponse(error);
         }
-        if (checkLessonPrerequisites(request)) {
-            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
-                    (String.class, "prerequisiteError");
-            return sendErrorResponse(error);
-        }
         if (checkClassTime(request)) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                     (String.class, "classTimeError");
@@ -406,11 +420,6 @@ public class UnitSelectionManager {
         if (checkExamTime(request)) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                     (String.class, "examTimeError");
-            return sendErrorResponse(error);
-        }
-        if (checkReligiousCourses(request)) {
-            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
-                    (String.class, "religiousCourseError");
             return sendErrorResponse(error);
         }
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");

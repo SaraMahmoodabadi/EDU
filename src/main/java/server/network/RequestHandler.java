@@ -7,6 +7,7 @@ import server.logic.managers.edu.registration.NewUserManager;
 import server.logic.managers.edu.registration.RegistrationManager;
 import server.logic.managers.edu.reportCard.EDUStatusManager;
 import server.logic.managers.edu.reportCard.ReportCardManager;
+import server.logic.managers.edu.unitSelection.UnitSelectionManager;
 import server.logic.managers.edu.unitSelection.UnitSelectionTimeManager;
 import server.logic.managers.edu.user.UserManager;
 import shared.model.user.UserType;
@@ -131,11 +132,37 @@ public class RequestHandler {
 
     private void handleUnitSelectionRequests() {
         UnitSelectionTimeManager timeManager = new UnitSelectionTimeManager(this.client);
+        UnitSelectionManager manager = new UnitSelectionManager(this.client);
         switch (this.request.getRequestType()) {
             case SET_UNIT_SELECTION_TIME:
                 this.client.sendResponse(timeManager.setTime(request));
                 break;
             case SHOW_STUDENT_UNIT_SELECTION_PAGE:
+                this.client.sendResponse(manager.getSuggestedLessons());
+                break;
+            case GET_LESSONS_IN_UNIT_SELECTION:
+                this.client.sendResponse(manager.getCollegeLesson(request));
+                break;
+            case MARK_LESSON:
+                this.client.sendResponse(manager.markLesson(request));
+                break;
+            case UN_MARK_LESSON:
+                this.client.sendResponse(manager.unmarkedLesson(request));
+                break;
+            case GET_LESSON_GROUPS:
+                this.client.sendResponse(manager.getLessonGroups(request));
+                break;
+            case REMOVE_LESSON_UNIT_SELECTION:
+                this.client.sendResponse(manager.removeLesson(request));
+                break;
+            case CHANGE_GROUP_UNIT_SELECTION:
+                this.client.sendResponse(manager.changeLessonGroup(request));
+                break;
+            case TAKE_LESSON_UNIT_SELECTION:
+                this.client.sendResponse(manager.takeLesson(request));
+                break;
+            case REQUEST_TAKE_LESSON_UNIT_SELECTION:
+                this.client.sendResponse(manager.requestToTakeLesson(request));
                 break;
             default: handleNewUserRequests();
         }

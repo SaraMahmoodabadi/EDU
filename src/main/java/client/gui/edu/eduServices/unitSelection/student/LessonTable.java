@@ -2,10 +2,10 @@ package client.gui.edu.eduServices.unitSelection.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import shared.model.user.student.Grade;
 import shared.request.Request;
@@ -13,7 +13,9 @@ import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LessonTable {
     String lessonCode;
@@ -90,14 +92,36 @@ public class LessonTable {
         });
     }
 
-    //todo : show groups
     private void addEventToChange() {
         changeGroup.setOnAction(event -> {
-            Request request = new Request(RequestType.CHANGE_GROUP_UNIT_SELECTION);
+            Request request = new Request(RequestType.GET_LESSON_GROUPS);
             request.addData("lessonCode", lessonCode);
             request.addData("group", group);
-            showResult(request);
+            Response response = EDU.serverController.sendRequest(request);
+            if (response.getStatus() == ResponseStatus.OK) {
+                showMenu(response);
+            }
+            else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         });
+    }
+
+    private void showMenu(Response response) {
+        List<String> groups = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : response.getData().entrySet()) {
+            if (entry.getKey().startsWith("group")) {
+                groups.add(String.valueOf(entry.getValue()));
+            }
+        }
+        ChoiceDialog d = new ChoiceDialog(groups.get(0), groups);
+        d.setHeaderText("day of the week");
+        d.setContentText("please select the day of the week");
+        d.showAndWait();
+        Request request = new Request(RequestType.CHANGE_GROUP_UNIT_SELECTION);
+        if (d.getSelectedItem() != null) {
+            request.addData("lessonCode", lessonCode);
+            request.addData("group", d.getSelectedItem());
+            showResult(request);
+        }
     }
 
     private void addEventToTake() {

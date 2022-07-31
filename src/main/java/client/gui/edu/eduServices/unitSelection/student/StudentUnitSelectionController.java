@@ -2,6 +2,7 @@ package client.gui.edu.eduServices.unitSelection.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -66,6 +67,7 @@ public class StudentUnitSelectionController implements Initializable {
     protected TableColumn<?, ?> receivedColumn2;
     private ToggleGroup group;
     private Request request;
+    private boolean stop;
 
 
     public void show(ActionEvent event) {
@@ -126,6 +128,7 @@ public class StudentUnitSelectionController implements Initializable {
         else {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
+        if (table == 1) updateTable1();
     }
 
     private void showData(HashMap<String, Object> data, int table) {
@@ -190,13 +193,50 @@ public class StudentUnitSelectionController implements Initializable {
         table2.getItems().addAll(lesson);
     }
 
+    private void updateTable1() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            showData(response.getData(), 1);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
+    private void updateTable2() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest
+                                (new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE));
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            showData(response.getData(), 2);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         addToggle();
         setBox();
         makeTable1();
         makeTable2();
-        request = new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE);
+        Request request = new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE);
         showResponse(request, 2);
+        updateTable2();
     }
 }
