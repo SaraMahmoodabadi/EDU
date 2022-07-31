@@ -48,7 +48,7 @@ public class RegistrationManager {
         int n = 0;
         if (collegeName != null && !collegeName.equals("-")) {
             String collegeCode = this.dataHandler.getCollegeCode(collegeName);
-            query += ("collegeCode = " + collegeCode);
+            query += ("collegeCode = " + getStringFormat(collegeCode));
             n++;
         }
         if (unitNumber != null) {
@@ -58,7 +58,7 @@ public class RegistrationManager {
         }
         if (lessonCode != null) {
             if (n >= 1) query += "AND ";
-            query += ("lessonCode = " + lessonCode);
+            query += ("lessonCode = " + getStringFormat(lessonCode));
         }
         if (n == 0) return getAllLessons();
         else {
@@ -84,13 +84,15 @@ public class RegistrationManager {
     public Response addLesson(Request request) {
         Lesson lesson = (Lesson) request.getData("lesson");
         if (this.dataHandler.existLesson(lesson.getLessonCode())) {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "duplicateLessonCode");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                    (String.class, "duplicateLessonCode");
             return getErrorResponse(errorMessage);
         }
         else {
             if (this.dataHandler.makeLesson(lesson)) {
                 if (addProfessorLesson(lesson.getProfessorCode(), lesson.getLessonCode())) {
-                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonCreated");
+                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                            (String.class, "lessonCreated");
                     Response response = new Response(ResponseStatus.OK);
                     response.setNotificationMessage(note);
                     return response;
@@ -113,23 +115,24 @@ public class RegistrationManager {
             String query = "";
             int n = 0;
             if (classTime != null) {
-                query += ("classTime = " + classTime);
+                query += ("classTime = " + getStringFormat(classTime));
                 n++;
             }
             if (days != null) {
                 if (n == 1) query += ", ";
-                query += ("days = " + days);
+                query += ("days = " + getStringFormat(days));
                 n++;
             }
             if (examTime != null) {
                 if (n >= 1) query += ", ";
-                query += ("examTime = " + examTime);
+                query += ("examTime = " + getStringFormat(examTime));
             }
             if (group != null) {
                 boolean result = this.dataHandler.makeGroup(group) &&
                         addProfessorLesson(group.getProfessorCode(), group.getLessonCode());
                 if (!result) {
-                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                            (String.class, "invalidInputs");
                     return getErrorResponse(errorMessage);
                 }
             }
@@ -184,7 +187,8 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                    (String.class, "errorMessage");
             return getErrorResponse(errorMessage);
         }
     }
@@ -206,12 +210,12 @@ public class RegistrationManager {
             String query = "";
             int n = 0;
             if (phoneNumber != null) {
-                query += ("phoneNumber = " + phoneNumber);
+                query += ("phoneNumber = " + getStringFormat(phoneNumber));
                 n++;
             }
             if (email != null) {
                 if (n == 1) query += ", ";
-                query += ("emailAddress = " + email);
+                query += ("emailAddress = " + getStringFormat(email));
                 n++;
             }
             boolean result1 = true;
@@ -220,12 +224,12 @@ public class RegistrationManager {
             }
             int m = 0;
             if (degree != null) {
-                query += ("degree = " + degree);
+                query += ("degree = " + getStringFormat(degree));
                 m++;
             }
             if (room != null) {
                 if (m == 1) query += ", ";
-                query += ("roomNumber = " + room);
+                query += ("roomNumber = " + getStringFormat(room));
                 m++;
             }
             boolean result2 = true;
@@ -233,17 +237,20 @@ public class RegistrationManager {
                 result2 = this.dataHandler.editProfessor(professorCode, query);
             }
             if ((m == 0 && n == 0) || (result1 && result2)) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                        (String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
             else {
-                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "professorEdited");
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                        (String.class, "professorEdited");
                 Response response = new Response(ResponseStatus.OK);
                 response.setNotificationMessage(note);
                 return response;
             }
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                (String.class, "invalidInputs");
         return getErrorResponse(errorMessage);
     }
 
@@ -253,7 +260,7 @@ public class RegistrationManager {
         String query = "educationalAssistant = NULL";
         boolean result = this.dataHandler.deposal(professorCode, query, collegeCode);
         if (result) {
-            String items = " type = " + Type.PROFESSOR;
+            String items = " type = " + getStringFormat(Type.PROFESSOR.toString());
             this.dataHandler.editProfessor(professorCode, items);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
@@ -261,7 +268,8 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                    (String.class, "invalidInputs");
             return getErrorResponse(errorMessage);
         }
     }
@@ -272,7 +280,7 @@ public class RegistrationManager {
         String query = "educationalAssistant = " + professorCode;
         boolean result = this.dataHandler.appointment(professorCode, query, collegeCode);
         if (result) {
-            String items = " type = " + Type.EDUCATIONAL_ASSISTANT;
+            String items = " type = " + getStringFormat(Type.EDUCATIONAL_ASSISTANT.toString());
             this.dataHandler.editProfessor(professorCode, items);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
@@ -280,7 +288,8 @@ public class RegistrationManager {
             return response;
         }
         else {
-            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+            String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                    (String.class, "invalidInputs");
             return getErrorResponse(errorMessage);
         }
     }
@@ -313,5 +322,9 @@ public class RegistrationManager {
             lessons.remove(lessonCode);
             this.dataHandler.updateProfessorLessons(code, lessons);
         }
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 }
