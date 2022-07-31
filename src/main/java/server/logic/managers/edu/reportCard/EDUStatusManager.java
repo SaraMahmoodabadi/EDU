@@ -33,7 +33,8 @@ public class EDUStatusManager {
                 studentCode = this.dataHandler.getStudentCode(studentName, collegeCode);
             }
             if (!this.dataHandler.getCollegeCode(studentCode).equals(collegeCode)) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                        (String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
         }
@@ -45,7 +46,7 @@ public class EDUStatusManager {
 
     private Response getAllScores(String studentCode) {
         Map<Score, Integer> scores = this.dataHandler.getFinalScores(studentCode);
-        List<String> lessons = this.dataHandler.getLessons(studentCode);
+        List<String> lessons = getMainLessonCodes(this.dataHandler.getLessons(studentCode));
         List<String> finalScores = new ArrayList<>();
         scores.keySet().forEach((K) -> finalScores.add(K.getLessonCode()));
         List<Score> scoreList = new ArrayList<>(scores.keySet());
@@ -67,6 +68,18 @@ public class EDUStatusManager {
         response.addData("average", this.dataHandler.getRate(studentCode));
         response.addData("numberPassed", passed);
         return response;
+    }
+
+    private List<String> getMainLessonCodes(List<String> lessons) {
+        List<String> newList = new ArrayList<>();
+        for (String lesson : lessons) {
+            String term = lesson.split("-")[0];
+            int n = lesson.split("-").length;
+            String group = lesson.split("-")[n - 1];
+            String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            newList.add(lessonCode);
+        }
+        return newList;
     }
 
     private Response getErrorResponse(String errorMessage) {

@@ -29,7 +29,8 @@ public class ReportCardManager {
         if (this.client.getUserType() == UserType.PROFESSOR) {
             if (request.getData("collegeCode").equals
                     (this.dataHandler.getStudentCollege((String) request.getData("studentCode")))) {
-                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                        (String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
             }
             studentCode = (String) request.getData("studentCode");
@@ -43,7 +44,8 @@ public class ReportCardManager {
             }
             return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                (String.class, "errorMessage");
         return getErrorResponse(errorMessage);
     }
 

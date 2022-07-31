@@ -5,9 +5,9 @@ import shared.model.university.lesson.score.Score;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class EDUStatusDataHandler {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "s.studentCode, u.firstName, u.lastName",
                 "student s", "user u", "u.username = s.username")
-                +  " u.collegeCode = " + collegeCode;
+                +  " u.collegeCode = " + getStringFormat(collegeCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -46,12 +46,14 @@ public class EDUStatusDataHandler {
     public String getCollegeCode(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "u.collegeCode", "student s", "user u", "u.username = s.username")
-                +  " s.studentCode = " + studentCode;
+                +  " s.studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 return resultSet.getString("collegeCode");
-            } catch (SQLException ignored) {}
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -59,41 +61,49 @@ public class EDUStatusDataHandler {
     public List<String> getLessons(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "lessonsCode", "student")
-                +  " studentCode = " + studentCode;
+                +  " studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
-                Array array = resultSet.getArray("lessonsCode");
-                String[] lessonsList = (String[]) array.getArray();
-                return Arrays.asList(lessonsList);
-            } catch (SQLException ignored) {}
+        try {
+            if (resultSet.next()) {
+                String lessons = resultSet.getString("lessonsCode");
+                String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     public String getStudentCode(String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "studentCode", "student")
-                +  " username = " + username;
+        query = String.format(query, "studentCode", "student") +  " username = " + getStringFormat(username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 return resultSet.getString("studentCode");
-            } catch (SQLException ignored) {}
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     public Double getRate(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "rate", "student")
-                +  " studentCode = " + studentCode;
+        query = String.format(query, "rate", "student") +  " studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 return Double.parseDouble(resultSet.getString("rate"));
-            } catch (SQLException ignored) {}
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 }
