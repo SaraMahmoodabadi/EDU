@@ -42,6 +42,8 @@ public class TemporaryScoresController implements Initializable {
     @FXML
     protected TextField lessonCodeField;
     @FXML
+    protected TextField groupField;
+    @FXML
     protected TextField scoreField;
     @FXML
     protected TextArea protestAnswerArea;
@@ -81,6 +83,7 @@ public class TemporaryScoresController implements Initializable {
         if (checkNullItems()) return;
         request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.PROFESSOR);
         request.addData("lessonCode", lessonCodeField.getText());
+        request.addData("group", groupField.getText());
         Response response = EDU.serverController.getResponse();
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -204,7 +207,7 @@ public class TemporaryScoresController implements Initializable {
     }
 
     private boolean checkNullItems() {
-        if (lessonCodeField.getText() == null) {
+        if (lessonCodeField.getText() == null || groupField.getText() == null) {
             String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullItem");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
             return false;

@@ -67,8 +67,9 @@ public class ReportCardManager {
     }
 
     public Response getLessonTemporaryScores(Request request) {
+        String group = String.valueOf(request.getData("group"));
         List<Score> scores = this.dataHandler.getLessonScores
-                ((String) request.getData("lessonCode"), this.client.getUserName());
+                ((String) request.getData("lessonCode"), this.client.getUserName(), group);
         if (scores != null) {
             Response response = new Response(ResponseStatus.OK);
             for (int i = 0; i < scores.size(); i++) {
@@ -77,7 +78,7 @@ public class ReportCardManager {
             return getLessonSummary(scores, response);
         }
         else return getStudentCodes
-                ((String) request.getData("lessonCode"), this.client.getUserName());
+                ((String) request.getData("lessonCode"), group);
     }
 
     public Response setProtestAnswer(Request request) {
@@ -218,13 +219,14 @@ public class ReportCardManager {
         return response;
     }
 
-    private Response getStudentCodes(String lessonCode, String username) {
-        List<String> students = this.dataHandler.getStudentCodes(username, lessonCode);
+    private Response getStudentCodes(String lessonCode, String group) {
+        List<String> students = this.dataHandler.getStudentCodes(lessonCode, group);
         if (students != null) {
             Response response = new Response(ResponseStatus.OK);
-            for (int i = 0; i < students.size(); i++) {
+            for (int i = 1; i < students.size(); i++) {
                 response.addData("score" + i,
-                        new Score(lessonCode, students.get(i), null, null, null));
+                        new Score(lessonCode, students.get(i), students.get(0),
+                                null, null, null));
             }
             return response;
         }

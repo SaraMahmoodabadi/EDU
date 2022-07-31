@@ -13,7 +13,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.reportCard.temporaryScores.eduAssistant.TemporaryScoresController">
    <children>
       <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
@@ -38,7 +37,7 @@
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </TextField>
-      <TextField fx:id="studentCodeField" alignment="CENTER" layoutX="493.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
+      <TextField fx:id="studentCodeField" alignment="CENTER" layoutX="456.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
@@ -120,5 +119,10 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
+      <TextField fx:id="groupField" alignment="CENTER" layoutX="682.0" layoutY="106.0" prefHeight="40.0" prefWidth="56.0" promptText="group" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
    </children>
 </AnchorPane>

@@ -60,15 +60,15 @@ public class TemporaryScoresDataHandler {
         return null;
     }
 
-    public List<Score> getLessonScores(String lessonCode, String username) {
+    public List<Score> getLessonScores(String lessonCode, String username, String group) {
         if (!isInSameCollege(lessonCode, username)) return null;
         String professorCode = getProfessorCode(username);
         List<Score> scores = new ArrayList<>();
         if (professorCode != null) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
             query = String.format(query, "*", "score") +
-                    " lessonCode = " + getStringFormat(lessonCode)  +
-                    " AND type = " + getStringFormat(ScoreType.TEMPORARY.toString());
+                    " lessonCode = " + getStringFormat(lessonCode)  + " AND type = " +
+                    getStringFormat(ScoreType.TEMPORARY.toString()) + " AND lessonGroup = " + getStringFormat(group);
             String condition = " AND professorCode = " + getStringFormat(professorCode);
             if (getProfessorType(username) != null &&
                     getProfessorType(username) != Type.EDUCATIONAL_ASSISTANT) {
@@ -78,11 +78,12 @@ public class TemporaryScoresDataHandler {
             if (resultSet != null) {
                 try {
                     while (resultSet.next()) {
+                        String professor = resultSet.getString("professorCode");
                         String studentCode = resultSet.getString("studentCode");
                         String score = resultSet.getString("score");
                         String protest = resultSet.getString("protest");
                         String protestAnswer = resultSet.getString("protestAnswer");
-                        Score studentScore = new Score(lessonCode, studentCode, score, protest, protestAnswer);
+                        Score studentScore = new Score(lessonCode, studentCode, professor, score, protest, protestAnswer);
                         scores.add(studentScore);
                     }
                 } catch (SQLException ignored) {}
@@ -162,9 +163,9 @@ public class TemporaryScoresDataHandler {
     public boolean registerScore(String score, String lessonCode, String studentCode, String username) {
         String professorCode = getProfessorCode(username);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
-        query = String.format(query, "score", "lessonCode, studentCode, " +
+        query = String.format(query, "score", "lessonCode, studentCode, lessonGroup, " +
                 "professorCode, score, type", getStringFormat(lessonCode) + ", " + getStringFormat(studentCode) +
-                ", " + getStringFormat(professorCode) +
+                ", " + getStringFormat(getLessonGroup(professorCode, lessonCode)) + ", " + getStringFormat(professorCode) +
                 ", " + getStringFormat(score) + ", " + getStringFormat(ScoreType.TEMPORARY.toString()));
         return this.databaseHandler.updateData(query);
     }
@@ -266,17 +267,35 @@ public class TemporaryScoresDataHandler {
         return professors;
     }
 
-    public List<String> getStudentCodes(String username, String lessonCode) {
-        String professorCode = getProfessorCode(username);
+    public List<String> getStudentCodes(String lessonCode, String group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "students", "group") + "lessonCode = " + getStringFormat(lessonCode) +
+        query = String.format(query, "*", "group") + "lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(group);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                List<String> list = new ArrayList<>();
+                String professor = resultSet.getString("professorCode");
+                list.add(professor);
+                String students = resultSet.getString("students");
+                String array = students.substring(1, students.length() - 1);
+                list.addAll(Arrays.asList(array.split(", ")));
+                return list;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getLessonGroup(String professorCode, String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "groupNumber", "group") +  " lessonCode = " + getStringFormat(lessonCode) +
                 " AND professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                String students = resultSet.getString("students");
-                String array = students.substring(1, students.length() - 1);
-                return new ArrayList<>(Arrays.asList(array.split(", ")));
+                return resultSet.getString("professorCode");
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -13,7 +13,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane fx:id="pane" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.reportCard.temporaryScores.professor.TemporaryScoresController">
    <children>
       <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
@@ -21,12 +20,12 @@
             <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
          </effect>
       </Rectangle>
-      <TextField fx:id="lessonCodeField" alignment="CENTER" layoutX="394.0" layoutY="121.0" prefHeight="40.0" prefWidth="215.0" promptText="lesson code" style="-fx-background-color: #ffffff;">
+      <TextField fx:id="lessonCodeField" alignment="CENTER" layoutX="373.0" layoutY="122.0" prefHeight="40.0" prefWidth="215.0" promptText="lesson code" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </TextField>
-      <Button fx:id="show" layoutX="671.0" layoutY="122.0" mnemonicParsing="false" onAction="#show" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
+      <Button fx:id="show" layoutX="689.0" layoutY="122.0" mnemonicParsing="false" onAction="#show" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="show" textAlignment="CENTER" textFill="#ffd100">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -91,5 +90,10 @@
             </ImageView>
          </graphic>
       </Button>
+      <TextField fx:id="groupField" alignment="CENTER" layoutX="605.0" layoutY="122.0" prefHeight="40.0" prefWidth="65.0" promptText="group" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
    </children>
 </AnchorPane>

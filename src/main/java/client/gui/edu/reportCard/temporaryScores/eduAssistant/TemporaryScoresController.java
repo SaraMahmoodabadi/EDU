@@ -39,6 +39,8 @@ public class TemporaryScoresController implements Initializable {
     @FXML
     protected TextField lessonCodeField;
     @FXML
+    protected TextField groupField;
+    @FXML
     protected TextField studentCodeField;
     @FXML
     protected TextField professorNameField;
@@ -90,10 +92,11 @@ public class TemporaryScoresController implements Initializable {
     private Request request;
 
     public void showLessonScores(ActionEvent actionEvent) {
-        if (lessonCodeField.getText() == null) showNullAlert();
+        if (lessonCodeField.getText() == null || groupField.getText() == null) showNullAlert();
         else {
             request = new Request(RequestType.SHOW_LESSON_SCORES);
             request.addData("lessonCode", lessonCodeField.getText());
+            request.addData("group", groupField.getText());
             showRequestResult(request);
         }
     }
