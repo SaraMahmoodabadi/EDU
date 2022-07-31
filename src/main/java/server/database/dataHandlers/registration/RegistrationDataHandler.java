@@ -28,7 +28,12 @@ public class RegistrationDataHandler {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getAllLessons");
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
-            return makeLessons(resultSet);
+            try {
+                if (resultSet.next())
+                    return makeLessons(resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -76,7 +81,7 @@ public class RegistrationDataHandler {
 
     private List<Group> getGroups(String lessonCode) {
         String query = Config.getConfig
-                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + lessonCode;
+                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             List<Group> groups = new ArrayList<>();
@@ -98,11 +103,13 @@ public class RegistrationDataHandler {
     }
 
     public String getCollegeCode(String collegeName){
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getCollegeCode") + " " + collegeName;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getCollegeCode")
+                + " " + getStringFormat(collegeName);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                return resultSet.getString("collegeCode");
+                if (resultSet.next())
+                    return resultSet.getString("collegeCode");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -111,11 +118,13 @@ public class RegistrationDataHandler {
     }
 
     public boolean existLesson(String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existLessonCode");
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existLessonCode") +
+                " " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("name") != null) return true;
+                if (resultSet.next())
+                    if (resultSet.getString("name") != null) return true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -124,14 +133,17 @@ public class RegistrationDataHandler {
     }
 
     public boolean makeLesson(Lesson lesson) {
+        if (lesson.getPrerequisites() == null) lesson.setPrerequisites(new ArrayList<>());
+        if (lesson.getTheNeed() == null) lesson.setTheNeed(new ArrayList<>());
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeLesson");
-        query = String.format(query, lesson.getLessonCode() + ", " + lesson.getName() +
-                ", " + lesson.getCollegeCode() + ", " + lesson.getUnitNumber() +
-                ", " + lesson.getGrade() + ", " + lesson.getPrerequisites().toString() +
-                ", " + lesson.getTheNeed().toString() + ", [1], " + lesson.getDays().toString() +
-                ", " + lesson.getClassTime() + ", " + lesson.getExamTime());
+        query = String.format(query, getStringFormat(lesson.getLessonCode()) + ", " + getStringFormat(lesson.getName()) +
+                ", " + getStringFormat(lesson.getCollegeCode()) + ", " + lesson.getUnitNumber() +
+                ", " + getStringFormat(lesson.getGrade().toString()) + ", " + getStringFormat(lesson.getPrerequisites().toString()) +
+                ", " + getStringFormat(lesson.getTheNeed().toString()) + ", [1], " + getStringFormat(lesson.getDays().toString()) +
+                ", " + getStringFormat(lesson.getClassTime()) + ", " + getStringFormat(lesson.getExamTime()));
         String query2 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
-        query2 = String.format(query2, lesson.getLessonCode() + ", " + lesson.getProfessorCode() +
+        query2 = String.format(query2, "'1', " +getStringFormat(lesson.getLessonCode()) + ", " +
+                getStringFormat(lesson.getProfessorCode()) +
                 ", " + lesson.getCapacity());
         boolean b1 = this.dataBaseHandler.updateData(query);
         boolean b2 = this.dataBaseHandler.updateData(query2);
@@ -140,41 +152,45 @@ public class RegistrationDataHandler {
 
     public boolean makeGroup(Group group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
-        query = String.format(query, generateGroupNumber(group.getLessonCode()),
-                group.getLessonCode() + ", " + group.getProfessorCode() +
+        query = String.format(query, getStringFormat(String.valueOf(generateGroupNumber(group.getLessonCode()))) + ", " +
+                getStringFormat(group.getLessonCode()) + ", " + getStringFormat(group.getProfessorCode()) +
                 ", " + group.getCapacity());
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean editLesson(String items, String lessonCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateLesson");
-        query = String.format(query, items) + " " + lessonCode;
+        query = String.format(query, items) + " " + getStringFormat(lessonCode);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeGroup(String lessonCode, String groupNumber) {
         if (!existGroup(lessonCode, groupNumber)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeGroup");
-        query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
+        query = String.format(query, "lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(groupNumber));
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeLesson(String lessonCode) {
         if (!existLesson(lessonCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeLesson") + " " + lessonCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeLesson")
+                + " " + getStringFormat(lessonCode);
         String query2 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeGroup");
-        query2 = String.format(query2, "lessonCode = " + lessonCode);
+        query2 = String.format(query2, "lessonCode = " + getStringFormat(lessonCode));
         this.dataBaseHandler.updateData(query2);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean existGroup(String lessonCode, String groupNumber) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existGroup");
-        query = String.format(query, "lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber);
+        query = String.format(query, "lessonCode = " + getStringFormat(lessonCode) +
+                " AND groupNumber = " + getStringFormat(groupNumber));
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("professorCode") != null) return true;
+                if (resultSet.next())
+                    if (resultSet.getString("professorCode") != null) return true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -213,14 +229,14 @@ public class RegistrationDataHandler {
     public boolean editProfessor(String professorCode, String items) {
         if (!existProfessor(professorCode)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateProfessor");
-        query = String.format(query, items) + " " + professorCode;
+        query = String.format(query, items) + " " + getStringFormat(professorCode);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean editUser(String username, String items, String professorCode) {
         if (!existProfessor(professorCode)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateUser");
-        query = String.format(query, items) + " " + username;
+        query = String.format(query, items) + " " + getStringFormat(username);
         return this.dataBaseHandler.updateData(query);
     }
 
@@ -228,7 +244,7 @@ public class RegistrationDataHandler {
         if (getAssistant(collegeCode) != null) return false;
         if (!getProfessorCollegeCode(professorCode).equals(collegeCode)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateCollege");
-        query = String.format(query, items) + " " + collegeCode;
+        query = String.format(query, items) + " " + getStringFormat(collegeCode);
         return this.dataBaseHandler.updateData(query);
     }
 
@@ -236,24 +252,27 @@ public class RegistrationDataHandler {
         if (getAssistant(collegeCode) == null ||
                 !Objects.equals(getAssistant(collegeCode), professorCode)) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateCollege");
-        query = String.format(query, items) + " " + collegeCode;
+        query = String.format(query, items) + " " + getStringFormat(collegeCode);
         return this.dataBaseHandler.updateData(query);
     }
 
     public boolean removeProfessor(String professorCode) {
         if (!existProfessor(professorCode)) return false;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeProfessor") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty
+                (String.class, "removeProfessor") + " " + getStringFormat(professorCode);
         return this.dataBaseHandler.updateData(query);
     }
 
     private String getAssistant(String collegeCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "educationalAssistantCode")
-                + " " + collegeCode;
+                + " " + getStringFormat(collegeCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("educationalAssistantCode") != null) {
-                    return resultSet.getString("educationalAssistantCode");
+                if (resultSet.next()){
+                    if (resultSet.getString("educationalAssistantCode") != null) {
+                        return resultSet.getString("educationalAssistantCode");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -263,12 +282,15 @@ public class RegistrationDataHandler {
     }
 
     private boolean existProfessor(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existProfessor") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty
+                (String.class, "existProfessor") + " " + getStringFormat(professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("username") != null) {
-                    return true;
+                if (resultSet.next()) {
+                    if (resultSet.getString("username") != null) {
+                        return true;
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -278,12 +300,15 @@ public class RegistrationDataHandler {
     }
 
     public String getLessonCollegeCode(String lessonCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getLessonCollege") + " " + lessonCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty
+                (String.class, "getLessonCollege") + " " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("collegeCode") != null) {
-                    return resultSet.getString("collegeCode");
+                if (resultSet.next()) {
+                    if (resultSet.getString("collegeCode") != null) {
+                        return resultSet.getString("collegeCode");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -293,12 +318,15 @@ public class RegistrationDataHandler {
     }
 
     public String getProfessorCollegeCode(String professorCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorCollege") + " " + professorCode;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty
+                (String.class, "getProfessorCollege") + " " + getStringFormat(professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.getString("collegeCode") != null) {
-                    return resultSet.getString("collegeCode");
+                if (resultSet.next()) {
+                    if (resultSet.getString("collegeCode") != null) {
+                        return resultSet.getString("collegeCode");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -309,19 +337,22 @@ public class RegistrationDataHandler {
 
     public boolean updateProfessorLessons(String professorCode, List<String> lessons) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateProfessor");
-        query = String.format(query, "lessonsCode = " + lessons) + " " + professorCode;
+        query = String.format(query, "lessonsCode = " + getStringFormat(lessons.toString()))
+                + " " + getStringFormat(professorCode);
         return this.dataBaseHandler.updateData(query);
     }
 
     public List<String> getProfessorLessons(String professorCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
-        query = String.format(query, "professor") + " professorCode = " + professorCode;
+        query = String.format(query, "professor") + " professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                Array lessons = resultSet.getArray("lessonsCode");
-                String[] lessonsCode = (String[]) lessons.getArray();
-                return Arrays.asList(lessonsCode);
+                if (resultSet.next()) {
+                    String lessons = resultSet.getString("lessonCode");
+                    String lessonArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
+                }
             } catch (SQLException ignored) {}
         }
         return null;
@@ -329,7 +360,7 @@ public class RegistrationDataHandler {
 
     public List<String> getProfessorsByLesson(String lessonCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorByLesson");
-        query = query + " lessonCode = " + lessonCode;
+        query = query + " lessonCode = " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         List<String> professors = new ArrayList<>();
         if (resultSet != null) {
@@ -344,29 +375,32 @@ public class RegistrationDataHandler {
 
     public String getProfessorByLesson(String lessonCode, String groupNumber) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorByLesson");
-        query = query + " lessonCode = " + lessonCode + " AND groupNumber = " + groupNumber;
+        query = query + " lessonCode = " + getStringFormat(lessonCode) + " AND groupNumber = " + getStringFormat(groupNumber);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         String professor = null;
         if (resultSet != null) {
             try {
-                professor = resultSet.getString("professorCode");
-            } catch (SQLException ignored) {}
+                if (resultSet.next()) {
+                    professor = resultSet.getString("professorCode");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return professor;
     }
 
     private int generateGroupNumber(String lessonCode) {
         String query = Config.getConfig
-                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + lessonCode;
+                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         List<Integer> groups = new ArrayList<>();
         if (resultSet != null) {
             try {
                 while (resultSet.next()) {
-                    int n = resultSet.getInt("groupNumber");
+                    int n = Integer.parseInt(resultSet.getString("groupNumber"));
                     groups.add(n);
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -375,5 +409,9 @@ public class RegistrationDataHandler {
             if (!groups.contains(i)) return i;
         }
         return 1;
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 }
