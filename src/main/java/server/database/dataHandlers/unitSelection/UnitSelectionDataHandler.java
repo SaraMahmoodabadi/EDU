@@ -24,6 +24,7 @@ public class UnitSelectionDataHandler {
 
     public boolean updateUnitSelectionTime(String items, String collegeCode, String time) {
         List<String> students = getStudentCodes(collegeCode);
+        setTimeInTable(time);
         for (String student : students) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
             query = String.format(query, "student", "registrationTime = " + getStringFormat(time)) + items +
@@ -31,6 +32,25 @@ public class UnitSelectionDataHandler {
             if (!this.databaseHandler.updateData(query)) return false;
         }
         return true;
+    }
+
+    private void setTimeInTable(String time) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "registrationtimes", "time", getStringFormat(time));
+        this.databaseHandler.updateData(query);
+    }
+
+    public List<String> getTimes() {
+        List<String> times = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "*", "registrationtimes");
+        ResultSet resultSet = this.databaseHandler.getResultSet(query.substring(0, query.length() - 6));
+        try {
+            while (resultSet.next()) {
+                times.add(resultSet.getString("time"));
+            }
+        } catch (SQLException ignored) {}
+        return times;
     }
 
     private List<String> getStudentCodes(String collegeCode) {
