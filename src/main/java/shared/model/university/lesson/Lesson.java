@@ -61,13 +61,6 @@ public class Lesson {
         this.examTime = examTime;
     }
 
-    public Lesson(String name, List<Day> days, String classTime) {
-        this.name = name;
-        this.days = days;
-        this.classTime = classTime;
-        this.plan = getPlan();
-    }
-
     public Lesson(String lessonCode, String name, String examTime) {
         this.lessonCode = lessonCode;
         this.name = name;
@@ -80,6 +73,14 @@ public class Lesson {
         this.examTime = examTime;
         this.grade = grade;
         this.group = group;
+    }
+
+    public Lesson(String lessonCode, String name, List<Day> lessonDays, String classTime) {
+        this.lessonCode = lessonCode;
+        this.name = name;
+        this.days = lessonDays;
+        this.classTime = classTime;
+        this.plan = getPlan();
     }
 
     public String getName() {

@@ -22,13 +22,16 @@ public class PlanDataHandler {
 
     public List<Lesson> getUserWeeklyPlan(String userType, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
-        query = String.format(query, userType) + userType + "Code = " + getUserCode(userType, username);
+        query = String.format(query, userType) + " " + userType + "Code = " +
+                getStringFormat(getUserCode(userType, username));
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                Array lessons = resultSet.getArray("lessonsCode");
-                String[] lessonsCode = (String[]) lessons.getArray();
-                return getLessonsWeeklyPlan(Arrays.asList(lessonsCode));
+                if (resultSet.next()) {
+                    String lessons = resultSet.getString("lessonsCode");
+                    String lessonArray = lessons.substring(1, lessons.length() - 1);
+                    return getLessonsWeeklyPlan(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+                }
             } catch (SQLException ignored) {
             }
         }
@@ -38,18 +41,24 @@ public class PlanDataHandler {
     private List<Lesson> getLessonsWeeklyPlan(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getWeeklyPlan") + " " + lessonCode;
+            String query = Config.getConfig(ConfigType.QUERY).getProperty
+                    (String.class, "getWeeklyPlan") + " " + getStringFormat(lessonCode);
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
-            if (resultSet != null) {
-                try {
+            try {
+                if (resultSet.next()) {
                     String classTime = resultSet.getString("classTime");
                     String name = resultSet.getString("name");
-                    Array days = resultSet.getArray("days");
-                    Day[] lessonDays = (Day[]) days.getArray();
-                    Lesson lesson = new Lesson(name, Arrays.asList(lessonDays), classTime);
+                    String days = resultSet.getString("days");
+                    String daysArray = days.substring(1, days.length() - 1);
+                    List<Day> lessonDays = new ArrayList<>();
+                    for (String day : daysArray.split(", ")) {
+                        lessonDays.add(Day.valueOf(day));
+                    }
+                    Lesson lesson = new Lesson(lessonCode, name, lessonDays, classTime);
                     lessons.add(lesson);
-                } catch (SQLException ignored) {
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         return lessons;
@@ -57,26 +66,30 @@ public class PlanDataHandler {
 
     private String getUserCode(String userType, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, userType + "Code", userType) + " username = " + username;
+        query = String.format(query, userType + "Code", userType) + " username = " + getStringFormat(username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 return resultSet.getString(userType + "Code");
-            } catch (SQLException ignored) {}
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     public List<Lesson> getUserExams(String userType, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
-        query = String.format(query, userType) + userType + "Code = " + getUserCode(userType, username);
+        query = String.format(query, userType) + userType + "Code = " + getStringFormat(getUserCode(userType, username));
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
-                Array lessons = resultSet.getArray("lessonsCode");
-                String[] lessonsCode = (String[]) lessons.getArray();
-                return getLessonsExam(Arrays.asList(lessonsCode));
-            } catch (SQLException ignored) {}
+        try {
+            if (resultSet.next()) {
+                String lessons = resultSet.getString("lessonsCode");
+                String lessonArray = lessons.substring(1, lessons.length() - 1);
+                return getLessonsExam(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -84,17 +97,24 @@ public class PlanDataHandler {
     private List<Lesson> getLessonsExam(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
-            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getExam") + " " + lessonCode;
+            String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getExam")
+                    + " " + getStringFormat(lessonCode);
             ResultSet resultSet = this.databaseHandler.getResultSet(query);
-            if (resultSet != null) {
-                try {
+            try {
+                if (resultSet.next()) {
                     String examTime = resultSet.getString("examTime");
                     String name = resultSet.getString("name");
                     Lesson lesson = new Lesson(lessonCode, name, examTime);
                     lessons.add(lesson);
-                } catch (SQLException ignored) {}
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
         return lessons;
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 }

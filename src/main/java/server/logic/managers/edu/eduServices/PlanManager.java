@@ -1,5 +1,6 @@
 package server.logic.managers.edu.eduServices;
 
+import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.eduServises.PlanDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
@@ -8,6 +9,7 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class PlanManager {
@@ -20,54 +22,85 @@ public class PlanManager {
     }
 
     public Response getWeeklyPlan() {
-        List<Lesson> lessons = this.dataHandler.getUserWeeklyPlan
-                (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName());
-        if (lessons != null) {
-            Response response = new Response(ResponseStatus.OK);
-            for (int i = 1; i <= lessons.size() ; i++) {
-                response.addData("lesson" + i, lessons.get(i));
-            }
-            return response;
+        List<Lesson> lessons = getThisTermLessons(this.dataHandler.getUserWeeklyPlan
+                (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName()));
+        Response response = new Response(ResponseStatus.OK);
+        for (int i = 1; i <= lessons.size() ; i++) {
+            response.addData("lesson" + i, lessons.get(i));
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
-        return getErrorResponse(errorMessage);
+        return response;
     }
 
     public Response getExamList() {
-        List<Lesson> lessons = this.dataHandler.getUserExams
-                (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName());
-        if (lessons != null) {
-            HashMap<Lesson, Double> examTime = new HashMap<>();
-            for (Lesson lesson : lessons) {
-                String exam = lesson.getExamTime();
-                String time = exam.split("-")[3];
-                double date = Integer.parseInt(exam.split("-")[0]) * 365 +
-                        Integer.parseInt(exam.split("-")[1]) * 12 +
-                        Integer.parseInt(exam.split("-")[2]) +
-                        Integer.parseInt(time.split(":")[0]) / 24.0 +
-                        Integer.parseInt(time.split(":")[1]) / (24.0 * 60.0);
-                examTime.put(lesson, date);
-            }
-            List<Double> times = new ArrayList<>(examTime.values());
-            Collections.sort(times);
-            Response response = new Response(ResponseStatus.OK);
-            for (double time : times) {
-                for (Map.Entry<Lesson, Double> entry : examTime.entrySet()) {
-                    if (Objects.equals(entry.getValue(), time)) {
-                        response.addData("lesson" +
-                                entry.getKey().getLessonCode(), entry.getKey());
-                    }
+        List<Lesson> lessons = getThisTermLessons(this.dataHandler.getUserExams
+                (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName()));
+        HashMap<Lesson, Double> examTime = new HashMap<>();
+        for (Lesson lesson : lessons) {
+            String exam = lesson.getExamTime();
+            String time = exam.split("-")[3];
+            double date = Integer.parseInt(exam.split("-")[0]) * 365 +
+                    Integer.parseInt(exam.split("-")[1]) * 12 +
+                    Integer.parseInt(exam.split("-")[2]) +
+                    Integer.parseInt(time.split(":")[0]) / 24.0 +
+                    Integer.parseInt(time.split(":")[1]) / (24.0 * 60.0);
+            examTime.put(lesson, date);
+        }
+        List<Double> times = new ArrayList<>(examTime.values());
+        Collections.sort(times);
+        Response response = new Response(ResponseStatus.OK);
+        for (double time : times) {
+            for (Map.Entry<Lesson, Double> entry : examTime.entrySet()) {
+                if (Objects.equals(entry.getValue(), time)) {
+                    response.addData("lesson" +
+                            entry.getKey().getLessonCode(), entry.getKey());
                 }
             }
-            return response;
         }
-        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
-        return getErrorResponse(errorMessage);
+        return response;
     }
 
-    private Response getErrorResponse(String errorMessage) {
-        Response response = new Response(ResponseStatus.ERROR);
-        response.setErrorMessage(errorMessage);
-        return response;
+    private List<Lesson> getThisTermLessons(List<Lesson> lessons) {
+        String thisTerm;
+        if (registrationPassed()) {
+            thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
+        }
+        else {
+            thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "lastTerm");
+        }
+        List<Lesson> newList = new ArrayList<>();
+        if (lessons != null) {
+            for (Lesson lesson : lessons) {
+                String term = lesson.getLessonCode().split("-")[0];
+                if (!term.equals(thisTerm)) continue;
+                String lessonCode = getMainLessonCode(lesson.getLessonCode());
+                lesson.setLessonCode(lessonCode);
+                newList.add(lesson);
+            }
+        }
+        return newList;
+    }
+
+    private boolean registrationPassed() {
+        String time = getRegistrationTime();
+        String now = String.valueOf(LocalDate.now());
+        int t1 = Integer.parseInt(time.split("-")[0]) * 365 +
+                Integer.parseInt(time.split("-")[1]) * 12 +
+                Integer.parseInt(time.split("-")[2]);
+        int t2 = Integer.parseInt(now.split("-")[0]) * 365 +
+                Integer.parseInt(now.split("-")[1]) * 12 +
+                Integer.parseInt(now.split("-")[2]);
+        return t2 > t1;
+    }
+
+    private String getRegistrationTime() {
+        MainDataHandler dataHandler = new MainDataHandler(this.client.getDataHandler());
+        return dataHandler.getUnitSelectionTime(this.client.getUserName());
+    }
+
+    private String getMainLessonCode(String lesson) {
+        String term = lesson.split("-")[0];
+        int n = lesson.split("-").length;
+        String group = lesson.split("-")[n - 1];
+        return lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
     }
 }
