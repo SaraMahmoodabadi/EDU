@@ -33,9 +33,9 @@ public class NewUserManager {
         Student student = (Student) request.getData("student");
         if (makeUser(student, (String) request.getData("profile"))) {
             if (!this.dataHandler.existStudentCode(student.getStudentCode())) {
-                String items = student.getUsername() + ", " + student.getStudentCode() + ", " +
-                        student.getEnteringYear() + " ," + student.getSupervisorCode() + ", " +
-                        student.getStatus() + ", " + student.getGrade();
+                String items = getStringFormat(student.getUsername()) + ", " + getStringFormat(student.getStudentCode()) + ", " +
+                        student.getEnteringYear() + " ," + getStringFormat(student.getSupervisorCode()) + ", " +
+                        getStringFormat(student.getStatus().toString()) + ", " + getStringFormat(student.getGrade().toString());
                 if (this.dataHandler.makeNewStudent(items)) {
                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "userCreated");
                    return getOKResponse(note);
@@ -51,10 +51,11 @@ public class NewUserManager {
     private Response makeProfessor(Request request) {
         Professor professor = (Professor) request.getData("professor");
         if (makeUser(professor, (String) request.getData("profile"))) {
-            if (!this.dataHandler.existStudentCode(professor.getProfessorCode())) {
-                String items = professor.getUsername() + ", " + professor.getProfessorCode() + ", " +
-                        professor.getRoomNumber() + ", " + professor.getDegree() + ", " +
-                        professor.getType() + ", ";
+            if (!this.dataHandler.existProfessorCode(professor.getProfessorCode())) {
+                String items = getStringFormat(professor.getUsername()) + ", " + getStringFormat(professor.getProfessorCode()) + ", " +
+                        getStringFormat(String.valueOf(professor.getRoomNumber())) + ", " +
+                        getStringFormat(professor.getDegree().toString()) + ", " +
+                        getStringFormat(professor.getType().toString()) + ", ";
                 if (this.dataHandler.makeNewProfessor(items)) {
                     String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "userCreated");
                     return getOKResponse(note);
@@ -70,13 +71,13 @@ public class NewUserManager {
     private boolean makeUser(User user, String profile) {
         if (this.dataHandler.existNationalCode(String.valueOf(user.getNationalCode())) ||
                 this.dataHandler.existUsername(user.getUsername())) return false;
-        String items = user.getFirstName() + ", " + user.getLastName() + ", " +
-                user.getNationalCode() + ", " + user.getCollegeCode() + ", " +
-                user.getUsername() + ", " + user.getPassword() + ", " +
-                user.getEmailAddress() + ", " + user.getPhoneNumber();
+        String items = getStringFormat(user.getFirstName()) + ", " + getStringFormat(user.getLastName()) + ", " +
+                getStringFormat(String.valueOf(user.getNationalCode())) + ", " + getStringFormat(user.getCollegeCode()) + ", " +
+                getStringFormat(user.getUsername()) + ", " + getStringFormat(user.getPassword()) + ", " +
+                getStringFormat(user.getEmailAddress()) + ", " + getStringFormat(String.valueOf(user.getPhoneNumber()));
         String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "userImage");
         new ImageHandler().saveImage(path, profile);
-        items = items + ", " + path;
+        items = items + ", " + getStringFormat(path);
         return this.dataHandler.makeNewUser(items);
     }
 
@@ -92,4 +93,7 @@ public class NewUserManager {
         return response;
     }
 
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
+    }
 }

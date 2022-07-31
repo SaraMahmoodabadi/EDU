@@ -34,58 +34,62 @@ public class NewUserDataHandler {
 
     public boolean existProfessorCode(String professorCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
-        query = String.format(query, "username", "professorCode = " + professorCode);
+        query = String.format(query, "username", "professor") + " professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 if (resultSet.getString("username") != null) return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     public boolean existStudentCode(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
-        query = String.format(query, "username", "professorCode = " + studentCode);
+        query = String.format(query, "username", "student") + " studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 if (resultSet.getString("username") != null) return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     public boolean existUsername(String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
-        query = String.format(query, "firstName", "username = " + username);
+        query = String.format(query, "firstName", "user") + " username = " + getStringFormat(username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 if (resultSet.getString("firstName") != null) return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
     public boolean existNationalCode(String nationalCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "existUserData");
-        query = String.format(query, "username", "nationalCode = " + nationalCode);
+        query = String.format(query, "username", "user") + " nationalCode = " + getStringFormat(nationalCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
+        try {
+            if (resultSet.next()) {
                 if (resultSet.getString("username") != null) return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 
 }
