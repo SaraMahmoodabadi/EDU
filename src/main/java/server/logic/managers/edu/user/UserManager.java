@@ -191,8 +191,8 @@ public class UserManager {
                 middleList.add("not specified");
                 leftList.add("");
             }
-            response.addData("middleList", middleList);
-            response.addData("leftList", leftList);
+            response.addData("middleList", middleList.toString());
+            response.addData("leftList", leftList.toString());
         }
         return response;
     }

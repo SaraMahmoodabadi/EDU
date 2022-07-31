@@ -39,7 +39,7 @@ public class UserHandler {
 
     public User getInformation(String userName){
         String getPassword = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getInformation");
-        String query = getPassword + " '" + userName + "'";
+        String query = getPassword + " " + getStringFormat(userName);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -59,7 +59,7 @@ public class UserHandler {
 
     public String getStatus(String username) {
         String status = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getStatus");
-        String query = status + " '" + username + "'";
+        String query = status + " " + getStringFormat(username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -75,7 +75,7 @@ public class UserHandler {
 
     public String getProfessorType(String username) {
         String status = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorType");
-        String query = status + " '" + username + "'";
+        String query = status + " " + getStringFormat(username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -91,20 +91,24 @@ public class UserHandler {
 
     public void updatePassword(String password, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updatePassword");
-        String query = String.format(updatedData, password) + " '" + userName + "'";
+        String query = String.format(updatedData, getStringFormat(password)) + " " + getStringFormat(userName);
         this.dataBaseHandler.updateData(query);
     }
 
     public void updateThisLogin(String thisLogin, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateThisLogin");
-        String query = String.format(updatedData, thisLogin) + " '" + userName + "'";
+        String query = String.format(updatedData, getStringFormat(thisLogin)) + " " + getStringFormat(updatedData);
         this.dataBaseHandler.updateData(query);
     }
 
     public void updateLastLogin(String lastLogin, String userName) {
         String updatedData = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateLastLogin");
-        String query = String.format(updatedData, lastLogin) + " '" + userName + "'";
+        String query = String.format(updatedData, getStringFormat(lastLogin)) + " " + getStringFormat(userName);
         this.dataBaseHandler.updateData(query);
+    }
+
+    private String getStringFormat(String value) {
+        return "'" + value + "'";
     }
 
 }

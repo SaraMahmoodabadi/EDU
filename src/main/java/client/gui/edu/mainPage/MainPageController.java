@@ -137,6 +137,15 @@ public class MainPageController implements Initializable {
     }
 
     public void showUnitSelectionPage(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        if (EDU.userType == UserType.STUDENT) {
+            EDU.sceneSwitcher.switchScenes(stage, "unitSelectionStudent");
+        }
+        else if (EDU.userType == UserType.PROFESSOR){
+            if (EDU.professorType == Type.EDUCATIONAL_ASSISTANT) {
+                EDU.sceneSwitcher.switchScenes(stage, "unitSelectionTime");
+            }
+        }
     }
 
     public void showTemporaryScores(ActionEvent actionEvent) {
@@ -225,9 +234,11 @@ public class MainPageController implements Initializable {
     }
 
     private void getTableData(Response response) {
-        String middleListString = (String) response.getData("middleList");
+        String middleList = (String) response.getData("middleList");
+        String middleListString = middleList.substring(1, middleList.length() - 1);
         List<String> middleListValues = new ArrayList<>(Arrays.asList(middleListString.split(", ")));
-        String rightListString = (String) response.getData("rightList");
+        String rightList = (String) response.getData("rightList");
+        String rightListString = rightList.substring(1, rightList.length() - 1);
         List<String> rightListValues = new ArrayList<>(Arrays.asList(rightListString.split(", ")));
         setTableData(middleListValues, rightListValues);
     }
