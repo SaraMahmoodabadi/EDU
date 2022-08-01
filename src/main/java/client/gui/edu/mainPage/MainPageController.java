@@ -193,6 +193,8 @@ public class MainPageController implements Initializable {
             this.leftList.setVisible(false);
             this.middleList.setVisible(false);
             this.rightList.setVisible(false);
+            this.statusRectangle.setVisible(false);
+            this.statusText.setVisible(false);
             if (EDU.professorType != Type.EDUCATIONAL_ASSISTANT) {
                 this.unitSelection.setDisable(true);
                 this.unitSelection.setVisible(false);

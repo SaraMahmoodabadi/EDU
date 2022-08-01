@@ -27,6 +27,8 @@ public class Lesson {
     private String plan;
     private int term;
 
+    public Lesson() {}
+
     public Lesson(String name, String lessonCode, String collegeCode,
                   List<String> teacherAssistant, int unitNumber,
                   Grade grade, List<String> prerequisites,
@@ -228,6 +230,7 @@ public class Lesson {
     }
 
     public String getPlan() {
+        if (days == null || classTime == null) return "-";
         return "days: " + this.days.toString() +
                 ", time: " + this.classTime;
     }

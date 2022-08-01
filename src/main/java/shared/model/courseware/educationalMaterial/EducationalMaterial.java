@@ -8,6 +8,8 @@ public class EducationalMaterial {
     private String name;
     private List<Item> items;
 
+    public EducationalMaterial() {}
+
     public EducationalMaterial(String courseCode,String name) {
         this.educationalMaterialCode = this.generateCode(courseCode);
         this.name = name;

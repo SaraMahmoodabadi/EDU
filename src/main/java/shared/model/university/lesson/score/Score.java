@@ -2,14 +2,16 @@ package shared.model.university.lesson.score;
 
 public class Score {
 
-    private final String lessonCode;
+    private String lessonCode;
     private int lessonGroup;
-    private final String studentCode;
+    private String studentCode;
     private String professorCode;
     private String score;
     private ScoreType type;
     private String protest;
     private String protestAnswer;
+
+    public Score() {}
 
     public Score(String lessonCode, int lessonGroup, String studentCode,
                  String professorCode , String score, ScoreType type) {

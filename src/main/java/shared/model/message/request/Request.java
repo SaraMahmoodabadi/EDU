@@ -15,6 +15,8 @@ public class Request {
     private String date;
     private String information;
 
+    public Request() {}
+
     public Request(Type type, String studentCode, String professorCode) {
         this.type = type;
         this.studentCode = studentCode;

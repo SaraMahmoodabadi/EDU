@@ -8,6 +8,8 @@ public class Answer {
     private String sendTime;
     private String exerciseCode;
 
+    public Answer() {}
+
     public Answer(String studentCode, String exerciseCode, String sendTime) {
         this.studentCode = studentCode;
         this.sendTime = sendTime;

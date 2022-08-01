@@ -11,6 +11,8 @@ public class Message {
     private String messageText;
     private String sendMessageTime;
 
+    public Message() {}
+
     public Message(String sender, String receiver, UserType senderType, UserType receiverType,
                    String messageText, String sendMessageTime) {
         this.sender = sender;

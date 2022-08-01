@@ -19,6 +19,7 @@ public class ServerController {
     private final int port;
     private final ObjectMapper objectMapper;
     private String token;
+    public static EDU edu;
 
     public ServerController(int port) {
         this.port = port;
@@ -32,7 +33,7 @@ public class ServerController {
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
             getToken();
-            new EDU(this);
+            edu = new EDU(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

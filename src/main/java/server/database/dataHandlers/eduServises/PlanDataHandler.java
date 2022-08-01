@@ -29,8 +29,10 @@ public class PlanDataHandler {
             try {
                 if (resultSet.next()) {
                     String lessons = resultSet.getString("lessonsCode");
-                    String lessonArray = lessons.substring(1, lessons.length() - 1);
-                    return getLessonsWeeklyPlan(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+                    if (lessons != null) {
+                        String lessonArray = lessons.substring(1, lessons.length() - 1);
+                        return getLessonsWeeklyPlan(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+                    }
                 }
             } catch (SQLException ignored) {
             }

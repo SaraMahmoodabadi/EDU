@@ -14,6 +14,8 @@ public class Course {
     private List<EducationalMaterial> educationalMaterials;
     private List<Exercise> exercises;
 
+    public Course() {}
+
     public Course(String courseCode, int groupNumber, List<List<String>> professors,
                   List<String> teacherAssistant, List<EducationalMaterial> educationalMaterials,
                   List<Exercise> exercises) {

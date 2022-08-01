@@ -16,6 +16,8 @@ public class Exercise {
     private ItemType itemType;
     private List<Answer> answers;
 
+    public Exercise() {}
+
     public Exercise(String courseCode, String name, String openingTime,
                     String closingTime, String uploadingTimeWithoutDeductingScores,
                     String fileAddress, String descriptions, ItemType itemType) {

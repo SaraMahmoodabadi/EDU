@@ -10,6 +10,8 @@ public class Group {
     private int registrationNumber;
     private List<String> students;
 
+    public Group() {}
+
     public Group(String lessonCode, int capacity, String professorCode) {
         this.lessonCode = lessonCode;
         this.capacity= capacity;

@@ -9,7 +9,6 @@ import shared.model.user.professor.Type;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -81,7 +80,8 @@ public class RegistrationDataHandler {
 
     private List<Group> getGroups(String lessonCode) {
         String query = Config.getConfig
-                (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + getStringFormat(lessonCode);
+                (ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "*", "edu.group") + " lessonCode = " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             List<Group> groups = new ArrayList<>();
@@ -104,7 +104,7 @@ public class RegistrationDataHandler {
 
     public List<String> getLessonGroups(String lessonCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "groups", "lesson") + " lessonCode = " + getStringFormat(lessonCode);
+        query = String.format(query, "edu.groups", "lesson") + " lessonCode = " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
@@ -120,7 +120,7 @@ public class RegistrationDataHandler {
 
     public void updateLessonGroups(String lessonCode, List<String> groups) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "lesson", "groups = " + getStringFormat(groups.toString())) + " lessonCode = " +
+        query = String.format(query, "lesson", "edu.groups = " + getStringFormat(groups.toString())) + " lessonCode = " +
                 getStringFormat(lessonCode);
         this.dataBaseHandler.updateData(query);
     }
@@ -238,8 +238,8 @@ public class RegistrationDataHandler {
                      resultSet.getString("lastName");
              String professorCode = resultSet.getString("professorCode");
              String collegeCode = resultSet.getString("collegeCode");
-             MasterDegree degree = (MasterDegree) resultSet.getObject("degree");
-             Type type = (Type) resultSet.getObject("type");
+             MasterDegree degree = MasterDegree.valueOf(resultSet.getString("degree"));
+             Type type = Type.valueOf(resultSet.getString("type"));
              Professor professor = new Professor(fullName, collegeCode, professorCode, degree, type);
              professors.add(professor);
             }

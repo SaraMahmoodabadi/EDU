@@ -13,6 +13,8 @@ public class Professor extends User {
     private MasterDegree degree;
     private Type type;
 
+    public Professor(){}
+
     public Professor(String firstName, String lastName, long nationalCode,
                      String collegeCode, String username, String password,
                      UserType userType, String email, String phoneNumber,

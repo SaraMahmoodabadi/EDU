@@ -105,7 +105,7 @@ public class WeeklyPlanController implements Initializable {
         double x = 250 + (h1 * 62) + (m1 * 62) / 60.0;
         for (Day day : days) {
             Label lessonLabel = new Label();
-            lessonLabel.setText(name);
+            lessonLabel.setText(name + "\n" + h1 + ":" + m1 + "-" + h2 + ":" + m2);
             lessonLabel.setTextAlignment(TextAlignment.CENTER);
             lessonLabel.setTextFill(Color.valueOf("#b151b8"));
             lessonLabel.setStyle(String.valueOf(Color.valueOf("#ffd100")));
@@ -115,6 +115,7 @@ public class WeeklyPlanController implements Initializable {
             lessonLabel.setPrefWidth(width);
             lessonLabel.setScaleX(x);
             lessonLabel.setScaleY(getY(day));
+            pane.getChildren().add(lessonLabel);
         }
     }
 

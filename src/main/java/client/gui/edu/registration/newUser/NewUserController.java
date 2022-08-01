@@ -2,6 +2,7 @@ package client.gui.edu.registration.newUser;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.ServerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -146,8 +147,7 @@ public class NewUserController implements Initializable {
         FileChooser imageChooser = new FileChooser();
         imageChooser.setTitle("select image");
         imageChooser.setInitialDirectory(new File(imageCode));
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        File file = imageChooser.showOpenDialog(stage);
+        File file = imageChooser.showOpenDialog(ServerController.edu);
         if(file != null) {
             Image image = new Image(file.toURI().toString());
             profileImage.setImage(image);

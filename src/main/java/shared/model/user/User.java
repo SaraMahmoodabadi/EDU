@@ -15,6 +15,8 @@ public class User {
     private String password;
     private UserType userType;
 
+    public User() {}
+
     public User(String firstName, String lastName, long nationalCode,
                 String collegeCode, String username, String password,
                 UserType userType, String email, String phoneNumber) {

@@ -11,6 +11,8 @@ public class College {
     private String educationalAssistantCode;
     private boolean hasAssistant;
 
+    public College() {}
+
     public College(String collegeCode, String name) {
         this.collegeCode = collegeCode;
         this.name = name;

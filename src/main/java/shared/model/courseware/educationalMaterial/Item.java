@@ -7,6 +7,8 @@ public class Item {
     private String text;
     private String mediaFileAddress;
 
+    public Item() {}
+
     public Item(ItemType itemType, String eduMaterialCode, int itemCount) {
         this.itemCode = this.generateCode(eduMaterialCode, itemCount);
         this.itemType = itemType;

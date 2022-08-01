@@ -20,6 +20,8 @@ public class Student extends User {
     private EducationalStatus status;
     private Grade grade;
 
+    public Student() {}
+
     public Student(String firstName, String lastName, long nationalCode,
                    String collegeCode, String username, String password,
                    UserType userType, String email, String phoneNumber,
