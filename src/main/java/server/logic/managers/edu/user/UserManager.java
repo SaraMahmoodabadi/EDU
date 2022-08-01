@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -198,9 +199,27 @@ public class UserManager {
     }
 
     private boolean isUnitSelectionTime() {
-        String unitSelectionTime = this.mainDataHandler.getUnitSelectionTime(this.clientHandler.getUserName());
-        if (unitSelectionTime == null) return false;
-        String date  = String.valueOf(LocalDate.now());
-        return date.equals(unitSelectionTime);
+        String time = this.mainDataHandler.getUnitSelectionTime(this.clientHandler.getUserName());
+        if (time == null) return false;
+        int y = Integer.parseInt(time.split("-")[0]);
+        int m = Integer.parseInt(time.split("-")[1]);
+        int d = Integer.parseInt(time.split("-")[2]);
+        int hStart = Integer.parseInt(time.split("-")[3].split(":")[0]);
+        int mmStart = Integer.parseInt(time.split("-")[3].split(":")[1]);
+        int hEnd = Integer.parseInt(time.split("-")[4].split(":")[0]);
+        int mmEnd = Integer.parseInt(time.split("-")[4].split(":")[1]);
+        Calendar calendar = Calendar.getInstance();
+        int y2 = calendar.get(Calendar.YEAR);
+        int m2 = calendar.get(Calendar.MONTH);
+        int d2 = calendar.get(Calendar.DAY_OF_MONTH);
+        int h2 = calendar.get(Calendar.HOUR_OF_DAY);
+        int mm2 = calendar.get(Calendar.MINUTE);
+        if (y == y2 && m == m2 && d == d2) {
+            int t1 = hStart * 60 + mmStart;
+            int t2 = hEnd * 60 + mmEnd;
+            int t3 = h2 * 60 + mm2;
+            return t1 <= t3 && t2 >= t3;
+        }
+        return false;
     }
 }

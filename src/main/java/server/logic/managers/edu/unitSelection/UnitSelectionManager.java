@@ -60,7 +60,7 @@ public class UnitSelectionManager {
     private Response sendLessons(List<Lesson> lessons) {
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         List<String> markedLessons = this.dataHandler.getStudentMarkedLessons(client.getUserName());
-        List<String> tookLessons = this.dataHandler.getStudentLessons(client.getUserName());
+        List<String> tookLessons = this.dataHandler.getStudentLessons(client.getUserName(), false);
         Response response = new Response(ResponseStatus.OK);
         for (Lesson lesson : lessons) {
             if (markedLessons.contains(thisTerm + "-" + lesson.getLessonCode() + "-" + lesson.getGroup())) {
@@ -298,7 +298,7 @@ public class UnitSelectionManager {
         String thisTime = this.dataHandler.getLessonData("classTime", thisLessonCode);
         String thisDaysArray = thisDays.substring(1, thisDays.length() - 1);
         List<String> thisDaysList = new ArrayList<>(Arrays.asList(thisDaysArray.split(",")));
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName());
+        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             int n = lesson.split("-").length;
             String term = lesson.split("-")[0];
@@ -343,7 +343,7 @@ public class UnitSelectionManager {
         int d1 = Integer.parseInt(thisExamTime.split("-")[2]);
         int h1 = Integer.parseInt(thisExamTime.split("-")[3]);
         int mm1 = Integer.parseInt(thisExamTime.split("-")[4]);
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName());
+        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             int n = lesson.split("-").length;
             String term = lesson.split("-")[0];
@@ -372,7 +372,7 @@ public class UnitSelectionManager {
         String thisLesson = (String) request.getData("lessonCode");
         String thisCollegeCode = this.dataHandler.getLessonData("collegeCode", thisLesson);
         if (!thisCollegeCode.equals(religiousCollege)) return false;
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName());
+        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             String term = lesson.split("-")[0];
             if (!term.equals(thisTerm)) continue;
@@ -388,7 +388,7 @@ public class UnitSelectionManager {
     private boolean checkLessonIsTaken(Request request) {
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         String thisLesson = (String) request.getData("lessonCode");
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName());
+        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             String term = lesson.split("-")[0];
             int n = lesson.split("-").length;
@@ -444,7 +444,7 @@ public class UnitSelectionManager {
     }
 
     private String findGroup(String lessonCode) {
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName());
+        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             String term = lesson.split("-")[0];
             int n = lesson.split("-").length;

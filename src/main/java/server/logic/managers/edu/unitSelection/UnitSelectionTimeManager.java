@@ -1,5 +1,6 @@
 package server.logic.managers.edu.unitSelection;
 
+import server.database.MySQLHandler;
 import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
 import shared.model.user.student.Grade;
@@ -9,86 +10,123 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class UnitSelectionTimeManager {
     private final UnitSelectionDataHandler dataHandler;
-    public static Thread thread;
 
     public UnitSelectionTimeManager(ClientHandler client) {
         this.dataHandler = new UnitSelectionDataHandler(client.getDataHandler());
     }
 
     public Response setTime(Request request) {
-        String filter = (String) request.getData("filter");
-        boolean result;
-        if (filter.equals("grade")) result = setTimeWithGrade(request);
-        else result = setTimeWithYear(request);
+        String grade = (String) request.getData("grade");
+        String year = (String) request.getData("year");
+        String time = (String) request.getData("time");
+        String collegeCode = (String) request.getData("collegeCode");
+        boolean result = this.dataHandler.updateUnitSelectionTime(grade, year, collegeCode, time);
         if (result) return sendOKResponse();
         else return sendErrorResponse();
     }
 
-    private boolean setTimeWithGrade(Request request) {
-        Grade grade = (Grade) request.getData("value");
-        String time  = (String) request.getData("date");
-        String collegeCode = (String) request.getData("collegeCode");
-        String items = " grade = '" + grade + "'";
-        return this.dataHandler.updateUnitSelectionTime(items, collegeCode, time);
-    }
-
-    private boolean setTimeWithYear(Request request) {
-        int year = (int) request.getData("value");
-        String time  = (String) request.getData("date");
-        String collegeCode = (String) request.getData("collegeCode");
-        String items  = " enteringYear = " + year;
-        return this.dataHandler.updateUnitSelectionTime(items, collegeCode, time);
-    }
-
-    private void checkTime(String time) {
-        thread = new Thread(() -> {
-            int t = findTime(this.dataHandler.getTimes());
-            if (t != -1) {
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        //TODO
+    public static void checkTime(MySQLHandler handler) {
+        UnitSelectionDataHandler dataHandler = new UnitSelectionDataHandler(handler);
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    List<String> students = dataHandler.getStudentCodes();
+                    boolean result = true;
+                    for (String student : students) {
+                        if (isPassed(dataHandler.getRegistrationTime(student))) {
+                            if(!dataHandler.IsFinaledRegistration(student)) {
+                                checkLessons(student, handler);
+                                dataHandler.finalRegistration(student);
+                            }
+                        }
+                        else {
+                            result = false;
+                        }
                     }
-                }, (long) t * 60 * 1000);
+                    if (result) {
+                        makeCourses();
+                        break;
+                    }
+                    Thread.sleep(1000 * 60 * 5);
+                } catch (InterruptedException ignored) {}
             }
         });
         thread.start();
     }
 
-    private int findTime(List<String> times) {
+    private static boolean isPassed(String time) {
         try {
-            int max = 0;
-            for (String time : times) {
-                int y = Integer.parseInt(time.split("-")[0]);
-                int m = Integer.parseInt(time.split("-")[1]);
-                int d = Integer.parseInt(time.split("-")[2]);
-                int h = Integer.parseInt(time.split("-")[4].split(":")[0]);
-                int mm = Integer.parseInt(time.split("-")[4].split(":")[1]);
-                int t = (y * 365 + m * 30 + d) * 24 * 60 + h * 60 + mm;
-                if (max < t) {
-                    max = t;
-                    Calendar calendar = Calendar.getInstance();
-                    int t2 = (calendar.get(Calendar.YEAR) * 365 +
-                            calendar.get(Calendar.MONTH) * 30 +
-                            calendar.get(Calendar.DAY_OF_MONTH)) * 24 * 60 +
-                            calendar.get(Calendar.HOUR) * 60 +
-                            calendar.get(Calendar.MINUTE);
-                    if (t2 > t) return -1;
-                    max = Math.max(max, t - t2);
+            int y = Integer.parseInt(time.split("-")[0]);
+            int m = Integer.parseInt(time.split("-")[1]);
+            int d = Integer.parseInt(time.split("-")[2]);
+            int h = Integer.parseInt(time.split("-")[4].split(":")[0]);
+            int mm = Integer.parseInt(time.split("-")[4].split(":")[1]);
+            Calendar calendar = Calendar.getInstance();
+            int y2 = calendar.get(Calendar.YEAR);
+            int m2 = calendar.get(Calendar.MONTH);
+            int d2 = calendar.get(Calendar.DAY_OF_MONTH);
+            int h2 = calendar.get(Calendar.HOUR_OF_DAY);
+            int mm2 = calendar.get(Calendar.MINUTE);
+            if (y > y2) return false;
+            if (y == y2 && m > m2) return false;
+            if (y == y2 && m == m2 && d > d2) return false;
+            return y != y2 || m != m2 || d != d2 || h <= h2;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static void checkLessons(String studentCode, MySQLHandler handler) {
+        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty("thisTerm");
+        UnitSelectionDataHandler dataHandler = new UnitSelectionDataHandler(handler);
+        List<String> lessons = dataHandler.getStudentLessons(studentCode, true);
+        List<String> lastTermLessons = new ArrayList<>();
+        List<String> thisTermLessons = new ArrayList<>();
+        List<String> removedLessonCodes = new ArrayList<>();
+        for (String lesson : lessons) {
+            String term = lesson.split("-")[0];
+            int n = lesson.split("-").length;
+            String group = lesson.split("-")[n - 1];
+            String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            if (term.equals(thisTerm)) thisTermLessons.add(lessonCode);
+            else lastTermLessons.add(lessonCode);
+        }
+        for (String lesson : thisTermLessons) {
+            List<String> prerequisites = dataHandler.getPrerequisites(lesson);
+            List<String> theNeeds = dataHandler.getNeeds(lesson);
+            for (String prerequisite : prerequisites) {
+                if (!lastTermLessons.contains(prerequisite)) {
+                    removedLessonCodes.add(lesson);
+                    break;
                 }
             }
-           return max;
-        } catch (Exception ignored) {}
-        return 0;
+            for (String need : theNeeds) {
+                if (!thisTermLessons.contains(need)) {
+                    removedLessonCodes.add(lesson);
+                    break;
+                }
+            }
+        }
+        List<String> removedLessons = new ArrayList<>();
+        for (String lesson : lessons) {
+            String term = lesson.split("-")[0];
+            int n = lesson.split("-").length;
+            String group = lesson.split("-")[n - 1];
+            String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            if (removedLessonCodes.contains(lessonCode)) removedLessons.add(lesson);
+        }
+        lessons.removeAll(removedLessons);
+        dataHandler.updateStudentLessons(studentCode, lessons);
+    }
+
+    private static void makeCourses() {
+
     }
 
     private Response sendOKResponse() {

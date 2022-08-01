@@ -26,20 +26,17 @@ public class AssistantUnitSelectionController implements Initializable {
     @FXML
     protected ComboBox<String> yearBox;
     @FXML
-    protected RadioButton gradeButton;
-    @FXML
-    protected RadioButton yearButton;
+    protected ComboBox<String> hour;
     @FXML
     protected DatePicker date;
-    protected ToggleGroup group;
 
 
     public void register(ActionEvent actionEvent) {
         if (isNull()) return;
         Request request = new Request(RequestType.SET_UNIT_SELECTION_TIME);
-        request.addData("filter", setFilter());
-        request.addData("value", setValue());
-        request.addData("date", date.getValue());
+        request.addData("grade", gradeBox.getValue());
+        request.addData("year", yearBox.getValue());
+        request.addData("time", setDate());
         request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
@@ -55,29 +52,59 @@ public class AssistantUnitSelectionController implements Initializable {
     }
 
     private boolean isNull() {
-        return date.getValue() == null || group.getSelectedToggle() == null
+        return date.getValue() == null || hour.getValue() == null
                 || gradeBox.getValue() == null || yearBox.getValue() == null;
     }
 
     private void makeBoxes() {
         yearBox.getItems().addAll("1400", "99", "98", "97", "96 and before");
         gradeBox.getItems().addAll(Arrays.toString(Grade.values()));
+        hour.getItems().addAll(Arrays.toString(Hour.values()));
     }
 
-    private String setFilter() {
-        if (group.getSelectedToggle() == gradeButton) return "grade";
-        else return "year";
-    }
-
-    private String setValue() {
-        if (group.getSelectedToggle() == gradeButton) return gradeBox.getValue();
-        else return yearBox.getValue();
+    private String setDate() {
+        String dateValue = date.getValue().toString();
+        String time = "8:0-9:0";
+        switch (Hour.valueOf(hour.getValue())) {
+            case _8_9:
+                time = "8:0-9:0";
+                break;
+            case _9_10:
+                time = "9:0-10:0";
+                break;
+            case _10_11:
+                time = "10:0-11:0";
+                break;
+            case _11_12:
+                time = "11:0-12:0";
+                 break;
+            case _12_13:
+                time = "12:0-13:0";
+                break;
+            case _13_14:
+                time = "13:0-14:0";
+                break;
+            case _14_15:
+                time = "14:0-15:0";
+                break;
+            case _15_16:
+                time = "15:0-16:0";
+                break;
+            case _16_17:
+                time = "16:0-17:0";
+                break;
+            case _17_18:
+                time = "17:0-18:0";
+                break;
+            case _18_19:
+                time = "18:0-19:0";
+                break;
+        }
+        return dateValue + "-" + time;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         makeBoxes();
-        gradeButton.setToggleGroup(group);
-        yearButton.setToggleGroup(group);
     }
 }

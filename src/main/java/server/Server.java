@@ -1,5 +1,7 @@
 package server;
 
+import server.database.MySQLHandler;
+import server.logic.managers.edu.unitSelection.UnitSelectionTimeManager;
 import server.network.ClientHandler;
 import server.network.Token;
 
@@ -27,10 +29,15 @@ public class Server {
         try {
             this.serverSocket = new ServerSocket(port);
             this.running = true;
+            runImportantMethods();
             listenForNewConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void runImportantMethods() {
+        UnitSelectionTimeManager.checkTime(new MySQLHandler());
     }
 
     private void listenForNewConnection() {
