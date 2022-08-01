@@ -99,13 +99,16 @@ public class UnitSelectionTimeManager {
         }
         for (String lesson : thisTermLessons) {
             List<String> prerequisites = dataHandler.getPrerequisites(lesson);
-            List<String> theNeeds = dataHandler.getNeeds(lesson);
             for (String prerequisite : prerequisites) {
                 if (!lastTermLessons.contains(prerequisite)) {
                     removedLessonCodes.add(lesson);
                     break;
                 }
             }
+        }
+        thisTermLessons.removeAll(removedLessonCodes);
+        for (String lesson : thisTermLessons) {
+            List<String> theNeeds = dataHandler.getNeeds(lesson);
             for (String need : theNeeds) {
                 if (!thisTermLessons.contains(need)) {
                     removedLessonCodes.add(lesson);
@@ -126,7 +129,7 @@ public class UnitSelectionTimeManager {
     }
 
     private static void makeCourses() {
-
+        //TODO : Check if course has been created
     }
 
     private Response sendOKResponse() {

@@ -102,6 +102,29 @@ public class RegistrationDataHandler {
         return null;
     }
 
+    public List<String> getLessonGroups(String lessonCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "groups", "lesson") + " lessonCode = " + getStringFormat(lessonCode);
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.next()) {
+                    String groups = resultSet.getString("groups");
+                    String groupsArray = groups.substring(1, groups.length() - 1);
+                    return new ArrayList<>(Arrays.asList(groupsArray.split(", ")));
+                }
+            } catch (SQLException ignored) {}
+        }
+        return null;
+    }
+
+    public void updateLessonGroups(String lessonCode, List<String> groups) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "lesson", "groups = " + getStringFormat(groups.toString())) + " lessonCode = " +
+                getStringFormat(lessonCode);
+        this.dataBaseHandler.updateData(query);
+    }
+
     public String getCollegeCode(String collegeName){
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getCollegeCode")
                 + " " + getStringFormat(collegeName);

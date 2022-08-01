@@ -131,6 +131,9 @@ public class RegistrationManager {
                 boolean result = this.dataHandler.makeGroup(group) &&
                         addProfessorLesson(group.getProfessorCode(), group.getLessonCode());
                 if (!result) {
+                    List<String> groups = this.dataHandler.getLessonGroups(group.getLessonCode());
+                    groups.add(String.valueOf(group.getGroupNumber()));
+                    this.dataHandler.updateLessonGroups(group.getLessonCode(), groups);
                     String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                             (String.class, "invalidInputs");
                     return getErrorResponse(errorMessage);
@@ -160,6 +163,10 @@ public class RegistrationManager {
                 List<String> professor = Collections.singletonList(this.dataHandler.getProfessorByLesson
                         (lessonCode, (String) request.getData("group")));
                 removeProfessorsLesson(professor, lessonCode);
+                String group = (String) request.getData("group");
+                List<String> groups = this.dataHandler.getLessonGroups(lessonCode);
+                groups.remove(group);
+                this.dataHandler.updateLessonGroups(lessonCode, groups);
             }
             else {
                 result = this.dataHandler.removeLesson(lessonCode);

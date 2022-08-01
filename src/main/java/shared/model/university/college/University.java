@@ -10,6 +10,26 @@ public class University {
 
     private University() {
         collegeName = new ArrayList<>();
+        major = new ArrayList<>();
+        makeNameList();
+        makeMajorList();
+    }
+
+    private void makeMajorList() {
+        major.add("Computer Engineering");
+        major.add("Electrical Engineering");
+        major.add("Mechanical Engineering");
+        major.add("Aerospace Engineering");
+        major.add("Chemical Engineering");
+    }
+
+    private void makeNameList() {
+        collegeName.add("Computer Engineering");
+        collegeName.add("Electrical Engineering");
+        collegeName.add("Mechanical Engineering");
+        collegeName.add("Aerospace Engineering");
+        collegeName.add("Chemical Engineering");
+        collegeName.add("Religious Center");
     }
 
     public List<String> getCollegeName() {
