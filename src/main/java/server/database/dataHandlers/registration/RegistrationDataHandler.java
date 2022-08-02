@@ -103,19 +103,18 @@ public class RegistrationDataHandler {
     }
 
     public List<String> getLessonGroups(String lessonCode) {
+        List<String> lessonGroups = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "edu.groups", "lesson") + " lessonCode = " + getStringFormat(lessonCode);
+        query = String.format(query, "groupNumber", "edu.group") + " lessonCode = " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
-                if (resultSet.next()) {
-                    String groups = resultSet.getString("groups");
-                    String groupsArray = groups.substring(1, groups.length() - 1);
-                    return new ArrayList<>(Arrays.asList(groupsArray.split(", ")));
+                while (resultSet.next()) {
+                    lessonGroups.add(resultSet.getString("groupNumber"));
                 }
             } catch (SQLException ignored) {}
         }
-        return null;
+        return lessonGroups;
     }
 
     public void updateLessonGroups(String lessonCode, List<String> groups) {
@@ -234,14 +233,15 @@ public class RegistrationDataHandler {
         List<Professor> professors = new ArrayList<>();
         try {
             while (resultSet.next()) {
-             String fullName = resultSet.getString("u.firstName") +
-                     resultSet.getString("u.lastName");
-             String professorCode = resultSet.getString("professorCode");
-             String collegeCode = resultSet.getString("collegeCode");
-             MasterDegree degree = MasterDegree.valueOf(resultSet.getString("degree"));
-             Type type = Type.valueOf(resultSet.getString("type"));
-             Professor professor = new Professor(fullName, collegeCode, professorCode, degree, type);
-             professors.add(professor);
+                String firstName = resultSet.getString("firstName");
+                String lastName = resultSet.getString("lastName");
+                String fullName = firstName + " " + lastName;
+                String professorCode = resultSet.getString("professorCode");
+                String collegeCode = resultSet.getString("collegeCode");
+                MasterDegree degree = MasterDegree.valueOf(resultSet.getString("degree"));
+                Type type = Type.valueOf(resultSet.getString("type"));
+                Professor professor = new Professor(fullName, collegeCode, professorCode, degree, type);
+                professors.add(professor);
             }
         } catch (SQLException e) {
             e.printStackTrace();

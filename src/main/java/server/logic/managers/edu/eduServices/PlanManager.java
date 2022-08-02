@@ -24,18 +24,20 @@ public class PlanManager {
     }
 
     public Response getWeeklyPlan() {
-        List<Lesson> lessons = getThisTermLessons(this.dataHandler.getUserWeeklyPlan
+        List<String> lessonsCode = getThisTermLessons(this.dataHandler.getUserWeeklyPlan
                 (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName()));
+        List<Lesson> lessons = this.dataHandler.getLessonsWeeklyPlan(lessonsCode);
         Response response = new Response(ResponseStatus.OK);
-        for (int i = 1; i <= lessons.size() ; i++) {
+        for (int i = 0; i < lessons.size() ; i++) {
             response.addData("lesson" + i, lessons.get(i));
         }
         return response;
     }
 
     public Response getExamList() {
-        List<Lesson> lessons = getThisTermLessons(this.dataHandler.getUserExams
+        List<String> lessonsCode = getThisTermLessons(this.dataHandler.getUserExams
                 (String.valueOf(this.client.getUserType()).toLowerCase(), this.client.getUserName()));
+        List<Lesson> lessons = this.dataHandler.getLessonsExam(lessonsCode);
         HashMap<Lesson, Double> examTime = new HashMap<>();
         for (Lesson lesson : lessons) {
             String exam = lesson.getExamTime();
@@ -61,7 +63,7 @@ public class PlanManager {
         return response;
     }
 
-    private List<Lesson> getThisTermLessons(List<Lesson> lessons) {
+    private List<String> getThisTermLessons(List<String> lessons) {
         String thisTerm;
         if (registrationPassed()) {
             thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
@@ -69,14 +71,13 @@ public class PlanManager {
         else {
             thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "lastTerm");
         }
-        List<Lesson> newList = new ArrayList<>();
+        List<String> newList = new ArrayList<>();
         if (lessons != null) {
-            for (Lesson lesson : lessons) {
-                String term = lesson.getLessonCode().split("-")[0];
+            for (String lesson : lessons) {
+                String term = lesson.split("-")[0];
                 if (!term.equals(thisTerm)) continue;
-                String lessonCode = getMainLessonCode(lesson.getLessonCode());
-                lesson.setLessonCode(lessonCode);
-                newList.add(lesson);
+                String lessonCode = getMainLessonCode(lesson);
+                newList.add(lessonCode);
             }
         }
         return newList;
@@ -85,6 +86,7 @@ public class PlanManager {
     private boolean registrationPassed() {
         if (isPassed()) return true;
         String time = getRegistrationTime();
+        if (time == null) return true;//todo: ?
         String now = String.valueOf(LocalDate.now());
         int t1 = Integer.parseInt(time.split("-")[0]) * 365 +
                 Integer.parseInt(time.split("-")[1]) * 12 +

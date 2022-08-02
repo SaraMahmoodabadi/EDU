@@ -177,6 +177,7 @@ public class LessonListController implements Initializable {
         collegeName.getItems().add("-");
         collegeName.getItems().addAll(University.getUniversity().getCollegeName());
         unitBox.getItems().addAll("1", "2", "3", "4");
+        unitBox.getItems().add("-");
         if (lessons != null) {
             setTableData(lessons);
         }

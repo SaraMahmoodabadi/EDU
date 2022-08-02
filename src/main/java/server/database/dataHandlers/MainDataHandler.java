@@ -59,11 +59,11 @@ public class MainDataHandler {
 
     public String getUnitSelectionTime(String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "unitSelectionTime", "student") + "username = " + getStringFormat(username);
+        query = String.format(query, "RegistrationTime", "student") + " username = " + getStringFormat(username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                return resultSet.getString("unitSelectionTime");
+                return resultSet.getString("RegistrationTime");
             }
         } catch (SQLException e) {
             e.printStackTrace();

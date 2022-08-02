@@ -51,12 +51,12 @@ public class RegistrationManager {
             query += ("lesson.collegeCode = " + getStringFormat(collegeCode));
             n++;
         }
-        if (unitNumber != null && !unitNumber.equals("")) {
+        if (unitNumber != null && !unitNumber.equals("-") && !unitNumber.equals("")) {
             if (n == 1) query += " AND ";
             query += ("unitNumber = " + unitNumber);
             n++;
         }
-        if (lessonCode != null && !lessonCode.equals("")) {
+        if (lessonCode != null  && !lessonCode.equals("")) {
             if (n >= 1) query += " AND ";
             query += ("lessonCode = " + getStringFormat(lessonCode));
             n++;

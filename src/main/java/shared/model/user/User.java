@@ -22,6 +22,7 @@ public class User {
                 UserType userType, String email, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
         this.nationalCode = nationalCode;
         this.collegeCode = collegeCode;
         this.username = username;
@@ -43,6 +44,7 @@ public class User {
     public User(String firstName, String lastName, String email, String lastLogin, String image) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
         this.emailAddress = email;
         this.lastLogin = lastLogin;
         this.imageAddress = image;
@@ -57,6 +59,7 @@ public class User {
                 String college, String email, long phone, String image) {
         this.firstName = firstname;
         this.lastName = lastname;
+        this.fullName = firstname + " " + lastname;
         this.nationalCode = nationalCode;
         this.collegeCode = college;
         this.emailAddress = email;
@@ -161,7 +164,7 @@ public class User {
     }
 
     public String getFullName() {
-        return this.firstName + " " + this.lastName;
+        return fullName;
     }
 
     public void setFullName(String fullName) {

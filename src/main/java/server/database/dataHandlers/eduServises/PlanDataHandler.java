@@ -20,7 +20,7 @@ public class PlanDataHandler {
         this.databaseHandler = databaseHandler;
     }
 
-    public List<Lesson> getUserWeeklyPlan(String userType, String username) {
+    public List<String> getUserWeeklyPlan(String userType, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
         query = String.format(query, userType) + " " + userType + "Code = " +
                 getStringFormat(getUserCode(userType, username));
@@ -31,7 +31,7 @@ public class PlanDataHandler {
                     String lessons = resultSet.getString("lessonsCode");
                     if (lessons != null) {
                         String lessonArray = lessons.substring(1, lessons.length() - 1);
-                        return getLessonsWeeklyPlan(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+                        return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
                     }
                 }
             } catch (SQLException ignored) {
@@ -40,7 +40,7 @@ public class PlanDataHandler {
         return null;
     }
 
-    private List<Lesson> getLessonsWeeklyPlan(List<String> lessonsCode) {
+    public List<Lesson> getLessonsWeeklyPlan(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty
@@ -80,15 +80,16 @@ public class PlanDataHandler {
         return null;
     }
 
-    public List<Lesson> getUserExams(String userType, String username) {
+    public List<String> getUserExams(String userType, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
-        query = String.format(query, userType) + userType + "Code = " + getStringFormat(getUserCode(userType, username));
+        query = String.format(query, userType.toLowerCase()) + " " +
+                userType.toLowerCase() + "Code = " + getStringFormat(getUserCode(userType, username));
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
                 String lessonArray = lessons.substring(1, lessons.length() - 1);
-                return getLessonsExam(new ArrayList<>(Arrays.asList(lessonArray.split(", "))));
+                return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,7 +97,7 @@ public class PlanDataHandler {
         return null;
     }
 
-    private List<Lesson> getLessonsExam(List<String> lessonsCode) {
+    public List<Lesson> getLessonsExam(List<String> lessonsCode) {
         List<Lesson> lessons = new ArrayList<>();
         for (String lessonCode : lessonsCode) {
             String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getExam")
@@ -123,7 +124,7 @@ public class PlanDataHandler {
         if (resultSet != null) {
             try {
                 if (resultSet.next()) {
-                    return resultSet.getString("username");
+                    return resultSet.getString("collegeCode");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
