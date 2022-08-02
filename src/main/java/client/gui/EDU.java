@@ -41,6 +41,7 @@ public class EDU extends Stage {
         this.setTitle(title);
         String imagePath = Config.getConfig(ConfigType.CLIENT_IMAGE).getProperty(String.class, "sharifLogo");
         Image icon = new Image("file:" + imagePath);
+        this.setOnCloseRequest(event -> System.exit(0));
         this.getIcons().add(icon);
         this.show();
     }

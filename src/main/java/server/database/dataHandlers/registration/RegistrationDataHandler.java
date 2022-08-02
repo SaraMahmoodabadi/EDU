@@ -234,8 +234,8 @@ public class RegistrationDataHandler {
         List<Professor> professors = new ArrayList<>();
         try {
             while (resultSet.next()) {
-             String fullName = resultSet.getString("firstName") +
-                     resultSet.getString("lastName");
+             String fullName = resultSet.getString("u.firstName") +
+                     resultSet.getString("u.lastName");
              String professorCode = resultSet.getString("professorCode");
              String collegeCode = resultSet.getString("collegeCode");
              MasterDegree degree = MasterDegree.valueOf(resultSet.getString("degree"));

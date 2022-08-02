@@ -7,6 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
@@ -29,22 +30,26 @@
             </ImageView>
          </graphic>
       </Button>
-      <TableView fx:id="list" layoutX="161.0" layoutY="123.0" prefHeight="483.0" prefWidth="878.0" style="-fx-background-color: #ffffff;">
-         <columns>
-            <TableColumn fx:id="nameColumn" prefWidth="177.0" text="Professor's name" />
-            <TableColumn fx:id="codeColumn" prefWidth="121.0" text="Code" />
-            <TableColumn fx:id="collegeColumn" prefWidth="243.0" text="College's name" />
-            <TableColumn fx:id="degreeColumn" prefWidth="167.0" text="Degree" />
-            <TableColumn fx:id="postColumn" prefWidth="170.0" text="Post" />
-         </columns>
-         <effect>
-            <InnerShadow color="#b151b8" />
-         </effect>
-      </TableView>
       <Button fx:id="edit" layoutX="510.0" layoutY="637.0" mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="181.0" style="-fx-background-color: #b151b8;" text="edit professors" textAlignment="CENTER" textFill="#ffd100">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Button>
+      <StackPane layoutX="161.0" layoutY="123.0" prefHeight="473.0" prefWidth="878.0">
+         <children>
+            <TableView fx:id="list" prefHeight="483.0" prefWidth="878.0" style="-fx-background-color: #ffffff;">
+               <columns>
+                  <TableColumn fx:id="nameColumn" prefWidth="177.0" text="Professor's name" />
+                  <TableColumn fx:id="codeColumn" prefWidth="121.0" text="Code" />
+                  <TableColumn fx:id="collegeColumn" prefWidth="243.0" text="College's name" />
+                  <TableColumn fx:id="degreeColumn" prefWidth="200.0" text="Degree" />
+                  <TableColumn fx:id="postColumn" prefWidth="200.0" text="Post" />
+               </columns>
+               <effect>
+                  <InnerShadow color="#b151b8" />
+               </effect>
+            </TableView>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

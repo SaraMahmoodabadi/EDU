@@ -46,7 +46,7 @@ public class Lesson {
         this.days = days;
         this.classTime = classTime;
         this.examTime = examTime;
-        this.plan = getPlan();
+        this.plan = "days: " + days + ", time: " + classTime;
         this.professorCode = professorCode;
     }
 
@@ -82,7 +82,7 @@ public class Lesson {
         this.name = name;
         this.days = lessonDays;
         this.classTime = classTime;
-        this.plan = getPlan();
+        this.plan = "days: " + days + ", time: " + classTime;
     }
 
     public String getName() {
@@ -230,8 +230,6 @@ public class Lesson {
     }
 
     public String getPlan() {
-        if (days == null || classTime == null) return "-";
-        return "days: " + this.days.toString() +
-                ", time: " + this.classTime;
+       return this.plan;
     }
 }

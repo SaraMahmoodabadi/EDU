@@ -67,28 +67,6 @@ public class ProfessorListController implements Initializable {
     private boolean stop;
     Request request;
 
-    /**
-    public void show(ActionEvent actionEvent) {
-        request = new Request(RequestType.SHOW_DESIRED_PROFESSORS_LIST);
-        request.addData("collegeName", collegeBox.getValue());
-        request.addData("degree", degreeBox.getValue());
-        request.addData("professorCode", codeField.getText());
-        Response response = EDU.serverController.sendRequest(request);
-        if (response.getStatus() == ResponseStatus.ERROR) {
-            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
-        }
-        else {
-            List<Professor> desiredProfessors = new ArrayList<>();
-            response.getData().forEach((K, V) -> {
-                if (K.startsWith("professor")) {
-                    desiredProfessors.add((Professor) V);
-                }
-            });
-            list.getItems().clear();
-            list.getItems().addAll(desiredProfessors);
-        }
-    } */
-
     public void edit(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "editProfessorPage");
@@ -162,12 +140,6 @@ public class ProfessorListController implements Initializable {
         stop = false;
         hide();
         List<Professor> professors = getData();
-        collegeBox.getItems().add("-");
-        collegeBox.getItems().addAll(University.getUniversity().getCollegeName());
-        degreeBox.getItems().addAll(Arrays.toString(MasterDegree.values()));
-        /**degreeBox.getItems().add(MasterDegree.ASSISTANT_PROFESSOR.toString());
-        degreeBox.getItems().add(MasterDegree.ASSOCIATE_PROFESSOR.toString());
-        degreeBox.getItems().add(MasterDegree.FULL_PROFESSOR.toString());*/
         if (professors != null) {
             setTableData(professors);
         }

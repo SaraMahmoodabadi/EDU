@@ -46,19 +46,20 @@ public class RegistrationManager {
         String lessonCode = (String) request.getData("lessonCode");
         String query = " WHERE ";
         int n = 0;
-        if (collegeName != null && !collegeName.equals("-")) {
+        if (collegeName != null && !collegeName.equals("-") && !collegeName.equals("")) {
             String collegeCode = this.dataHandler.getCollegeCode(collegeName);
-            query += ("collegeCode = " + getStringFormat(collegeCode));
+            query += ("lesson.collegeCode = " + getStringFormat(collegeCode));
             n++;
         }
-        if (unitNumber != null) {
-            if (n == 1) query += "AND ";
+        if (unitNumber != null && !unitNumber.equals("")) {
+            if (n == 1) query += " AND ";
             query += ("unitNumber = " + unitNumber);
             n++;
         }
-        if (lessonCode != null) {
-            if (n >= 1) query += "AND ";
+        if (lessonCode != null && !lessonCode.equals("")) {
+            if (n >= 1) query += " AND ";
             query += ("lessonCode = " + getStringFormat(lessonCode));
+            n++;
         }
         if (n == 0) return getAllLessons();
         else {

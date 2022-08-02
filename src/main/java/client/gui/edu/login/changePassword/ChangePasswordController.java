@@ -68,9 +68,6 @@ public class ChangePasswordController implements Initializable {
 
             }
             else {
-                if (EDU.userType == UserType.PROFESSOR) {
-                    EDU.professorType = (Type) response.getData("professorType");
-                }
                 EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
             }
         }
