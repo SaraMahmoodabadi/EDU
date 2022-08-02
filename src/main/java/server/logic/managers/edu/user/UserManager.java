@@ -166,36 +166,36 @@ public class UserManager {
         List<String> table = this.mainDataHandler.getTableData(this.clientHandler.getUserName());
         if (table != null) {
             List<String> middleList = new ArrayList<>();
-            List<String> leftList = new ArrayList<>();
+            List<String> rightList = new ArrayList<>();
             if (table.get(0) != null) middleList.add(table.get(0));
             else middleList.add("");
-            leftList.add("");
+            rightList.add("");
             if (table.get(1) != null && table.get(2) != null) {
                 middleList.add("specified");
-                leftList.add(table.get(1) + " " + table.get(2));
+                rightList.add(table.get(1) + " " + table.get(2));
             }
             else {
                 middleList.add("not specified");
-                leftList.add("");
+                rightList.add("");
             }
             if (Boolean.parseBoolean(table.get(3))) {
                 middleList.add("issued");
-                leftList.add("your registration permit has been issued");
+                rightList.add("your registration permit has been issued");
             }
             else {
                 middleList.add("not issued");
-                leftList.add("");
+                rightList.add("");
             }
             if (table.get(4) != null) {
                 middleList.add("specified");
-                leftList.add(table.get(4));
+                rightList.add(table.get(4));
             }
             else {
                 middleList.add("not specified");
-                leftList.add("");
+                rightList.add("");
             }
             response.addData("middleList", middleList.toString());
-            response.addData("leftList", leftList.toString());
+            response.addData("rightList", rightList.toString());
         }
         return response;
     }

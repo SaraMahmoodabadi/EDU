@@ -6,6 +6,7 @@ import server.database.dataHandlers.eduServises.PlanDataHandler;
 import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
+import shared.model.user.UserType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
@@ -52,11 +53,10 @@ public class PlanManager {
         List<Double> times = new ArrayList<>(examTime.values());
         Collections.sort(times);
         Response response = new Response(ResponseStatus.OK);
-        for (double time : times) {
+        for (int i = 0; i < times.size(); i++) {
             for (Map.Entry<Lesson, Double> entry : examTime.entrySet()) {
-                if (Objects.equals(entry.getValue(), time)) {
-                    response.addData("lesson" +
-                            entry.getKey().getLessonCode(), entry.getKey());
+                if (Objects.equals(entry.getValue(), times.get(i))) {
+                    response.addData("lesson" + i, entry.getKey());
                 }
             }
         }
@@ -86,7 +86,11 @@ public class PlanManager {
     private boolean registrationPassed() {
         if (isPassed()) return true;
         String time = getRegistrationTime();
-        if (time == null) return true;//todo: ?
+        if (client.getUserType() == UserType.STUDENT) {
+            if (time == null) return true;//todo: ?
+        } else if (client.getUserType() == UserType.PROFESSOR) {
+            return false;
+        }
         String now = String.valueOf(LocalDate.now());
         int t1 = Integer.parseInt(time.split("-")[0]) * 365 +
                 Integer.parseInt(time.split("-")[1]) * 12 +
@@ -98,8 +102,11 @@ public class PlanManager {
     }
 
     private String getRegistrationTime() {
-        MainDataHandler dataHandler = new MainDataHandler(this.client.getDataHandler());
-        return dataHandler.getUnitSelectionTime(this.client.getUserName());
+        if (client.getUserType() == UserType.STUDENT) {
+            MainDataHandler dataHandler = new MainDataHandler(this.client.getDataHandler());
+            return dataHandler.getUnitSelectionTime(this.client.getUserName());
+        }
+        else return null;
     }
 
     private boolean isPassed() {
@@ -113,17 +120,19 @@ public class PlanManager {
             int mm = Integer.parseInt(time.split("-")[3].split(":")[1]);
             Calendar calendar = Calendar.getInstance();
             int y2 = calendar.get(Calendar.YEAR);
-            int m2 = calendar.get(Calendar.MONTH);
+            int m2 = calendar.get(Calendar.MONTH) + 1;
             int d2 = calendar.get(Calendar.DAY_OF_MONTH);
             int h2 = calendar.get(Calendar.HOUR_OF_DAY);
             int mm2 = calendar.get(Calendar.MINUTE);
             if (y > y2) return false;
             if (y == y2 && m > m2) return false;
             if (y == y2 && m == m2 && d > d2) return false;
-            return y != y2 || m != m2 || d != d2 || h <= h2;
+            if (y == y2 && m == m2 && d == d2 && h > h2) return false;
+            if (y == y2 && m == m2 && d == d2 && h == h2 && mm > mm2) return false;
         } catch (Exception e) {
             return false;
         }
+        return true;
     }
 
     private String getMainLessonCode(String lesson) {

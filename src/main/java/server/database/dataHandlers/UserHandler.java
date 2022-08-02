@@ -112,7 +112,7 @@ public class UserHandler {
         if (resultSet != null) {
             try {
                 if (resultSet.next()) {
-                    return resultSet.getString("username");
+                    return resultSet.getString("collegeCode");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

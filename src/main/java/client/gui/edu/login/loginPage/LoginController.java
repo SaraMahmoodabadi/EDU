@@ -117,7 +117,7 @@ public class LoginController implements Initializable {
     }
 
     private void checkWithdrawal(Response response) {
-        EducationalStatus eduStatus = (EducationalStatus) response.getData("eduStatus");
+        EducationalStatus eduStatus = EducationalStatus.valueOf(String.valueOf(response.getData("eduStatus")));
         if (eduStatus == EducationalStatus.WITHDRAWAL_FROM_EDUCATION) {
             String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
                     getProperty(String.class, "withdrawalError");

@@ -29,7 +29,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Rectangle fx:id="table" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="480.0" layoutX="135.0" layoutY="164.0" stroke="#b151b8" strokeType="INSIDE" strokeWidth="2.0" width="930.0" />
+      <Rectangle fx:id="table" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="480.0" layoutX="135.0" layoutY="164.0" stroke="#b151b8" strokeType="INSIDE" strokeWidth="2.0" width="930.0" AnchorPane.rightAnchor="135.0" />
       <Line endY="470.0" layoutX="250.0" layoutY="174.0" startY="-10.0" stroke="#6a5f6b" />
       <Line endX="930.0" layoutX="135.0" layoutY="244.0" stroke="#6a5f6b" />
       <Line endX="930.0" layoutX="135.0" layoutY="324.0" stroke="#6a5f6b" />

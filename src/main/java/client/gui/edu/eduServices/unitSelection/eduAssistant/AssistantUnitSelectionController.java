@@ -58,8 +58,12 @@ public class AssistantUnitSelectionController implements Initializable {
 
     private void makeBoxes() {
         yearBox.getItems().addAll("1400", "99", "98", "97", "96 and before");
-        gradeBox.getItems().addAll(Arrays.toString(Grade.values()));
-        hour.getItems().addAll(Arrays.toString(Hour.values()));
+        for (Grade grade : Grade.values()) {
+            gradeBox.getItems().add(String.valueOf(grade));
+        }
+        for (Hour time : Hour.values()) {
+            hour.getItems().addAll(String.valueOf(time));
+        }
     }
 
     private String setDate() {

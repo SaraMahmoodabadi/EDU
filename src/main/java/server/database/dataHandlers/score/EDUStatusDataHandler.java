@@ -66,8 +66,10 @@ public class EDUStatusDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
-                String lessonsArray = lessons.substring(1, lessons.length() - 1);
-                return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
+                if (lessons != null) {
+                    String lessonsArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -129,9 +129,11 @@ public class StudentRequestController implements Initializable {
     }
 
     private void makeTable() {
+        /**
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         resultColumn.setCellValueFactory(new PropertyValueFactory<>("finalResult"));
+         */
     }
 
     private void hide() {

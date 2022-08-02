@@ -60,11 +60,10 @@ public class ExamListController implements Initializable {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             List<Lesson> lessons = new ArrayList<>();
-            response.getData().forEach((K, V) -> {
-                if (K.startsWith("lesson")) {
-                    lessons.add((Lesson) V);
-                }
-            });
+            for (int i = 0; i < response.getData().size(); i++) {
+                Lesson lesson = (Lesson) response.getData("lesson" + i);
+                lessons.add(lesson);
+            }
             return lessons;
         }
         return null;
@@ -79,11 +78,9 @@ public class ExamListController implements Initializable {
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             List<Lesson> lessons = new ArrayList<>();
-                            response.getData().forEach((K, V) -> {
-                                if (K.startsWith("lesson")) {
-                                    lessons.add((Lesson) V);
-                                }
-                            });
+                            for (int i = 0; i < response.getData().size(); i++) {
+                                lessons.add((Lesson) response.getData("lesson" + i));
+                            }
                             table.getItems().clear();
                             table.getItems().addAll(lessons);
                         }

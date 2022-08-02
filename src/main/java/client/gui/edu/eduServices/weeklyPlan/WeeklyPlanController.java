@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -102,19 +103,25 @@ public class WeeklyPlanController implements Initializable {
     private void makePlace(int h1, int m1, int h2, int m2, List<Day> days, String name) {
         int time = (h2 - h1) * 60 + (m2 - m1);
         double width = (double) (time * 62 ) / 60.0;
-        double x = 250 + (h1 * 62) + (m1 * 62) / 60.0;
+        double x = 250 + ((h1 - 7) * 62) + (m1 * 62) / 60.0;
         for (Day day : days) {
             Label lessonLabel = new Label();
             lessonLabel.setText(name + "\n" + h1 + ":" + m1 + "-" + h2 + ":" + m2);
             lessonLabel.setTextAlignment(TextAlignment.CENTER);
+            lessonLabel.setAlignment(Pos.CENTER);
             lessonLabel.setTextFill(Color.valueOf("#b151b8"));
             lessonLabel.setStyle(String.valueOf(Color.valueOf("#ffd100")));
             lessonLabel.setBackground(new Background(new BackgroundFill
                     (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
             lessonLabel.setPrefHeight(75);
             lessonLabel.setPrefWidth(width);
-            lessonLabel.setScaleX(x);
-            lessonLabel.setScaleY(getY(day));
+            lessonLabel.setLayoutX(x);
+            lessonLabel.setLayoutY(getY(day));
+            lessonLabel.setWrapText(true);
+            AnchorPane.setTopAnchor(lessonLabel, (double) getY(day));
+            AnchorPane.setLeftAnchor(lessonLabel, x);
+            AnchorPane.setRightAnchor(lessonLabel, 1200 - width - x);
+            AnchorPane.setBottomAnchor(lessonLabel, 800 - (double) getY(day) - 75);
             pane.getChildren().add(lessonLabel);
         }
     }
