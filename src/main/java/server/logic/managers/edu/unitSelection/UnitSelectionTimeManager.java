@@ -36,22 +36,17 @@ public class UnitSelectionTimeManager {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    List<String> students = dataHandler.getStudentCodes();
-                    boolean result = true;
-                    for (String student : students) {
-                        if (isPassed(dataHandler.getRegistrationTime(student))) {
-                            if(!dataHandler.IsFinaledRegistration(student)) {
+                    List<String> colleges = dataHandler.getCollegeCodes();
+                    for (String college : colleges) {
+                        if (isPassed(dataHandler.getCollegeRegistrationTime(college)) &&
+                                !dataHandler.isFinaledCollegeRegistration(college)) {
+                            List<String> students = dataHandler.getStudentCodes(college);
+                            for (String student : students) {
                                 checkLessons(student, handler);
-                                dataHandler.finalRegistration(student);
                             }
+                            makeCourses(college);
+                            dataHandler.finalCollegeRegistration(college);
                         }
-                        else {
-                            result = false;
-                        }
-                    }
-                    if (result) {
-                        makeCourses();
-                        break;
                     }
                     Thread.sleep(1000 * 60 * 5);
                 } catch (InterruptedException ignored) {}
@@ -65,8 +60,8 @@ public class UnitSelectionTimeManager {
             int y = Integer.parseInt(time.split("-")[0]);
             int m = Integer.parseInt(time.split("-")[1]);
             int d = Integer.parseInt(time.split("-")[2]);
-            int h = Integer.parseInt(time.split("-")[4].split(":")[0]);
-            int mm = Integer.parseInt(time.split("-")[4].split(":")[1]);
+            int h = Integer.parseInt(time.split("-")[3].split(":")[0]);
+            int mm = Integer.parseInt(time.split("-")[3].split(":")[1]);
             Calendar calendar = Calendar.getInstance();
             int y2 = calendar.get(Calendar.YEAR);
             int m2 = calendar.get(Calendar.MONTH);
@@ -128,7 +123,7 @@ public class UnitSelectionTimeManager {
         dataHandler.updateStudentLessons(studentCode, lessons);
     }
 
-    private static void makeCourses() {
+    private static void makeCourses(String collegeCode) {
         //TODO : Check if course has been created
     }
 

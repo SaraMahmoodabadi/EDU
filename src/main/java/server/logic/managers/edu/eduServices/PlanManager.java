@@ -1,7 +1,9 @@
 package server.logic.managers.edu.eduServices;
 
+import server.database.MySQLHandler;
 import server.database.dataHandlers.MainDataHandler;
 import server.database.dataHandlers.eduServises.PlanDataHandler;
+import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
 import shared.response.Response;
@@ -81,6 +83,7 @@ public class PlanManager {
     }
 
     private boolean registrationPassed() {
+        if (isPassed()) return true;
         String time = getRegistrationTime();
         String now = String.valueOf(LocalDate.now());
         int t1 = Integer.parseInt(time.split("-")[0]) * 365 +
@@ -95,6 +98,30 @@ public class PlanManager {
     private String getRegistrationTime() {
         MainDataHandler dataHandler = new MainDataHandler(this.client.getDataHandler());
         return dataHandler.getUnitSelectionTime(this.client.getUserName());
+    }
+
+    private boolean isPassed() {
+        String time = new UnitSelectionDataHandler(new MySQLHandler())
+                .getCollegeRegistrationTime(this.dataHandler.getCollegeCode(this.client.getUserName()));
+        try {
+            int y = Integer.parseInt(time.split("-")[0]);
+            int m = Integer.parseInt(time.split("-")[1]);
+            int d = Integer.parseInt(time.split("-")[2]);
+            int h = Integer.parseInt(time.split("-")[3].split(":")[0]);
+            int mm = Integer.parseInt(time.split("-")[3].split(":")[1]);
+            Calendar calendar = Calendar.getInstance();
+            int y2 = calendar.get(Calendar.YEAR);
+            int m2 = calendar.get(Calendar.MONTH);
+            int d2 = calendar.get(Calendar.DAY_OF_MONTH);
+            int h2 = calendar.get(Calendar.HOUR_OF_DAY);
+            int mm2 = calendar.get(Calendar.MINUTE);
+            if (y > y2) return false;
+            if (y == y2 && m > m2) return false;
+            if (y == y2 && m == m2 && d > d2) return false;
+            return y != y2 || m != m2 || d != d2 || h <= h2;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private String getMainLessonCode(String lesson) {

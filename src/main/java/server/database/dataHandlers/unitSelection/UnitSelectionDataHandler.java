@@ -41,19 +41,6 @@ public class UnitSelectionDataHandler {
         this.databaseHandler.updateData(query);
     }
 
-    public List<String> getTimes() {
-        List<String> times = new ArrayList<>();
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "*", "registrationtimes");
-        ResultSet resultSet = this.databaseHandler.getResultSet(query.substring(0, query.length() - 6));
-        try {
-            while (resultSet.next()) {
-                times.add(resultSet.getString("time"));
-            }
-        } catch (SQLException ignored) {}
-        return times;
-    }
-
     public List<String> getStudentCodes(String collegeCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "s.studentCode", "student s", "user u", "u.username  = s.username") +
@@ -93,6 +80,57 @@ public class UnitSelectionDataHandler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getCollegeRegistrationTime(String collegeCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "endUnitSelectionTime", "college") + " collegeCode = " + getStringFormat(collegeCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("endUnitSelectionTime");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void finalCollegeRegistration(String collegeCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "college", "isUnitSelectionFinaled = 'true'")
+                + " collegeCode = " + getStringFormat(collegeCode);
+        this.databaseHandler.updateData(query);
+    }
+
+    public boolean isFinaledCollegeRegistration(String collegeCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "isUnitSelectionFinaled", "college") +
+                " collegeCode = " + getStringFormat(collegeCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return Boolean.parseBoolean(resultSet.getString("registrationFinaled"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<String> getCollegeCodes() {
+        List<String> colleges = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "collegeCode", "college");
+        ResultSet resultSet = this.databaseHandler.getResultSet(query.substring(0, query.length() - 6));
+        try {
+            while (resultSet.next()) {
+               colleges.add(resultSet.getString("collegeCode"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return colleges;
     }
 
     public void finalRegistration(String studentCode) {

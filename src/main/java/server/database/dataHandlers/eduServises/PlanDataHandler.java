@@ -116,6 +116,22 @@ public class PlanDataHandler {
         return lessons;
     }
 
+    public String getCollegeCode(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "collegeCode", "user") + " username = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        if (resultSet != null) {
+            try {
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     private String getStringFormat(String value) {
         return "'" + value + "'";
     }
