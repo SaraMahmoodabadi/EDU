@@ -204,6 +204,7 @@ public class TemporaryScoresController implements Initializable {
             while (!stop) {
                 try {
                     Thread.sleep(2000);
+                    if (request == null) continue;
                     Platform.runLater(() -> {
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {

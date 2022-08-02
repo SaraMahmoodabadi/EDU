@@ -30,7 +30,7 @@ public class ProfileDataHandler {
             if (resultSet.next()) {
                 String studentCode = resultSet.getString("studentCode");
                 String rate = resultSet.getString("rate");
-                Grade grade = (Grade) resultSet.getObject("grade");
+                Grade grade = Grade.valueOf(resultSet.getString("grade"));
                 String supervisorCode = resultSet.getString("supervisorCode");
                 String enteringYear = resultSet.getString("enteringYear");
                 return new Student(user.getFirstName(), user.getLastName(), user.getNationalCode(),
@@ -54,7 +54,7 @@ public class ProfileDataHandler {
             if (resultSet.next()) {
                 String professorCode = resultSet.getString("professorCode");
                 int roomNumber = resultSet.getInt("roomNumber");
-                MasterDegree degree = (MasterDegree) resultSet.getObject("degree");
+                MasterDegree degree = MasterDegree.valueOf(resultSet.getString("degree"));
                 return new Professor(user.getFirstName(), user.getLastName(), user.getNationalCode(),
                         user.getCollegeCode(), user.getEmailAddress(), user.getPhoneNumber(), user.getImageAddress(),
                         professorCode, roomNumber, degree);
@@ -78,7 +78,7 @@ public class ProfileDataHandler {
                 String email = resultSet.getString("emailAddress");
                 String phone = resultSet.getString("phoneNumber");
                 String image = resultSet.getString("imageAddress");
-                String college = resultSet.getString("college");
+                String college = resultSet.getString("collegeCode");
                 return new User(firstname, lastname, Long.parseLong(nationalCode),
                         college, email, Long.parseLong(phone), image);
             }
@@ -90,13 +90,13 @@ public class ProfileDataHandler {
 
     public boolean updateEmail(String username, String email) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "user", "emailAddress = " + email) + " username = " + getStringFormat(username);
+        query = String.format(query, "user", "emailAddress = " + getStringFormat(email)) + " username = " + getStringFormat(username);
         return this.databaseHandler.updateData(query);
     }
 
     public boolean updatePhone(String username, String phone) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "user", "phoneNumber = " + phone) + " username = " + getStringFormat(username);
+        query = String.format(query, "user", "phoneNumber = " + getStringFormat(phone)) + " username = " + getStringFormat(username);
         return this.databaseHandler.updateData(query);
     }
 

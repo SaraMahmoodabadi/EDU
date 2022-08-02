@@ -139,7 +139,7 @@ public class ProfileController implements Initializable {
             collegeLabel.setText(student.getCollegeCode());
             emailField.setText(student.getEmailAddress());
             phoneNumberField.setText(String.valueOf(student.getPhoneNumber()));
-            averageOrRoomText.setText(String.valueOf(student.getRate()));
+            averageOrRoomLabel.setText(String.valueOf(student.getRate()));
             degreeLabel.setText(String.valueOf(student.getGrade()));
             supervisorLabel.setText(student.getSupervisorCode());
             enteringYearLabel.setText(String.valueOf(student.getEnteringYear()));
@@ -160,7 +160,7 @@ public class ProfileController implements Initializable {
             collegeLabel.setText(professor.getCollegeCode());
             emailField.setText(professor.getEmailAddress());
             phoneNumberField.setText(String.valueOf(professor.getPhoneNumber()));
-            averageOrRoomText.setText(String.valueOf(professor.getRoomNumber()));
+            averageOrRoomLabel.setText(String.valueOf(professor.getRoomNumber()));
             degreeLabel.setText(String.valueOf(professor.getDegree()));
             Object image = response.getData("profile");
             this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
