@@ -38,7 +38,7 @@ public class RequestManager {
     }
 
     public Response createRequest(Request request) {
-        switch ((Type) request.getData("type")) {
+        switch (Type.valueOf(String.valueOf(request.getData("type")))) {
             case CERTIFICATE:
                 return sendCertificate();
             case DORMITORY:
@@ -169,8 +169,8 @@ public class RequestManager {
 
     public Response getAnswerRequest(Request request) {
         if (request.getRequestType() == RequestType.REGISTER_REQUEST_ANSWER) {
-            boolean isMinor = request.getData("type") == Type.MINOR;
-            Type type = (Type) request.getData("type");
+            Type type = Type.valueOf(String.valueOf(request.getData("type")));
+            boolean isMinor = type == Type.MINOR;
             boolean result = this.pDataHandler.registerRequestAnswer
                     ((String) request.getData("studentCode"),
                             this.client.getUserName(),

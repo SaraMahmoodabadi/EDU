@@ -17,7 +17,7 @@ public class ProfessorRequestDataHandler {
 
     public boolean registerRecommendationAnswer(String studentCode, String firstBlank, String secondBlank,
                                                 String thirdBlank, String username) {
-        if (!isValidProfessorCode(studentCode, username)) return false;
+        if (!isValidProfessor(username, studentCode)) return false;
         String professorCode = getProfessorCode(username);
         if (professorCode == null) return false;
         String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
@@ -27,6 +27,22 @@ public class ProfessorRequestDataHandler {
                 " AND type = " + getStringFormat(Type.RECOMMENDATION.toString()) +
                 " AND professorCode = " + getStringFormat(professorCode);
         return this.databaseHandler.updateData(finalQuery);
+    }
+
+    private boolean isValidProfessor(String username, String studentCode) {
+        String professorCode = getProfessorCode(username);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "professorCode", "request") + " studentCode = " + getStringFormat(studentCode) +
+                " AND type = " + getStringFormat(String.valueOf(Type.RECOMMENDATION));
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                if (resultSet.getString("professorCode").equals(professorCode)) return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean registerRequestAnswer(String studentCode, String username, boolean result,
@@ -57,13 +73,16 @@ public class ProfessorRequestDataHandler {
 
     private boolean isValidProfessorCode(String studentCode, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        String query1 = String.format(query, "professorCode", "student") +  " studentCode = " + getStringFormat(studentCode);
+        String query0 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
+        String query1 = String.format(query0, "c.educationalAssistantCode", "student s", "user u",
+                "u.username = s.username JOIN college c ON c.collegeCode = u.collegeCode") +
+                " s.studentCode = " + getStringFormat(studentCode);
         String query2 = String.format(query, "professorCode", "professor") + " username = " + getStringFormat(username);
         ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
         ResultSet resultSet2 = this.databaseHandler.getResultSet(query2);
         try {
             if (resultSet1.next() && resultSet2.next()) {
-                if (resultSet1.getString("professorCode").equals
+                if (resultSet1.getString("educationalAssistantCode").equals
                         (resultSet2.getString("professorCode"))) return true;
             }
         } catch (SQLException e) {
@@ -74,11 +93,9 @@ public class ProfessorRequestDataHandler {
 
     private boolean isAnotherCollege(String studentCode, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        String query1 = String.format(query, "professorsCode", "student") +  " studentCode = " + getStringFormat(studentCode);
         String query2 = String.format(query, "professorCode", "professor") + " username = " + getStringFormat(username);
         String query3 = String.format(query, "anotherCollegeProfessorCode", "request")
                 +  " studentCode = " + getStringFormat(studentCode);
-        ResultSet resultSet1 = this.databaseHandler.getResultSet(query1);
         ResultSet resultSet2 = this.databaseHandler.getResultSet(query2);
         ResultSet resultSet3 = this.databaseHandler.getResultSet(query3);
         try {

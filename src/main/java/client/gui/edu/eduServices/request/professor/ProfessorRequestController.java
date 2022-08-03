@@ -131,9 +131,20 @@ public class ProfessorRequestController implements Initializable {
         reject.setToggleGroup(result);
     }
 
+    private void hide() {
+        rectangle2.setVisible(false);
+        requestBox.setVisible(false);
+        requestBox.setDisable(true);
+        accept.setVisible(false);
+        reject.setVisible(false);
+        register.setVisible(false);
+        register.setDisable(true);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         makeBox();
         setGroup();
+        if (EDU.professorType != Type.EDUCATIONAL_ASSISTANT) hide();
     }
 }

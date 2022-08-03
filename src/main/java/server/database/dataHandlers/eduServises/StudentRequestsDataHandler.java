@@ -66,7 +66,8 @@ public class StudentRequestsDataHandler {
                 String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
                 finalQuery = String.format(finalQuery, items, getStringFormat(resultSet1.getString("studentCode")) +
                         ", " + getStringFormat(resultSet2.getString("educationalAssistantCode")) + ", " +
-                        Type.MINOR + ", " + getStringFormat(resultSet3.getString("educationalAssistantCode")));
+                        getStringFormat(String.valueOf(Type.MINOR)) + ", " +
+                        getStringFormat(resultSet3.getString("educationalAssistantCode")));
                 return this.databaseHandler.updateData(finalQuery);
             }
         } catch (SQLException e) {

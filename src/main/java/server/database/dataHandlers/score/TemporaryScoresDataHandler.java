@@ -269,7 +269,7 @@ public class TemporaryScoresDataHandler {
 
     public List<String> getStudentCodes(String lessonCode, String group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "*", "group") + "lessonCode = " + getStringFormat(lessonCode) +
+        query = String.format(query, "*", "edu.group") + "lessonCode = " + getStringFormat(lessonCode) +
                 " AND groupNumber = " + getStringFormat(group);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
@@ -290,7 +290,7 @@ public class TemporaryScoresDataHandler {
 
     private String getLessonGroup(String professorCode, String lessonCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "groupNumber", "group") +  " lessonCode = " + getStringFormat(lessonCode) +
+        query = String.format(query, "groupNumber", "edu.group") +  " lessonCode = " + getStringFormat(lessonCode) +
                 " AND professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
