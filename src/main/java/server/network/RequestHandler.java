@@ -235,6 +235,7 @@ public class RequestHandler {
                 break;
             case REGISTER_SCORE:
                 this.client.sendResponse(manager.setScore(request));
+                break;
             case REGISTER_ALL_SCORES:
                 this.client.sendResponse(manager.setScores(request));
                 break;

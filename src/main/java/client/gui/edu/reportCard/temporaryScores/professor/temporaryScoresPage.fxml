@@ -31,7 +31,7 @@
          </font>
       </Button>
       <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="181.0" layoutX="121.0" layoutY="395.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="990.0" />
-      <TableView fx:id="table" layoutX="202.0" layoutY="187.0" prefHeight="188.0" prefWidth="797.0">
+      <TableView fx:id="table" layoutX="202.0" layoutY="187.0" onMouseClicked="#select" prefHeight="188.0" prefWidth="797.0">
          <columns>
             <TableColumn fx:id="studentCodeColumn" prefWidth="134.0" style="-fx-background-color: #ffd100;" text="student code" />
             <TableColumn fx:id="scoreColumn" minWidth="0.0" prefWidth="111.0" style="-fx-background-color: #ffd100;" text="score" />

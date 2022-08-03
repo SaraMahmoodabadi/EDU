@@ -31,6 +31,16 @@ public class EDUStatusManager {
             else {
                 String studentName = (String) request.getData("studentName");
                 studentCode = this.dataHandler.getStudentCode(studentName, collegeCode);
+                if (studentCode == null) {
+                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                            (String.class, "invalidInputs");
+                    return getErrorResponse(errorMessage);
+                }
+            }
+            if (this.dataHandler.getCollegeCode(studentCode) == null) {
+                String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                        (String.class, "invalidInputs");
+                return getErrorResponse(errorMessage);
             }
             if (!this.dataHandler.getCollegeCode(studentCode).equals(collegeCode)) {
                 String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
@@ -48,13 +58,15 @@ public class EDUStatusManager {
         Map<Score, Integer> scores = this.dataHandler.getFinalScores(studentCode);
         List<String> lessons = getMainLessonCodes(this.dataHandler.getLessons(studentCode));
         List<String> finalScores = new ArrayList<>();
-        scores.keySet().forEach((K) -> finalScores.add(K.getLessonCode()));
+        for (Score score : scores.keySet()) {
+            finalScores.add(score.getLessonCode());
+        }
         List<Score> scoreList = new ArrayList<>(scores.keySet());
         Response response = new Response(ResponseStatus.OK);
         for (int i = 0; i < scoreList.size(); i++) {
             response.addData("score" + i, scoreList.get(i));
         }
-        for (int i = 0; i < scoreList.size(); i++) {
+        for (int i = 0; i < lessons.size(); i++) {
             if (!finalScores.contains(lessons.get(i))) {
                 Score score = new Score(lessons.get(i), studentCode, "N");
                 response.addData("score" + (i + scoreList.size()), score);

@@ -88,37 +88,47 @@ public class TemporaryScoresController implements Initializable {
     protected Label numberFailedLabel;
     @FXML
     protected Label averagePassedLabel;
+    @FXML
+    protected Button showPage;
     private boolean stop;
     private Request request;
 
     public void showLessonScores(ActionEvent actionEvent) {
         if (lessonCodeField.getText() == null || groupField.getText() == null) showNullAlert();
+        if (lessonCodeField.getText().equals("") || groupField.getText().equals("")) showNullAlert();
         else {
             request = new Request(RequestType.SHOW_LESSON_SCORES);
             request.addData("lessonCode", lessonCodeField.getText());
             request.addData("group", groupField.getText());
+            request.addData("page", "eduAssistant");
             showRequestResult(request);
         }
     }
 
     public void showStudentScores(ActionEvent actionEvent) {
-        hideLessonSummary();
         if (studentCodeField.getText() == null) showNullAlert();
+        if (studentCodeField.getText().equals("")) showNullAlert();
         else {
-            request = new Request(RequestType.SHOW_LESSON_SCORES);
+            request = new Request(RequestType.SHOW_STUDENT_SCORES);
             request.addData("studentCode", studentCodeField.getText());
+            request.addData("collegeCode", EDU.collegeCode);
             showRequestResult(request);
         }
     }
 
     public void showProfessorScores(ActionEvent actionEvent) {
-        hideLessonSummary();
         if (professorNameField.getText() == null) showNullAlert();
+        if (professorNameField.getText().equals("")) showNullAlert();
         else {
-            request = new Request(RequestType.SHOW_LESSON_SCORES);
+            request = new Request(RequestType.SHOW_PROFESSOR_SCORES);
             request.addData("professorName", professorNameField.getText());
             showRequestResult(request);
         }
+    }
+
+    public void showPage(ActionEvent actionEvent) {
+        stop = true;
+        EDU.sceneSwitcher.switchScene(actionEvent, "professorTemporaryScoresPage");
     }
 
     public void back(ActionEvent actionEvent) {
@@ -168,10 +178,10 @@ public class TemporaryScoresController implements Initializable {
         numberPassedLabel.setOpacity(1);
         numberFailedText.setOpacity(1);
         numberFailedLabel.setOpacity(1);
-        averageText.setText((String) response.getData("average"));
-        averagePassedText.setText((String) response.getData("averagePassed"));
-        numberPassedText.setText((String) response.getData("numberPassed"));
-        numberFailedText.setText((String) response.getData("numberFailed"));
+        averageLabel.setText(String.valueOf(response.getData("average")));
+        averagePassedLabel.setText(String.valueOf(response.getData("averagePassed")));
+        numberPassedLabel.setText(String.valueOf(response.getData("numberPassed")));
+        numberFailedLabel.setText(String.valueOf(response.getData("numberFailed")));
     }
 
     private void showRequestResult(Request request) {
@@ -181,6 +191,7 @@ public class TemporaryScoresController implements Initializable {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
+            hideLessonSummary();
             List<Score> scores = new ArrayList<>();
             response.getData().forEach((K, V) -> {
                 if (K.startsWith("score")) {

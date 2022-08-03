@@ -1,6 +1,8 @@
 package client.gui.edu.reportCard.eduStatus;
 
+import client.gui.AlertMonitor;
 import client.gui.EDU;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -64,24 +66,28 @@ public class EduStatusController implements Initializable {
     protected Button showByName;
     @FXML
     protected Button showByCode;
+    private Request request;
+    private boolean stop;
 
     public void showByCode(ActionEvent actionEvent) {
         if (studentCodeField.getText() != null) {
-            Request request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
+            request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
             request.addData("studentCode", studentCodeField.getText());
             request.addData("collegeCode", EDU.collegeCode);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) setData(response);
+            else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
     }
 
     public void showByName(ActionEvent actionEvent) {
         if (studentNameField.getText() != null) {
-            Request request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
+            request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
             request.addData("studentName", studentNameField.getText());
             request.addData("collegeCode", EDU.collegeCode);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) setData(response);
+            else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
     }
 
@@ -103,7 +109,8 @@ public class EduStatusController implements Initializable {
     }
 
     private void getData() {
-        Request request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
+        request = new Request(RequestType.SHOW_EDU_STATUS_PAGE);
+        request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) setData(response);
     }
@@ -121,12 +128,39 @@ public class EduStatusController implements Initializable {
         table.getItems().addAll(scores);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    if (request == null) continue;
+                    Platform.runLater(() -> {
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            List<Score> scores = new ArrayList<>();
+                            response.getData().forEach((K, V) -> {
+                                if (K.startsWith("score")) {
+                                    scores.add((Score) V);
+                                }
+                            });
+                            table.getItems().clear();
+                            table.getItems().addAll(scores);
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeTable();
         if (EDU.userType == UserType.STUDENT) {
             hide();
             getData();
         }
+        updateData();
     }
 }

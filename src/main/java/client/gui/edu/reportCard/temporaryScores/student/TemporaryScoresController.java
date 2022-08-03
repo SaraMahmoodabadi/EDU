@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -58,15 +59,15 @@ public class TemporaryScoresController implements Initializable {
     List<Score> scores;
     private boolean stop;
     private Request request;
+    private Score score;
 
     public void register(ActionEvent actionEvent) {
-        if (table.getSelectionModel().getSelectedItem() == null) {
+        if (score == null) {
             String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullChoice");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
         }
         else {
-            Score score = table.getSelectionModel().getSelectedItem();
-            if (score == null || protestArea.getText() == null) {
+            if (protestArea.getText() == null) {
                 String message = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "nullItem");
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, message);
             }
@@ -77,6 +78,10 @@ public class TemporaryScoresController implements Initializable {
                 showRequestResult(request, score, protestArea.getText());
             }
         }
+    }
+
+    public void select(MouseEvent mouseEvent) {
+        score = table.getSelectionModel().getSelectedItem();
     }
 
     public void back(ActionEvent actionEvent) {
@@ -93,17 +98,17 @@ public class TemporaryScoresController implements Initializable {
             scores.remove(score);
             score.setProtest(protest);
             scores.add(score);
-            updateTable(this.scores);
+            updateTable(scores);
         }
     }
 
-    private void updateTable(List<Score> scores) {
+    private synchronized void updateTable(List<Score> scores) {
         table.getItems().clear();
         table.getItems().addAll(scores);
     }
 
-    private List<Score> gerData() {
-        Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.STUDENT);
+    private List<Score> getData() {
+        request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.STUDENT);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -131,8 +136,9 @@ public class TemporaryScoresController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                     Platform.runLater(() -> {
+                        Request request = new Request(RequestType.SHOW_TEMPORARY_SCORES_PAGE, UserType.STUDENT);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             List<Score> scores = new ArrayList<>();
@@ -154,7 +160,7 @@ public class TemporaryScoresController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
         makeTable();
-        this.scores = gerData();
+        this.scores = getData();
         if (scores != null) {
             table.getItems().addAll(scores);
         }

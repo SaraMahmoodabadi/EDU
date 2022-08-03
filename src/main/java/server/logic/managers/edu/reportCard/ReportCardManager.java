@@ -1,5 +1,6 @@
 package server.logic.managers.edu.reportCard;
 
+import client.gui.EDU;
 import server.database.dataHandlers.score.TemporaryScoresDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.score.Score;
@@ -26,8 +27,9 @@ public class ReportCardManager {
 
     public Response getStudentTemporaryScores(Request request) {
         String studentCode = "";
+        String collegeCode = (String) request.getData("collegeCode");
         if (this.client.getUserType() == UserType.PROFESSOR) {
-            if (request.getData("collegeCode").equals
+            if (!collegeCode.equals
                     (this.dataHandler.getStudentCollege((String) request.getData("studentCode")))) {
                 String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                         (String.class, "invalidInputs");
@@ -68,17 +70,20 @@ public class ReportCardManager {
 
     public Response getLessonTemporaryScores(Request request) {
         String group = String.valueOf(request.getData("group"));
+        String page = (String) request.getData("page");
         List<Score> scores = this.dataHandler.getLessonScores
-                ((String) request.getData("lessonCode"), this.client.getUserName(), group);
-        if (scores != null) {
+                ((String) request.getData("lessonCode"), this.client.getUserName(), group, page);
+        if (scores != null && scores.size() > 0) {
             Response response = new Response(ResponseStatus.OK);
             for (int i = 0; i < scores.size(); i++) {
                 response.addData("score" + i, scores.get(i));
             }
-            return getLessonSummary(scores, response);
+            return getLessonSummary(scores, response, page);
         }
-        else return getStudentCodes
+        else if (page.equals("professor"))
+            return getStudentCodes
                 ((String) request.getData("lessonCode"), group);
+        return new Response(ResponseStatus.OK);
     }
 
     public Response setProtestAnswer(Request request) {
@@ -100,8 +105,7 @@ public class ReportCardManager {
 
     public Response setScore(Request request) {
         Score score = (Score) request.getData("score");
-        boolean result = this.dataHandler.setScore(
-                (String) request.getData("score"), score.getLessonCode(),
+        boolean result = this.dataHandler.setScore(score.getScore(), score.getLessonCode(),
                 score.getStudentCode());
         if (result) {
             Response response = new Response(ResponseStatus.OK);
@@ -121,7 +125,7 @@ public class ReportCardManager {
         for (Map.Entry<String,Object> entry : data.entrySet()) {
             if (entry.getKey().startsWith("score")) {
                 if (((Score) entry.getValue()).getScore() == null) break;
-                result = this.dataHandler.registerScore((String) request.getData("score"),
+                result = this.dataHandler.registerScore(((Score) entry.getValue()).getScore(),
                         ((Score) entry.getValue()).getLessonCode(),
                         ((Score) entry.getValue()).getStudentCode(), this.client.getUserName());
                 if (!result) break;
@@ -148,7 +152,7 @@ public class ReportCardManager {
                 studentsCode.add(((Score) entry.getValue()).getStudentCode());
                 if (((Score) entry.getValue()).getScore() == null) break;
                 result = this.dataHandler.finalizeScores(((Score) entry.getValue()).getLessonCode(),
-                        this.client.getUserName());
+                        ((Score) entry.getValue()).getStudentCode());
                 if (!result) break;
             }
         }
@@ -171,7 +175,7 @@ public class ReportCardManager {
             int unitSum = 0;
             double scoreSum = 0.0;
             for (Map.Entry<Score,Integer> entry : scores.entrySet()) {
-                scoreSum += Double.parseDouble(entry.getKey().getScore());
+                scoreSum += Double.parseDouble(entry.getKey().getScore()) * entry.getValue();
                 unitSum += entry.getValue();
             }
             double rate = scoreSum / unitSum;
@@ -193,23 +197,25 @@ public class ReportCardManager {
         return getErrorResponse(errorMessage);
     }
 
-    public Response getLessonSummary(List<Score> scores, Response response) {
-        double sum = 0.0;
-        double sumPassed = 0.0;
-        int numberPassed = 0;
-        for (Score score : scores) {
-            sum += Double.parseDouble(score.getScore());
-            if (Double.parseDouble(score.getScore()) >= 10) {
-                sumPassed += Double.parseDouble(score.getScore());
-                numberPassed++;
+    public Response getLessonSummary(List<Score> scores, Response response, String page) {
+        if (page.equals("eduAssistant")) {
+            double sum = 0.0;
+            double sumPassed = 0.0;
+            int numberPassed = 0;
+            for (Score score : scores) {
+                sum += Double.parseDouble(score.getScore());
+                if (Double.parseDouble(score.getScore()) >= 10) {
+                    sumPassed += Double.parseDouble(score.getScore());
+                    numberPassed++;
+                }
             }
+            double average = sum / scores.size();
+            double averagePassed = sumPassed / numberPassed;
+            response.addData("average", average);
+            response.addData("averagePassed", averagePassed);
+            response.addData("numberPassed", numberPassed);
+            response.addData("numberFailed", scores.size() - numberPassed);
         }
-        double average = sum / scores.size();
-        double averagePassed = sumPassed / numberPassed;
-        response.addData("average", average);
-        response.addData("averagePassed", averagePassed);
-        response.addData("numberPassed", numberPassed);
-        response.addData("numberFailed", scores.size() - numberPassed);
         return response;
     }
 
@@ -220,7 +226,7 @@ public class ReportCardManager {
     }
 
     private Response getStudentCodes(String lessonCode, String group) {
-        List<String> students = this.dataHandler.getStudentCodes(lessonCode, group);
+        List<String> students = this.dataHandler.getStudentCodes(lessonCode, group, client.getUserName());
         if (students != null) {
             Response response = new Response(ResponseStatus.OK);
             for (int i = 1; i < students.size(); i++) {

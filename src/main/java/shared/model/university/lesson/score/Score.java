@@ -95,4 +95,20 @@ public class Score {
     public void setProtestAnswer(String protestAnswer) {
         this.protestAnswer = protestAnswer;
     }
+
+    public void setLessonCode(String lessonCode) {
+        this.lessonCode = lessonCode;
+    }
+
+    public void setLessonGroup(int lessonGroup) {
+        this.lessonGroup = lessonGroup;
+    }
+
+    public void setStudentCode(String studentCode) {
+        this.studentCode = studentCode;
+    }
+
+    public void setProfessorCode(String professorCode) {
+        this.professorCode = professorCode;
+    }
 }

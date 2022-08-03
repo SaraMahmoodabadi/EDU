@@ -32,12 +32,12 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="lessonCodeField" alignment="CENTER" layoutX="114.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="lesson code" style="-fx-background-color: #ffffff;">
+      <TextField fx:id="lessonCodeField" alignment="CENTER" layoutX="102.0" layoutY="106.0" prefHeight="40.0" prefWidth="176.0" promptText="lesson code" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </TextField>
-      <TextField fx:id="studentCodeField" alignment="CENTER" layoutX="456.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
+      <TextField fx:id="studentCodeField" alignment="CENTER" layoutX="494.0" layoutY="106.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
@@ -62,7 +62,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Button>
-      <TableView fx:id="table" layoutX="190.0" layoutY="238.0" prefHeight="248.0" prefWidth="822.0">
+      <TableView fx:id="table" layoutX="189.0" layoutY="221.0" prefHeight="248.0" prefWidth="822.0">
          <columns>
             <TableColumn fx:id="lessonCodeColumn" prefWidth="100.0" style="-fx-background-color: #ffd100;" text="lesson code" />
             <TableColumn fx:id="professorCodeColumn" prefWidth="115.0" style="-fx-background-color: #ffd100;" text="professor code" />
@@ -75,54 +75,59 @@
             <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
          </effect>
       </TableView>
-      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="511.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
-      <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="632.0" layoutY="511.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
-      <Rectangle fx:id="rectangle3" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="598.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
-      <Rectangle fx:id="rectangle4" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="632.0" layoutY="598.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
-      <Text fx:id="numberPassedText" fill="#b151b8" layoutX="252.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of passed students:">
+      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="484.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="632.0" layoutY="483.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle3" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="190.0" layoutY="559.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Rectangle fx:id="rectangle4" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="55.0" layoutX="637.0" layoutY="558.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="380.0" />
+      <Text fx:id="numberPassedText" fill="#b151b8" layoutX="245.0" layoutY="517.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of passed students:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Text fx:id="numberFailedText" fill="#b151b8" layoutX="717.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of failed students:">
+      <Text fx:id="numberFailedText" fill="#b151b8" layoutX="717.0" layoutY="517.0" strokeType="OUTSIDE" strokeWidth="0.0" text="number of failed students:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Text fx:id="averageText" fill="#b151b8" layoutX="315.0" layoutY="631.0" strokeType="OUTSIDE" strokeWidth="0.0" text="scores average:">
+      <Text fx:id="averageText" fill="#b151b8" layoutX="315.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="scores average:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Text fx:id="averagePassedText" fill="#b151b8" layoutX="665.0" layoutY="631.0" strokeType="OUTSIDE" strokeWidth="0.0" text="average regardless of the failed students:">
+      <Text fx:id="averagePassedText" fill="#b151b8" layoutX="665.0" layoutY="591.0" strokeType="OUTSIDE" strokeWidth="0.0" text="average regardless of the failed students:">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <Label fx:id="numberPassedLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="459.0" layoutY="528.0" prefHeight="21.0" prefWidth="27.0" text="-" textFill="#b151b8">
+      <Label fx:id="numberPassedLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="459.0" layoutY="501.0" prefHeight="21.0" prefWidth="27.0" text="-" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="averageLabel" layoutX="440.0" layoutY="614.0" text="-" textFill="#b151b8">
+      <Label fx:id="averageLabel" layoutX="437.0" layoutY="576.0" text="-" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="numberFailedLabel" layoutX="922.0" layoutY="527.0" text="-" textFill="#b151b8">
+      <Label fx:id="numberFailedLabel" layoutX="924.0" layoutY="500.0" text="-" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label fx:id="averagePassedLabel" layoutX="971.0" layoutY="614.0" text="-" textFill="#b151b8">
+      <Label fx:id="averagePassedLabel" layoutX="971.0" layoutY="574.0" text="-" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="groupField" alignment="CENTER" layoutX="682.0" layoutY="106.0" prefHeight="40.0" prefWidth="56.0" promptText="group" style="-fx-background-color: #ffffff;">
+      <TextField fx:id="groupField" alignment="CENTER" layoutX="287.0" layoutY="106.0" prefHeight="40.0" prefWidth="56.0" promptText="group" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </TextField>
+      <Button fx:id="showPage" layoutX="477.0" layoutY="647.0" mnemonicParsing="false" onAction="#showPage" prefHeight="39.0" prefWidth="250.0" style="-fx-background-color: #b151b8;" text="score registration page" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
