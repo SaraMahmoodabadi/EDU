@@ -91,14 +91,27 @@ public class PlanManager {
         } else if (client.getUserType() == UserType.PROFESSOR) {
             return false;
         }
-        String now = String.valueOf(LocalDate.now());
-        int t1 = Integer.parseInt(time.split("-")[0]) * 365 +
-                Integer.parseInt(time.split("-")[1]) * 12 +
-                Integer.parseInt(time.split("-")[2]);
-        int t2 = Integer.parseInt(now.split("-")[0]) * 365 +
-                Integer.parseInt(now.split("-")[1]) * 12 +
-                Integer.parseInt(now.split("-")[2]);
-        return t2 > t1;
+        try {
+            int y = Integer.parseInt(time.split("-")[0]);
+            int m = Integer.parseInt(time.split("-")[1]);
+            int d = Integer.parseInt(time.split("-")[2]);
+            int h = Integer.parseInt(time.split("-")[4].split(":")[0]);
+            int mm = Integer.parseInt(time.split("-")[4].split(":")[1]);
+            Calendar calendar = Calendar.getInstance();
+            int y2 = calendar.get(Calendar.YEAR);
+            int m2 = calendar.get(Calendar.MONTH) + 1;
+            int d2 = calendar.get(Calendar.DAY_OF_MONTH);
+            int h2 = calendar.get(Calendar.HOUR_OF_DAY);
+            int mm2 = calendar.get(Calendar.MINUTE);
+            if (y > y2) return false;
+            if (y == y2 && m > m2) return false;
+            if (y == y2 && m == m2 && d > d2) return false;
+            if (y == y2 && m == m2 && d == d2 && h > h2) return false;
+            if (y == y2 && m == m2 && d == d2 && h == h2 && mm > mm2) return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private String getRegistrationTime() {
