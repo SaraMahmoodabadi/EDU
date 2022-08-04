@@ -26,21 +26,21 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected ComboBox<String> collegeBox;
     @FXML
-    protected static TableView<LessonTable> table1;
+    protected TableView<LessonTable> table1;
     @FXML
     protected TableColumn<LessonTable, String> nameColumn1;
     @FXML
-    protected TableColumn<LessonTable, Integer> groupColumn1;
+    protected TableColumn<LessonTable, String> groupColumn1;
     @FXML
-    protected TableColumn<LessonTable, Grade> gradeColumn1;
+    protected TableColumn<LessonTable, String> gradeColumn1;
     @FXML
     protected TableColumn<LessonTable, String> examColumn1;
     @FXML
     protected TableColumn<LessonTable, CheckBox> markColumn1;
     @FXML
-    protected TableColumn<LessonTable, Scene> optionsColumn1;
+    protected TableColumn<LessonTable, Button> option1Column1;
     @FXML
-    protected TableColumn<?, ?> receivedColumn1;
+    protected TableColumn<LessonTable, Button> option2Column1;
     @FXML
     protected RadioButton alphabeticButton;
     @FXML
@@ -50,21 +50,21 @@ public class StudentUnitSelectionController implements Initializable {
     @FXML
     protected Button show;
     @FXML
-    protected static TableView<LessonTable> table2;
+    protected TableView<LessonTable> table2;
     @FXML
     protected TableColumn<LessonTable, String> nameColumn2;
     @FXML
-    protected TableColumn<LessonTable, Integer> groupColumn2;
+    protected TableColumn<LessonTable, String> groupColumn2;
     @FXML
-    protected TableColumn<LessonTable, Grade> gradeColumn2;
+    protected TableColumn<LessonTable, String> gradeColumn2;
     @FXML
     protected TableColumn<LessonTable, String> examColumn2;
     @FXML
     protected TableColumn<LessonTable, CheckBox> markColumn2;
     @FXML
-    protected TableColumn<LessonTable, Scene> optionsColumn2;
+    protected TableColumn<LessonTable, Button> option1Column2;
     @FXML
-    protected TableColumn<?, ?> receivedColumn2;
+    protected TableColumn<LessonTable, Button> option2Column2;
     private ToggleGroup group;
     private Request request;
     private boolean stop;
@@ -92,7 +92,8 @@ public class StudentUnitSelectionController implements Initializable {
         gradeColumn1.setCellValueFactory(new PropertyValueFactory<>("grade"));
         examColumn1.setCellValueFactory(new PropertyValueFactory<>("exam"));
         markColumn1.setCellValueFactory(new PropertyValueFactory<>("mark"));
-        optionsColumn1.setCellValueFactory(new PropertyValueFactory<>("scene"));
+        option1Column1.setCellValueFactory(new PropertyValueFactory<>("option1"));
+        option2Column1.setCellValueFactory(new PropertyValueFactory<>("option2"));
     }
 
     private void makeTable2() {
@@ -101,7 +102,8 @@ public class StudentUnitSelectionController implements Initializable {
         gradeColumn2.setCellValueFactory(new PropertyValueFactory<>("grade"));
         examColumn2.setCellValueFactory(new PropertyValueFactory<>("exam"));
         markColumn2.setCellValueFactory(new PropertyValueFactory<>("mark"));
-        optionsColumn2.setCellValueFactory(new PropertyValueFactory<>("scene"));
+        option1Column2.setCellValueFactory(new PropertyValueFactory<>("option1"));
+        option2Column2.setCellValueFactory(new PropertyValueFactory<>("option2"));
     }
 
     private void addToggle() {
@@ -133,47 +135,53 @@ public class StudentUnitSelectionController implements Initializable {
 
     private void showData(HashMap<String, Object> data, int table) {
         List<LessonTable> lessonTableList = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-            if (entry.getKey().startsWith("lessonRM")) {
-                Lesson lesson = (Lesson) entry.getValue();
+        Lesson lesson;
+        for (int i = 0; i < data.size(); i++) {
+            lesson = (Lesson) data.get("lessonRM" + i);
+            if (lesson != null) {
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), true, true);
+                        lesson.getGrade(), true, true, this);
                 lessonTableList.add(lessonTable);
+                continue;
             }
-            else if (entry.getKey().startsWith("lessonNM")) {
-                Lesson lesson = (Lesson) entry.getValue();
+            lesson = (Lesson) data.get("lessonNM" + i);
+            if (lesson != null) {
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), false, true);
+                        lesson.getGrade(), false, true, this);
                 lessonTableList.add(lessonTable);
+                continue;
             }
-            else if (entry.getKey().startsWith("lessonRN")) {
-                Lesson lesson = (Lesson) entry.getValue();
+            lesson = (Lesson) data.get("lessonRN" + i);
+            if (lesson != null) {
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), false, false);
+                        lesson.getGrade(), true, false, this);
                 lessonTableList.add(lessonTable);
+                continue;
             }
-            else if (entry.getKey().startsWith("lessonNN")) {
-                Lesson lesson = (Lesson) entry.getValue();
+            lesson = (Lesson) data.get("lessonNN" + i);
+            if (lesson != null) {
                 LessonTable lessonTable = new LessonTable(lesson.getLessonCode(),
                         lesson.getName(), lesson.getGroup(), lesson.getExamTime(),
-                        lesson.getGrade(), false, false);
+                        lesson.getGrade(), false, false, this);
                 lessonTableList.add(lessonTable);
             }
         }
         if (table == 1) {
-            table1.getItems().clear();
+            if (table1.getItems() != null)
+                table1.getItems().clear();
             table1.getItems().addAll(lessonTableList);
         }
         else if (table == 2) {
-            table2.getItems().clear();
+            if (table2.getItems() != null)
+                table2.getItems().clear();
             table2.getItems().addAll(lessonTableList);
         }
     }
 
-    static void removeData(LessonTable lesson) {
+    public void removeData(LessonTable lesson) {
         List<LessonTable> list = table1.getItems();
         list.remove(lesson);
         table1.getItems().clear();
@@ -183,7 +191,7 @@ public class StudentUnitSelectionController implements Initializable {
         table2.getItems().addAll(lesson);
     }
 
-    static void addData(LessonTable lesson) {
+    public void addData(LessonTable lesson) {
         List<LessonTable> list = table1.getItems();
         list.add(lesson);
         table1.getItems().clear();

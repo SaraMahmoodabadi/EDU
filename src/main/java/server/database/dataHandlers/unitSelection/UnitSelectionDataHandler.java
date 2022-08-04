@@ -55,33 +55,6 @@ public class UnitSelectionDataHandler {
         return studentsCode;
     }
 
-    public List<String> getStudentCodes() {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "studentCode", "student");
-        ResultSet resultSet = this.databaseHandler.getResultSet(query.substring(0, query.length() - 6));
-        List<String> studentsCode = new ArrayList<>();
-        try {
-            while (resultSet.next()) {
-                studentsCode.add(resultSet.getString("studentCode"));
-            }
-        } catch (SQLException ignored) {}
-        return studentsCode;
-    }
-
-    public String getRegistrationTime(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "registrationTime", "student") + " studentCode = " + getStringFormat(studentCode);
-        ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        try {
-            if (resultSet.next()) {
-                return resultSet.getString("registrationTime");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public String getCollegeRegistrationTime(String collegeCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "endUnitSelectionTime", "college") + " collegeCode = " + getStringFormat(collegeCode);
@@ -110,7 +83,7 @@ public class UnitSelectionDataHandler {
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                return Boolean.parseBoolean(resultSet.getString("registrationFinaled"));
+                return Boolean.parseBoolean(resultSet.getString("isUnitSelectionFinaled"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -133,43 +106,25 @@ public class UnitSelectionDataHandler {
         return colleges;
     }
 
-    public void finalRegistration(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "student", "registrationFinaled = 'true'") + " studentCode = " + getStringFormat(studentCode);
-        this.databaseHandler.updateData(query);
-    }
-
-    public boolean IsFinaledRegistration(String studentCode) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "registrationFinaled", "student") + " studentCode = " + getStringFormat(studentCode);
-        ResultSet resultSet = this.databaseHandler.getResultSet(query);
-        try {
-            if (resultSet.next()) {
-                return Boolean.parseBoolean(resultSet.getString("registrationFinaled"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public List<Lesson> getCollegeLesson(String collegeName) {
         String collegeCode = getCollegeCode(collegeName);
         if (collegeCode == null) return null;
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "l.lessonCode, l.name, g.groupNumber, l.examTime, l.grade",
-                "lesson l", "group g", "l.lessonCode = g.lessonCode") + " l.collegeCode = " + getStringFormat(collegeCode);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "lessonCode, name, examTime, grade", "lesson") +
+                " collegeCode = " + getStringFormat(collegeCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<Lesson> lessons = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 String lessonCode = resultSet.getString("lessonCode");
                 String name  = resultSet.getString("name");
-                int group = resultSet.getInt("groupNumber");
                 String examTime = resultSet.getString("examTime");
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
-                Lesson lesson = new Lesson(lessonCode, name, examTime, grade, group);
-                lessons.add(lesson);
+                List<String> groups = getGroups(lessonCode);
+                for (String group : groups) {
+                    Lesson lesson = new Lesson(lessonCode, name, examTime, grade, Integer.parseInt(group));
+                    lessons.add(lesson);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -200,7 +155,7 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
@@ -219,7 +174,7 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("markedLessons");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
@@ -232,20 +187,21 @@ public class UnitSelectionDataHandler {
     } //lessonCode-group
 
     public List<Lesson> getSuggestedLessons(String items) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "l.lessonCode, l.name, g.groupNumber, l.examTime, l.grade",
-                "lesson l", "group g", "l.lessonCode = g.lessonCode") + " " + items;
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "lessonCode, name, examTime, grade", "lesson") + " " + items;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<Lesson> lessons = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 String lessonCode = resultSet.getString("lessonCode");
                 String name  = resultSet.getString("name");
-                int group = resultSet.getInt("groupNumber");
                 String examTime = resultSet.getString("examTime");
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
-                Lesson lesson = new Lesson(lessonCode, name, examTime, grade, group);
-                lessons.add(lesson);
+                List<String> groups = getGroups(lessonCode);
+                for (String group : groups) {
+                    Lesson lesson = new Lesson(lessonCode, name, examTime, grade, Integer.parseInt(group));
+                    lessons.add(lesson);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -348,7 +304,7 @@ public class UnitSelectionDataHandler {
         if (students != null) students.remove(studentCode);
         else students = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "group", "students = " + getStringFormat(students.toString()))
+        query = String.format(query, "edu.group", "students = " + getStringFormat(students.toString()))
                 + " lessonCode = " + getStringFormat(lessonCode) +
                 " AND groupNumber = " + getStringFormat(group);
         this.databaseHandler.updateData(query);
@@ -360,7 +316,7 @@ public class UnitSelectionDataHandler {
         if (students == null) students = new ArrayList<>();
         students.add(studentCode);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "group", "students = " + getStringFormat(students.toString()))
+        query = String.format(query, "edu.group", "students = " + getStringFormat(students.toString()))
                 + " lessonCode = " + getStringFormat(lessonCode) +
                 " AND groupNumber = " + getStringFormat(group);
         this.databaseHandler.updateData(query);
@@ -368,13 +324,13 @@ public class UnitSelectionDataHandler {
 
     public List<String> getGroupStudents(String lessonCode, String group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "students", "group") + " lessonCode = " + getStringFormat(lessonCode) +
+        query = String.format(query, "students", "edu.group") + " lessonCode = " + getStringFormat(lessonCode) +
                 " AND groupNumber = " + getStringFormat(group);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("students");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
@@ -388,7 +344,7 @@ public class UnitSelectionDataHandler {
 
     public int getGroupCapacity(String lessonCode, String group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "capacity", "group") + " lessonCode = " + getStringFormat(lessonCode) +
+        query = String.format(query, "capacity", "edu.group") + " lessonCode = " + getStringFormat(lessonCode) +
                 " AND groupNumber = " + getStringFormat(group);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
@@ -426,7 +382,7 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("prerequisites");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
@@ -445,7 +401,7 @@ public class UnitSelectionDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("theNeed");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
@@ -477,8 +433,8 @@ public class UnitSelectionDataHandler {
         String professorCode = getAssistant(collegeCode);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "request", "studentCode, professorCode, type, information" ,
-                getStringFormat(studentCode) + ", " + getStringFormat(professorCode) + ", " + Type.TAKE_LESSON + ", " +
-                lessonCode);
+                getStringFormat(studentCode) + ", " + getStringFormat(professorCode) + ", " +
+                        getStringFormat(Type.TAKE_LESSON.toString()) + ", " + getStringFormat(lessonCode));
         return this.databaseHandler.updateData(query);
     }
 
@@ -510,7 +466,7 @@ public class UnitSelectionDataHandler {
     public List<String> getGroups(String lessonCode) {
         List<String> groups = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "groupNumber", "group") + " lessonCode = " + getStringFormat(lessonCode);
+        query = String.format(query, "groupNumber", "edu.group") + " lessonCode = " + getStringFormat(lessonCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             while (resultSet.next()) {

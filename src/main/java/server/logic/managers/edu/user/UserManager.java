@@ -213,7 +213,7 @@ public class UserManager {
         int mmEnd = Integer.parseInt(time.split("-")[4].split(":")[1]);
         Calendar calendar = Calendar.getInstance();
         int y2 = calendar.get(Calendar.YEAR);
-        int m2 = calendar.get(Calendar.MONTH);
+        int m2 = calendar.get(Calendar.MONTH) + 1;
         int d2 = calendar.get(Calendar.DAY_OF_MONTH);
         int h2 = calendar.get(Calendar.HOUR_OF_DAY);
         int mm2 = calendar.get(Calendar.MINUTE);
@@ -237,7 +237,7 @@ public class UserManager {
             int mm = Integer.parseInt(time.split("-")[3].split(":")[1]);
             Calendar calendar = Calendar.getInstance();
             int y2 = calendar.get(Calendar.YEAR);
-            int m2 = calendar.get(Calendar.MONTH);
+            int m2 = calendar.get(Calendar.MONTH) + 1;
             int d2 = calendar.get(Calendar.DAY_OF_MONTH);
             int h2 = calendar.get(Calendar.HOUR_OF_DAY);
             int mm2 = calendar.get(Calendar.MINUTE);

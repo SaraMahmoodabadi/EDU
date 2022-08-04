@@ -48,7 +48,7 @@ public class UnitSelectionTimeManager {
                             dataHandler.finalCollegeRegistration(college);
                         }
                     }
-                    Thread.sleep(1000 * 60 * 5);
+                    Thread.sleep(1000 * 5);
                 } catch (InterruptedException ignored) {}
             }
         });
@@ -64,21 +64,23 @@ public class UnitSelectionTimeManager {
             int mm = Integer.parseInt(time.split("-")[3].split(":")[1]);
             Calendar calendar = Calendar.getInstance();
             int y2 = calendar.get(Calendar.YEAR);
-            int m2 = calendar.get(Calendar.MONTH);
+            int m2 = calendar.get(Calendar.MONTH) + 1;
             int d2 = calendar.get(Calendar.DAY_OF_MONTH);
             int h2 = calendar.get(Calendar.HOUR_OF_DAY);
             int mm2 = calendar.get(Calendar.MINUTE);
             if (y > y2) return false;
             if (y == y2 && m > m2) return false;
             if (y == y2 && m == m2 && d > d2) return false;
-            return y != y2 || m != m2 || d != d2 || h <= h2;
+            if (y == y2 && m == m2 && d == d2 && h > h2) return false;
+            if (y == y2 && m == m2 && d == d2 && h == h2 && mm > mm2) return false;
         } catch (Exception e) {
             return false;
         }
+        return true;
     }
 
     private static void checkLessons(String studentCode, MySQLHandler handler) {
-        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty("thisTerm");
+        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         UnitSelectionDataHandler dataHandler = new UnitSelectionDataHandler(handler);
         List<String> lessons = dataHandler.getStudentLessons(studentCode, true);
         List<String> lastTermLessons = new ArrayList<>();
@@ -101,7 +103,6 @@ public class UnitSelectionTimeManager {
                 }
             }
         }
-        thisTermLessons.removeAll(removedLessonCodes);
         for (String lesson : thisTermLessons) {
             List<String> theNeeds = dataHandler.getNeeds(lesson);
             for (String need : theNeeds) {
@@ -114,6 +115,7 @@ public class UnitSelectionTimeManager {
         List<String> removedLessons = new ArrayList<>();
         for (String lesson : lessons) {
             String term = lesson.split("-")[0];
+            if (!term.equals(thisTerm)) continue;
             int n = lesson.split("-").length;
             String group = lesson.split("-")[n - 1];
             String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);

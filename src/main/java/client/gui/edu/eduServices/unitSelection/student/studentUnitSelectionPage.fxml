@@ -38,15 +38,15 @@
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </ComboBox>
-      <TableView fx:id="table1" layoutX="108.0" layoutY="181.0" prefHeight="182.0" prefWidth="992.0">
+      <TableView fx:id="table1" layoutX="112.0" layoutY="185.0" prefHeight="182.0" prefWidth="978.0">
         <columns>
-          <TableColumn fx:id="nameColumn1" prefWidth="130.0" text="lesson name" />
-          <TableColumn fx:id="groupColumn1" prefWidth="113.0" text="group number" />
-            <TableColumn fx:id="gradeColumn1" prefWidth="117.0" text="grade" />
-            <TableColumn fx:id="examColumn1" prefWidth="127.0" text="exam time" />
-            <TableColumn fx:id="markColumn1" prefWidth="82.0" text="mark" />
-            <TableColumn fx:id="optionsColumn1" prefWidth="252.0" text="options" />
-            <TableColumn fx:id="receivedColumn1" prefWidth="170.0" text="received / not received" />
+          <TableColumn fx:id="nameColumn1" prefWidth="224.0" text="lesson name" />
+          <TableColumn fx:id="groupColumn1" prefWidth="114.0" text="group number" />
+            <TableColumn fx:id="gradeColumn1" prefWidth="190.0" text="grade" />
+            <TableColumn fx:id="examColumn1" prefWidth="133.0" text="exam time" />
+            <TableColumn fx:id="markColumn1" prefWidth="96.0" text="mark" />
+            <TableColumn fx:id="option1Column1" prefWidth="100.0" text="option1" />
+            <TableColumn fx:id="option2Column1" prefWidth="150.0" text="option2" />
         </columns>
       </TableView>
       <Label layoutX="405.0" layoutY="111.0" text="sort by:" textFill="#b151b8">
@@ -80,15 +80,15 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <TableView fx:id="table2" layoutX="111.0" layoutY="450.0" prefHeight="182.0" prefWidth="992.0">
+      <TableView fx:id="table2" layoutX="112.0" layoutY="449.0" prefHeight="221.0" prefWidth="978.0">
          <columns>
-            <TableColumn fx:id="nameColumn2" prefWidth="130.0" text="lesson name" />
-            <TableColumn fx:id="groupColumn2" prefWidth="113.0" text="group number" />
-            <TableColumn fx:id="gradeColumn2" prefWidth="117.0" text="grade" />
-            <TableColumn fx:id="examColumn2" prefWidth="127.0" text="exam time" />
-            <TableColumn fx:id="markColumn2" prefWidth="82.0" text="mark" />
-            <TableColumn fx:id="optionsColumn2" prefWidth="252.0" text="options" />
-            <TableColumn fx:id="receivedColumn2" prefWidth="170.0" text="received / not received" />
+            <TableColumn fx:id="nameColumn2" prefWidth="227.0" text="lesson name" />
+            <TableColumn fx:id="groupColumn2" prefWidth="112.0" text="group number" />
+            <TableColumn fx:id="gradeColumn2" prefWidth="191.0" text="grade" />
+            <TableColumn fx:id="examColumn2" prefWidth="131.0" text="exam time" />
+            <TableColumn fx:id="markColumn2" prefWidth="95.0" text="mark" />
+            <TableColumn fx:id="option1Column2" prefWidth="100.0" text="option1" />
+            <TableColumn fx:id="option2Column2" prefWidth="150.0" text="option2" />
          </columns>
       </TableView>
    </children>

@@ -41,58 +41,80 @@ public class UnitSelectionManager {
 
     public Response getSuggestedLessons() {
         Grade grade = this.dataHandler.getStudentGrade(this.client.getUserName());
-        String items = " l.grade = '" + grade + "'";
+        String items = " grade = '" + grade + "'";
         List<Lesson> lessons = this.dataHandler.getSuggestedLessons(items);
         List<String> markedLessons = this.dataHandler.getStudentMarkedLessons(this.client.getUserName());
+        List<Lesson> newList = compareToScore(removeFullLessons(lessons));
+        List<Lesson> finalList = new ArrayList<>();
         for (String lesson : markedLessons) {
+            if (lesson == null || lesson.equals("")) continue;
             String term = lesson.split("-")[0];
             int n = lesson.split("-").length;
             String group = lesson.split("-")[n - 1];
             String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
             Lesson markedLesson = this.dataHandler.getLesson(lessonCode, Integer.parseInt(group));
-            if (!lessons.contains(markedLesson)) lessons.add(markedLesson);
+            finalList.add(markedLesson);
         }
-        List<Lesson> newList = removeFullLessons(lessons);
-        List<Lesson> finalList = compareToScore(newList);
+        for (Lesson lesson : newList) {
+            boolean result = true;
+            for (Lesson markedLesson : finalList) {
+                if (markedLesson.getLessonCode().equals(lesson.getLessonCode()) &&
+                        markedLesson.getGroup() == lesson.getGroup()) {
+                    result = false;
+                    break;
+                }
+            }
+            if (result) {
+                finalList.add(lesson);
+            }
+        }
+        Collections.reverse(finalList);
         return sendLessons(finalList);
     }
 
-    private Response sendLessons(List<Lesson> lessons) {
+    private synchronized Response sendLessons(List<Lesson> lessons) {
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         List<String> markedLessons = this.dataHandler.getStudentMarkedLessons(client.getUserName());
         List<String> tookLessons = this.dataHandler.getStudentLessons(client.getUserName(), false);
         Response response = new Response(ResponseStatus.OK);
+        int i = 0;
         for (Lesson lesson : lessons) {
             if (markedLessons.contains(thisTerm + "-" + lesson.getLessonCode() + "-" + lesson.getGroup())) {
                 if (tookLessons.contains(thisTerm + "-" + lesson.getLessonCode() + "-" + lesson.getGroup())) {
-                    response.addData("lessonRM", lesson);
+                    response.addData("lessonRM" + i, lesson);
                 }
-                else
-                    response.addData("lessonNM", lesson);
+                else {
+                    response.addData("lessonNM" + i, lesson);
+                }
             }
             else {
                 if (tookLessons.contains(thisTerm + "-" + lesson.getLessonCode() + "-" + lesson.getGroup())) {
-                    response.addData("lessonRN", lesson);
+                    response.addData("lessonRN" + i, lesson);
                 }
-                else
-                    response.addData("lessonNN", lesson);
+                else {
+                    response.addData("lessonNN" + i, lesson);
+                }
             }
+            i++;
         }
         return response;
     }
 
     private List<Lesson> sortByAlphabet(List<Lesson> lessons) {
         List<String> names = new ArrayList<>();
-        Map<String, Lesson> lessonMap = new HashMap<>();
         for (Lesson lesson : lessons) {
-            String name = lesson.getName() + lesson.getGroup();
-            lessonMap.put(name, lesson);
-            names.add(name);
+            String name = lesson.getName();
+            if (!names.contains(name))
+                names.add(name);
         }
         Collections.sort(names);
         List<Lesson> newList = new ArrayList<>();
         for (String name : names) {
-            newList.add(lessonMap.get(name));
+            for (Lesson lesson : lessons) {
+                if (lesson.getName().equals(name)) {
+                    newList.add(lesson);
+                }
+            }
         }
         return newList;
     }
@@ -108,15 +130,17 @@ public class UnitSelectionManager {
                     Integer.parseInt(examTime.split("-")[3].split(":")[0]) / 24.0 +
                     Integer.parseInt(examTime.split("-")[3].split(":")[1]) / 60.0;
             lessonMap.put(time, examTime);
-            times.add(time);
+            if (!times.contains(time))
+                times.add(time);
         }
         Collections.sort(times);
         List<Lesson> newList = new ArrayList<>();
         for (Double time : times) {
             String examTime = lessonMap.get(time);
             for (Lesson lesson : lessons) {
-                if (lesson.getExamTime().equals(examTime))
+                if (lesson.getExamTime().equals(examTime)) {
                     newList.add(lesson);
+                }
             }
         }
         return newList;
@@ -143,7 +167,7 @@ public class UnitSelectionManager {
                     String.valueOf(lesson.getGroup()));
             int capacity = this.dataHandler.getGroupCapacity(lesson.getLessonCode(),
                     String.valueOf(lesson.getGroup()));
-            if (students.size() <= capacity) removedLessons.add(lesson);
+            if (students.size() >= capacity) removedLessons.add(lesson);
         }
         lessons.removeAll(removedLessons);
         return lessons;
@@ -159,6 +183,10 @@ public class UnitSelectionManager {
         }
         List<Lesson> removedLessons = new ArrayList<>();
         for (Lesson lesson : lessons) {
+            if (passedLessons.contains(lesson.getLessonCode())) {
+                removedLessons.add(lesson);
+                continue;
+            }
             List<String> prerequisites = this.dataHandler.getPrerequisites(lesson.getLessonCode());
             if (prerequisites == null) prerequisites = new ArrayList<>();
             for (String lessonCode : prerequisites) {
@@ -287,8 +315,9 @@ public class UnitSelectionManager {
         String lessonCode = (String) request.getData("lessonCode");
         String group = (String) request.getData("group");
         List<String> students = this.dataHandler.getGroupStudents(lessonCode, group);
+        if (students == null) return false;
         int capacity = this.dataHandler.getGroupCapacity(lessonCode, group);
-        return students.size() <= capacity;
+        return students.size() >= capacity;
     }
 
     private boolean checkClassTime(Request request) {
@@ -305,6 +334,7 @@ public class UnitSelectionManager {
             if (!term.equals(thisTerm)) continue;
             String group = lesson.split("-")[n - 1];
             String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            if (lessonCode.equals(thisLessonCode)) continue;
             String days = this.dataHandler.getLessonData("days", lessonCode);
             String time = this.dataHandler.getLessonData("classTime", lessonCode);
             if (checkTime(thisTime, time)) continue;
@@ -341,8 +371,8 @@ public class UnitSelectionManager {
         int y1 = Integer.parseInt(thisExamTime.split("-")[0]);
         int m1 = Integer.parseInt(thisExamTime.split("-")[1]);
         int d1 = Integer.parseInt(thisExamTime.split("-")[2]);
-        int h1 = Integer.parseInt(thisExamTime.split("-")[3]);
-        int mm1 = Integer.parseInt(thisExamTime.split("-")[4]);
+        int h1 = Integer.parseInt(thisExamTime.split("-")[3].split(":")[0]);
+        int mm1 = Integer.parseInt(thisExamTime.split("-")[3].split(":")[1]);
         List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
         for (String lesson : lessons) {
             int n = lesson.split("-").length;
@@ -350,15 +380,16 @@ public class UnitSelectionManager {
             if (!term.equals(thisTerm)) continue;
             String group = lesson.split("-")[n - 1];
             String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            if (lessonCode.equals(thisLessonCode)) continue;
             String examTime = this.dataHandler.getLessonData("examTime", lessonCode);
-            int y2 = Integer.parseInt(thisExamTime.split("-")[0]);
-            int m2 = Integer.parseInt(thisExamTime.split("-")[1]);
-            int d2 = Integer.parseInt(thisExamTime.split("-")[2]);
-            int h2 = Integer.parseInt(thisExamTime.split("-")[3]);
-            int mm2 = Integer.parseInt(thisExamTime.split("-")[4]);
+            int y2 = Integer.parseInt(examTime.split("-")[0]);
+            int m2 = Integer.parseInt(examTime.split("-")[1]);
+            int d2 = Integer.parseInt(examTime.split("-")[2]);
+            int h2 = Integer.parseInt(examTime.split("-")[3].split(":")[0]);
+            int mm2 = Integer.parseInt(examTime.split("-")[3].split(":")[1]);
             if (y1 == y2 && m1 == m2 && d1 == d2) {
                 int start1 = h1 * 60 + mm1;
-                int start2 = h2 * 69 + mm2;
+                int start2 = h2 * 60 + mm2;
                 if (Math.abs(start1 - start2) < 60) return true;
             }
         }
@@ -394,11 +425,11 @@ public class UnitSelectionManager {
             int n = lesson.split("-").length;
             String group = lesson.split("-")[n - 1];
             String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
-            if (thisLesson.equals(term) && lessonCode.equals(lesson)) return true;
-            if (lessonCode.equals(lesson)) {
+            if (thisTerm.equals(term) && lessonCode.equals(thisLesson)) return true;
+            if (lessonCode.equals(thisLesson)) {
                 List<Score> scores = this.dataHandler.getStudentScores(this.client.getUserName());
                 for (Score score : scores) {
-                    if (score.getLessonCode().equals(lesson) &&
+                    if (score.getLessonCode().equals(lessonCode) &&
                     Double.parseDouble(score.getScore()) >= 10) return true;
                 }
             }
@@ -424,11 +455,11 @@ public class UnitSelectionManager {
         }
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         String lessonCode = (String) request.getData("lessonCode");
-        String group = findGroup(lessonCode);
+        String group = (String) request.getData("previousGroup");
         boolean result = this.dataHandler.takeLesson(getLessonCodeFormat(request), this.client.getUserName());
         if (result) {
             this.dataHandler.removeStudentFromGroup(lessonCode,
-                    (String) request.getData("group"), this.client.getUserName());
+                    group, this.client.getUserName());
             this.dataHandler.addStudentToGroup(lessonCode,
                     (String) request.getData("group"), this.client.getUserName());
             this.dataHandler.removeLesson(thisTerm + "-" + lessonCode + "-" + group, this.client.getUserName());
@@ -441,18 +472,6 @@ public class UnitSelectionManager {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
-    }
-
-    private String findGroup(String lessonCode) {
-        List<String> lessons = this.dataHandler.getStudentLessons(this.client.getUserName(), false);
-        for (String lesson : lessons) {
-            String term = lesson.split("-")[0];
-            int n = lesson.split("-").length;
-            String group = lesson.split("-")[n - 1];
-            String thisLessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
-            if (thisLessonCode.equals(lessonCode)) return group;
-        }
-        return null;
     }
 
     public Response requestToTakeLesson(Request request) {
@@ -473,6 +492,8 @@ public class UnitSelectionManager {
     public Response removeLesson(Request request) {
         boolean result = this.dataHandler.removeLesson(getLessonCodeFormat(request), this.client.getUserName());
         if (result) {
+            this.dataHandler.removeStudentFromGroup((String) request.getData("lessonCode"),
+                    (String) request.getData("group"), this.client.getUserName());
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             Response response = new Response(ResponseStatus.OK);
             response.setNotificationMessage(note);
