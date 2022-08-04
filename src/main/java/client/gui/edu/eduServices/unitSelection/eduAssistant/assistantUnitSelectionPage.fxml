@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.eduServices.unitSelection.eduAssistant.AssistantUnitSelectionController">
    <children>
@@ -17,6 +18,7 @@
             <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
          </effect>
       </Rectangle>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="290.0" layoutX="193.0" layoutY="111.0" opacity="0.7" stroke="#ffd100" strokeType="INSIDE" width="814.0" />
       <Button fx:id="back" layoutX="563.0" layoutY="732.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
          <font>
             <Font name="System Bold" size="18.0" />
@@ -29,30 +31,61 @@
             </ImageView>
          </graphic>
       </Button>
-      <ComboBox fx:id="gradeBox" layoutX="637.0" layoutY="202.0" prefHeight="40.0" prefWidth="215.0" promptText="Grade" style="-fx-background-color: #ffffff;">
+      <ComboBox fx:id="gradeBox" layoutX="637.0" layoutY="169.0" prefHeight="40.0" prefWidth="215.0" promptText="Grade" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </ComboBox>
-      <ComboBox fx:id="yearBox" layoutX="348.0" layoutY="202.0" prefHeight="40.0" prefWidth="215.0" promptText="Entering year" style="-fx-background-color: #ffffff;">
+      <ComboBox fx:id="yearBox" layoutX="348.0" layoutY="169.0" prefHeight="40.0" prefWidth="215.0" promptText="Entering year" style="-fx-background-color: #ffffff;">
          <effect>
             <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </ComboBox>
-      <DatePicker fx:id="date" layoutX="396.0" layoutY="321.0" prefHeight="31.0" prefWidth="192.0" promptText="date">
+      <DatePicker fx:id="date" layoutX="389.0" layoutY="256.0" prefHeight="31.0" prefWidth="192.0" promptText="date">
          <effect>
             <InnerShadow color="#b151b8" />
          </effect>
       </DatePicker>
-      <Button fx:id="register" layoutX="522.0" layoutY="400.0" mnemonicParsing="false" onAction="#register" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
+      <Button fx:id="register" layoutX="522.0" layoutY="325.0" mnemonicParsing="false" onAction="#register" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Button>
-      <ComboBox fx:id="hour" layoutX="617.0" layoutY="321.0" prefHeight="31.0" prefWidth="184.0" promptText="Hour">
+      <ComboBox fx:id="hour" layoutX="614.0" layoutY="256.0" prefHeight="31.0" prefWidth="184.0" promptText="Hour">
          <effect>
             <InnerShadow color="#b151b8" />
          </effect>
       </ComboBox>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="230.0" layoutX="285.0" layoutY="433.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="632.0" />
+      <DatePicker fx:id="dateCollege" layoutX="389.0" layoutY="506.0" prefHeight="31.0" prefWidth="192.0" promptText="date">
+         <effect>
+            <InnerShadow color="#b151b8" />
+         </effect>
+      </DatePicker>
+      <ComboBox fx:id="hourCollege" layoutX="625.0" layoutY="506.0" prefHeight="31.0" prefWidth="91.0" promptText="Hour">
+         <effect>
+            <InnerShadow color="#b151b8" />
+         </effect>
+      </ComboBox>
+      <Button fx:id="registerCollege" layoutX="523.0" layoutY="578.0" mnemonicParsing="false" onAction="#registerEndTime" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Text fill="#fffc00" layoutX="492.0" layoutY="475.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Unit selection end time">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <ComboBox fx:id="minuteCollege" layoutX="730.0" layoutY="506.0" prefHeight="31.0" prefWidth="103.0" promptText="Minute">
+         <effect>
+            <InnerShadow color="#b151b8" />
+         </effect>
+      </ComboBox>
+      <Text fill="#fffc00" layoutX="721.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

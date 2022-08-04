@@ -29,6 +29,12 @@ public class AssistantUnitSelectionController implements Initializable {
     protected ComboBox<String> hour;
     @FXML
     protected DatePicker date;
+    @FXML
+    protected ComboBox<Integer> hourCollege;
+    @FXML
+    protected ComboBox<Integer> minuteCollege;
+    @FXML
+    protected DatePicker dateCollege;
 
 
     public void register(ActionEvent actionEvent) {
@@ -38,6 +44,22 @@ public class AssistantUnitSelectionController implements Initializable {
         request.addData("year", yearBox.getValue());
         request.addData("time", setDate());
         request.addData("collegeCode", EDU.collegeCode);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) {
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+        }
+        else {
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+    }
+
+    public void registerEndTime(ActionEvent actionEvent) {
+        if (dateCollege.getValue() == null || hourCollege.getValue() == null ||
+                minuteCollege.getValue() == null) return;
+        String time = dateCollege.getValue() + "-" + hourCollege.getValue() + ":" + minuteCollege.getValue();
+        Request request = new Request(RequestType.SET_END_UNIT_SELECTION_TIME);
+        request.addData("collegeCode", EDU.collegeCode);
+        request.addData("time", time);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
@@ -63,6 +85,12 @@ public class AssistantUnitSelectionController implements Initializable {
         }
         for (Hour time : Hour.values()) {
             hour.getItems().addAll(String.valueOf(time));
+        }
+        for (int i = 8; i <= 20; i++) {
+            hourCollege.getItems().add(i);
+        }
+        for (int i = 0; i < 60; i++) {
+            minuteCollege.getItems().add(i);
         }
     }
 

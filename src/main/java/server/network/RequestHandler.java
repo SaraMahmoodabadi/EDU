@@ -137,6 +137,9 @@ public class RequestHandler {
             case SET_UNIT_SELECTION_TIME:
                 this.client.sendResponse(timeManager.setTime(request));
                 break;
+            case SET_END_UNIT_SELECTION_TIME:
+                this.client.sendResponse(timeManager.setEndTime(request));
+                break;
             case SHOW_STUDENT_UNIT_SELECTION_PAGE:
                 this.client.sendResponse(manager.getSuggestedLessons());
                 break;

@@ -31,6 +31,14 @@ public class UnitSelectionTimeManager {
         else return sendErrorResponse();
     }
 
+    public Response setEndTime(Request request) {
+        String collegeCode = (String) request.getData("collegeCode");
+        String time = (String) request.getData("time");
+        boolean result = this.dataHandler.updateEndUnitSelectionTime(collegeCode, time);
+        if (result) return sendOKResponse();
+        else return sendErrorResponse();
+    }
+
     public static void checkTime(MySQLHandler handler) {
         UnitSelectionDataHandler dataHandler = new UnitSelectionDataHandler(handler);
         Thread thread = new Thread(() -> {
@@ -48,7 +56,7 @@ public class UnitSelectionTimeManager {
                             dataHandler.finalCollegeRegistration(college);
                         }
                     }
-                    Thread.sleep(1000 * 5);
+                    Thread.sleep(1000 * 60 * 5);
                 } catch (InterruptedException ignored) {}
             }
         });

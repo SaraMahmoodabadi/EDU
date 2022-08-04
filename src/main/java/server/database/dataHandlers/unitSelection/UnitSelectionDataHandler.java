@@ -35,6 +35,13 @@ public class UnitSelectionDataHandler {
         return true;
     }
 
+    public boolean updateEndUnitSelectionTime(String collegeCode, String time) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "college", "endUnitSelectionTime = " + getStringFormat(time))
+                + " collegeCode = " + getStringFormat(collegeCode);
+        return this.databaseHandler.updateData(query);
+    }
+
     private void setTimeInTable(String time) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "registrationtimes", "time", getStringFormat(time));
