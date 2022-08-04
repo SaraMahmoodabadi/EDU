@@ -173,17 +173,23 @@ public class LessonTable {
 
     private void addEventToMark() {
         mark.setOnAction(event -> {
+            Response response;
             if (isMarked()) {
                 Request request = new Request(RequestType.MARK_LESSON);
                 request.addData("lessonCode", lessonCode);
                 request.addData("group", group);
-                EDU.serverController.sendRequest(request);
+                request.addData("collegeCode", EDU.collegeCode);
+                response = EDU.serverController.sendRequest(request);
             }
             else {
                 Request request = new Request(RequestType.UN_MARK_LESSON);
                 request.addData("lessonCode", lessonCode);
                 request.addData("group", group);
-                EDU.serverController.sendRequest(request);
+                request.addData("collegeCode", EDU.collegeCode);
+                response = EDU.serverController.sendRequest(request);
+            }
+            if (response.getStatus() == ResponseStatus.ERROR) {
+                AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             }
         });
     }
@@ -202,6 +208,7 @@ public class LessonTable {
             Request request = new Request(RequestType.GET_LESSON_GROUPS);
             request.addData("lessonCode", lessonCode);
             request.addData("group", group);
+            request.addData("collegeCode", EDU.collegeCode);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
                 showMenu(response);
@@ -250,6 +257,7 @@ public class LessonTable {
     }
 
     private void showResult(Request request) {
+        request.addData("collegeCode", EDU.collegeCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             if (request.getRequestType() == RequestType.TAKE_LESSON_UNIT_SELECTION) {

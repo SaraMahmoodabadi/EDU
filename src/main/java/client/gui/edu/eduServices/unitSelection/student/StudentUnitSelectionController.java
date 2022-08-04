@@ -75,6 +75,7 @@ public class StudentUnitSelectionController implements Initializable {
         request = new Request(RequestType.GET_LESSONS_IN_UNIT_SELECTION);
         request.addData("college", collegeBox.getValue());
         request.addData("sort", setSort());
+        request.addData("collegeCode", EDU.collegeCode);
         showResponse(request, 1);
     }
 
@@ -211,6 +212,13 @@ public class StudentUnitSelectionController implements Initializable {
                         if (response.getStatus() == ResponseStatus.OK) {
                             showData(response.getData(), 1);
                         }
+                        else {
+                            String time = (String) response.getData("time");
+                            if (time != null && time.equals("end")) {
+                                AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getErrorMessage());
+                                stop = true;
+                            }
+                        }
                     });
                 } catch (InterruptedException ignored) {}
             }
@@ -224,10 +232,18 @@ public class StudentUnitSelectionController implements Initializable {
                 try {
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest
-                                (new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE));
+                        Request request = new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE);
+                        request.addData("collegeCode", EDU.collegeCode);
+                        Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             showData(response.getData(), 2);
+                        }
+                        else {
+                            String time = (String) response.getData("time");
+                            if (time != null && time.equals("end")) {
+                                AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getErrorMessage());
+                                stop = true;
+                            }
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -244,6 +260,7 @@ public class StudentUnitSelectionController implements Initializable {
         makeTable1();
         makeTable2();
         Request request = new Request(RequestType.SHOW_STUDENT_UNIT_SELECTION_PAGE);
+        request.addData("collegeCode", EDU.collegeCode);
         showResponse(request, 2);
         updateTable2();
     }

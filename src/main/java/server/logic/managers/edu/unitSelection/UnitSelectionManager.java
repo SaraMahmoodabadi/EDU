@@ -1,6 +1,7 @@
 package server.logic.managers.edu.unitSelection;
 
 import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
+import server.logic.managers.edu.user.UserManager;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
 import shared.model.university.lesson.score.Score;
@@ -24,6 +25,7 @@ public class UnitSelectionManager {
     }
 
     public Response getCollegeLesson(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         String collegeName = (String) request.getData("college");
         String sort = (String) request.getData("sort");
         List<Lesson> lessons = this.dataHandler.getCollegeLesson(collegeName);
@@ -39,7 +41,8 @@ public class UnitSelectionManager {
         return sendLessons(sortedList);
     }
 
-    public Response getSuggestedLessons() {
+    public Response getSuggestedLessons(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         Grade grade = this.dataHandler.getStudentGrade(this.client.getUserName());
         String items = " grade = '" + grade + "'";
         List<Lesson> lessons = this.dataHandler.getSuggestedLessons(items);
@@ -229,6 +232,7 @@ public class UnitSelectionManager {
     }
 
     public Response getLessonGroups(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         String group = (String) request.getData("group");
         String lessonCode = (String) request.getData("lessonCode");
         List<String> groups = this.dataHandler.getGroups(lessonCode);
@@ -248,6 +252,7 @@ public class UnitSelectionManager {
     }
 
     public synchronized Response takeLesson(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         if (checkLessonIsTaken(request)) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                     (String.class, "lessonTakenError");
@@ -437,7 +442,8 @@ public class UnitSelectionManager {
         return false;
     }
 
-    public Response changeLessonGroup(Request request) {
+    public synchronized Response changeLessonGroup(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         if (checkLessonCapacity(request)) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                     (String.class, "lessonCapacityError");
@@ -475,6 +481,7 @@ public class UnitSelectionManager {
     }
 
     public Response requestToTakeLesson(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         boolean result = this.dataHandler.requestGetLesson(this.client.getUserName(), getLessonCodeFormat(request));
         if (result) {
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
@@ -490,6 +497,7 @@ public class UnitSelectionManager {
     }
 
     public Response removeLesson(Request request) {
+        if (isFinishedUnitSelectionTime(request)) return sendUnitSelectionFinished();
         boolean result = this.dataHandler.removeLesson(getLessonCodeFormat(request), this.client.getUserName());
         if (result) {
             this.dataHandler.removeStudentFromGroup((String) request.getData("lessonCode"),
@@ -511,6 +519,22 @@ public class UnitSelectionManager {
         String lessonCode = (String) request.getData("lessonCode");
         String group = (String) request.getData("group");
         return thisTerm + "-" + lessonCode + "-" + group;
+    }
+
+    private boolean isFinishedUnitSelectionTime(Request request) {
+        String time = this.dataHandler.getCollegeRegistrationTime((String) request.getData("collegeCode"));
+        if (UnitSelectionTimeManager.isPassed(time)) return true;
+        UserManager manager = new UserManager(this.client);
+        return !manager.isUnitSelectionTime();
+    }
+
+    private Response sendUnitSelectionFinished() {
+        Response response = new Response(ResponseStatus.ERROR);
+        response.addData("time", "end");
+        String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                (String.class, "endUnitSelectionTime");
+        response.setErrorMessage(errorMessage);
+        return response;
     }
 
     private Response sendErrorResponse(String errorMessage) {

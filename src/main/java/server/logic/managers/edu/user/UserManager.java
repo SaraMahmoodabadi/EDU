@@ -200,7 +200,7 @@ public class UserManager {
         return response;
     }
 
-    private boolean isUnitSelectionTime() {
+    public boolean isUnitSelectionTime() {
         if (isPassed()) return false;
         String time = this.mainDataHandler.getUnitSelectionTime(this.clientHandler.getUserName());
         if (time == null) return false;

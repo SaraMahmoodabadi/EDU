@@ -63,7 +63,7 @@ public class UnitSelectionTimeManager {
         thread.start();
     }
 
-    private static boolean isPassed(String time) {
+    protected static boolean isPassed(String time) {
         try {
             int y = Integer.parseInt(time.split("-")[0]);
             int m = Integer.parseInt(time.split("-")[1]);

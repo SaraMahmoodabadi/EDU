@@ -141,7 +141,7 @@ public class RequestHandler {
                 this.client.sendResponse(timeManager.setEndTime(request));
                 break;
             case SHOW_STUDENT_UNIT_SELECTION_PAGE:
-                this.client.sendResponse(manager.getSuggestedLessons());
+                this.client.sendResponse(manager.getSuggestedLessons(request));
                 break;
             case GET_LESSONS_IN_UNIT_SELECTION:
                 this.client.sendResponse(manager.getCollegeLesson(request));
