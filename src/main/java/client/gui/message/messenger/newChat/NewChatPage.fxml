@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="client.gui.message.messenger.newChat.NewChatController"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.message.messenger.newChat.NewChatController">
+   <children>
+      <Rectangle arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="569.0" layoutY="736.0" mnemonicParsing="false" onAction="#back" prefHeight="44.0" prefWidth="57.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="38.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="371.0" layoutX="100.0" layoutY="112.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="481.0" />
+      <TableView fx:id="table" layoutX="142.0" layoutY="170.0" prefHeight="275.0" prefWidth="397.0" style="-fx-background-radius: 20;">
+        <columns>
+          <TableColumn fx:id="firstnameColumn" prefWidth="159.0" text="firstname" />
+          <TableColumn fx:id="lastnameColumn" prefWidth="175.0" text="lastname" />
+            <TableColumn fx:id="selectColumn" prefWidth="62.0" text="select" />
+        </columns>
+         <effect>
+            <InnerShadow color="#ffd100" />
+         </effect>
+      </TableView>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#b151b8" height="371.0" layoutX="617.0" layoutY="112.0" opacity="0.5" stroke="#b151b8" strokeType="INSIDE" width="481.0" />
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="155.0" layoutX="100.0" layoutY="518.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="1000.0" />
+      <CheckBox fx:id="selectAllCheckBox" layoutX="450.0" layoutY="140.0" mnemonicParsing="false" onAction="#selectAll" text="select all">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <Label alignment="CENTER" layoutX="679.0" layoutY="134.0" prefHeight="54.0" prefWidth="357.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" text="Fiest select users then send a message" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="messageArea" layoutX="685.0" layoutY="205.0" prefHeight="190.0" prefWidth="346.0" promptText="Message">
+         <effect>
+            <InnerShadow color="#ffd100" />
+         </effect>
+      </TextArea>
+      <Button fx:id="sendButton" layoutX="784.0" layoutY="410.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="31.0" prefWidth="147.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" text="send" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <TextField fx:id="userCodeField" layoutX="232.0" layoutY="596.0" prefHeight="31.0" prefWidth="298.0" promptText="User code" style="-fx-background-radius: 20;" />
+      <Button fx:id="requestButton" layoutX="650.0" layoutY="596.0" mnemonicParsing="false" onAction="#sendRequest" prefHeight="31.0" prefWidth="298.0" style="-fx-background-color: #b151b8; -fx-background-radius: 20;" text="request to send message" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <RadioButton fx:id="professorRadioButton" layoutX="485.0" layoutY="547.0" mnemonicParsing="false" text="professor" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="studentRadioButton" layoutX="610.0" layoutY="547.0" mnemonicParsing="false" text="student" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Button fx:id="sendMediaButton" layoutX="993.0" layoutY="359.0" mnemonicParsing="false" onAction="#sendMedia" prefHeight="44.0" prefWidth="50.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="24.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resource/images/attachmentIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
 </AnchorPane>

@@ -19,10 +19,10 @@
       <Rectangle fill="#b151b8" height="90.0" layoutY="710.0" opacity="0.71" stroke="#b151b8" strokeType="INSIDE" width="600.0" />
       <Rectangle fill="#b151b8" height="90.0" layoutX="600.0" opacity="0.71" stroke="#b151b8" strokeType="INSIDE" width="600.0" />
       <Rectangle fill="#b151b8" height="90.0" layoutX="600.0" layoutY="710.0" opacity="0.71" stroke="#b151b8" strokeType="INSIDE" width="600.0" />
-      <TextField layoutX="636.0" layoutY="732.0" prefHeight="47.0" prefWidth="460.0" promptText="Message ..." style="-fx-background-radius: 50;" />
+      <TextField fx:id="textMessage" layoutX="636.0" layoutY="732.0" onKeyPressed="#sendMessage" prefHeight="47.0" prefWidth="460.0" promptText="Message" style="-fx-background-radius: 50;" />
       <Pane layoutX="600.0" prefHeight="90.0" prefWidth="600.0">
          <children>
-            <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="profilePicture" fitHeight="70.0" fitWidth="70.0" layoutX="50.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../../resource/images/defaultProfile.png" />
                </image>
@@ -34,7 +34,7 @@
             </Label>
          </children>
       </Pane>
-      <Button layoutX="1107.0" layoutY="734.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="34.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;">
+      <Button fx:id="mediaButton" layoutX="1107.0" layoutY="734.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="44.0" prefWidth="34.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;">
          <graphic>
             <ImageView fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -72,9 +72,9 @@
       </Rectangle>
       <ScrollPane layoutX="21.0" layoutY="104.0" prefHeight="582.0" prefWidth="561.0" style="-fx-background-color: #ffffff;">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="550.0" style="-fx-background-image: #ffffff;">
+          <AnchorPane fx:id="allChatsPane" minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="550.0" style="-fx-background-image: #ffffff;">
                <children>
-                  <Button layoutX="470.0" layoutY="514.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="66.0" style="-fx-background-radius: 15; -fx-background-color: #b151b8;" textFill="WHITE">
+                  <Button fx:id="newChatButton" layoutX="470.0" layoutY="514.0" mnemonicParsing="false" onAction="#showNewChatPage" prefHeight="54.0" prefWidth="66.0" style="-fx-background-radius: 15; -fx-background-color: #b151b8;" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="45.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -89,7 +89,7 @@
       </ScrollPane>
       <ScrollPane layoutX="614.0" layoutY="104.0" prefHeight="582.0" prefWidth="571.0" style="-fx-background-color: #ffffff;">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="560.0" style="-fx-background-color: #ffffff;" />
+          <AnchorPane fx:id="chatPane" minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="560.0" style="-fx-background-color: #ffffff;" />
         </content>
       </ScrollPane>
    </children>
