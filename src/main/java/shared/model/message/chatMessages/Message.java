@@ -10,6 +10,10 @@ public class Message {
     private UserType receiverType;
     private String messageText;
     private String sendMessageTime;
+    private String name;
+    private String type;
+    private boolean isMedia;
+    private String user;
 
     public Message() {}
 
@@ -69,5 +73,37 @@ public class Message {
 
     public void setSendMessageTime(String sendMessageTime) {
         this.sendMessageTime = sendMessageTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isMedia() {
+        return isMedia;
+    }
+
+    public void setMedia(boolean media) {
+        isMedia = media;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

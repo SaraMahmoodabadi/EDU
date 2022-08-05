@@ -7,5 +7,6 @@ public enum Type {
     MINOR,
     THESIS_DEFENCE,
     DORMITORY,
-    TAKE_LESSON
+    TAKE_LESSON,
+    SEND_MESSAGE
 }

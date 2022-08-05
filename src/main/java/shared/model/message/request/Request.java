@@ -12,7 +12,8 @@ public class Request {
     private boolean result;
     private boolean secondResult;
     private String finalResult;
-    private String date;
+    private String date1;
+    private String date2;
     private String information;
 
     public Request() {}
@@ -103,12 +104,20 @@ public class Request {
         this.finalResult = finalResult;
     }
 
-    public String getDate() {
-        return date;
+    public String getDate1() {
+        return date1;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate1(String date1) {
+        this.date1 = date1;
+    }
+
+    public String getDate2() {
+        return date2;
+    }
+
+    public void setDate2(String date2) {
+        this.date2= date2;
     }
 
     public String getInformation() {
