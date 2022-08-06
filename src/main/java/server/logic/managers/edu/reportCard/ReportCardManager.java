@@ -1,7 +1,6 @@
 package server.logic.managers.edu.reportCard;
 
-import client.gui.EDU;
-import server.database.dataHandlers.score.TemporaryScoresDataHandler;
+import server.database.dataHandlers.edu.score.TemporaryScoresDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.score.Score;
 import shared.model.user.UserType;

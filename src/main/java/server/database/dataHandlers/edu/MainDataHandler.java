@@ -1,4 +1,4 @@
-package server.database.dataHandlers;
+package server.database.dataHandlers.edu;
 
 import server.database.MySQLHandler;
 import shared.model.user.User;

@@ -2,6 +2,7 @@ package client.gui.edu.profile;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.ServerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -132,20 +133,24 @@ public class ProfileController implements Initializable {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             Student student = (Student) response.getData("student");
-            firstNameLabel.setText(student.getFirstName());
-            lastNameLabel.setText(student.getLastName());
-            nationalCodeLabel.setText(String.valueOf(student.getNationalCode()));
-            userCodeLabel.setText(student.getStudentCode());
-            collegeLabel.setText(student.getCollegeCode());
-            emailField.setText(student.getEmailAddress());
-            phoneNumberField.setText(String.valueOf(student.getPhoneNumber()));
-            averageOrRoomLabel.setText(String.valueOf(student.getRate()));
-            degreeLabel.setText(String.valueOf(student.getGrade()));
-            supervisorLabel.setText(student.getSupervisorCode());
-            enteringYearLabel.setText(String.valueOf(student.getEnteringYear()));
+            setStudentData(student);
             Object image = response.getData("profile");
             this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
         }
+    }
+
+    private void setStudentData(Student student) {
+        firstNameLabel.setText(student.getFirstName());
+        lastNameLabel.setText(student.getLastName());
+        nationalCodeLabel.setText(String.valueOf(student.getNationalCode()));
+        userCodeLabel.setText(student.getStudentCode());
+        collegeLabel.setText(student.getCollegeCode());
+        emailField.setText(student.getEmailAddress());
+        phoneNumberField.setText(String.valueOf(student.getPhoneNumber()));
+        averageOrRoomLabel.setText(String.valueOf(student.getRate()));
+        degreeLabel.setText(String.valueOf(student.getGrade()));
+        supervisorLabel.setText(student.getSupervisorCode());
+        enteringYearLabel.setText(String.valueOf(student.getEnteringYear()));
     }
 
     private void getProfessorData() {
@@ -180,7 +185,22 @@ public class ProfileController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         makeFields();
-        if (EDU.userType ==UserType.STUDENT) getStudentData();
-        else getProfessorData();
+        if (EDU.userType == UserType.STUDENT) getStudentData();
+        else if (EDU.userType == UserType.PROFESSOR) getProfessorData();
+        else if (EDU.userType == UserType.MR_MOHSENI) {
+            Response response = EDU.serverController.sendRequest(ServerController.request);
+            if (response.getStatus() == ResponseStatus.OK) {
+                Student student = (Student) response.getData("student");
+                setStudentData(student);
+                Object image = response.getData("profile");
+                this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
+                registerButton1.setDisable(true);
+                registerButton1.setVisible(false);
+                registerButton2.setVisible(false);
+                registerButton2.setDisable(true);
+                emailField.setEditable(false);
+                phoneNumberField.setEditable(false);
+            }
+        }
     }
 }

@@ -15,7 +15,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.message.messenger.newChat.NewChatController">
    <children>
       <Rectangle arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="675.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
@@ -84,7 +83,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </RadioButton>
-      <Button fx:id="sendMediaButton" layoutX="993.0" layoutY="359.0" mnemonicParsing="false" onAction="#sendMedia" prefHeight="44.0" prefWidth="50.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" textFill="#b151b8">
+      <Button fx:id="sendMediaButton" layoutX="993.0" layoutY="359.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="44.0" prefWidth="50.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

@@ -1,65 +1,178 @@
 package client.gui.message.mohseni;
 
+import client.gui.AlertMonitor;
+import client.gui.EDU;
+import client.network.ServerController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import shared.model.university.college.University;
+import shared.model.university.lesson.Lesson;
+import shared.model.user.student.Grade;
+import shared.model.user.student.Student;
+import shared.request.Request;
+import shared.request.RequestType;
+import shared.response.Response;
+import shared.response.ResponseStatus;
+import shared.util.media.MediaHandler;
 
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MohseniController implements Initializable {
     @FXML
-    private Button back;
+    protected Button back;
     @FXML
-    private TextArea messageArea;
+    protected TextArea messageArea;
     @FXML
-    private Button sendMediaButton;
+    protected Button sendMediaButton;
     @FXML
-    private Button sendButton;
+    protected Button sendButton;
     @FXML
-    private ComboBox<?> gradeBox;
+    protected ComboBox<String> gradeBox;
     @FXML
-    private ComboBox<?> yearBox;
+    protected ComboBox<String> yearBox;
     @FXML
-    private ComboBox<?> collegeBox;
+    protected ComboBox<String> collegeBox;
     @FXML
-    private TableView<?> table;
+    protected TableView<Student> table;
     @FXML
-    private TableColumn<?, ?> firstnameColumn;
+    protected TableColumn<Student, String> firstnameColumn;
     @FXML
-    private TableColumn<?, ?> lastnameColumn;
+    protected TableColumn<Student, String> lastnameColumn;
     @FXML
-    private TableColumn<?, ?> studentCodeColumn;
+    protected TableColumn<Student, String> studentCodeColumn;
     @FXML
-    private TableColumn<?, ?> gradeColumn;
+    protected TableColumn<Student, Grade> gradeColumn;
     @FXML
-    private TextField studentCodeField;
+    protected TextField studentCodeField;
+    private String file;
+    private boolean stop;
 
 
     @FXML
-    void selectStudent(MouseEvent event) {
-
+    public void selectStudent(MouseEvent event) {
+        stop = true;
+        Student student = table.getSelectionModel().getSelectedItem();
+        Request request = new Request(RequestType.GET_STUDENT_PROFILE_MOHSENI);
+        request.addData("studentCode", student.getStudentCode());
+        ServerController.request = request;
+        EDU.sceneSwitcher.switchScene(new ActionEvent(), "profilePage");
     }
 
     @FXML
-    void sendMedia(ActionEvent event) {
-
+    public void sendMessage(ActionEvent event) {
+        if (file == null && messageArea.getText() == null) return;
+        Request request = new Request(RequestType.SEND_MESSAGE_MOHSENI);
+        if (file != null) {
+            request.addData("file", file);
+        }
+        if (messageArea.getText() != null) {
+            request.addData("message", messageArea.getText());
+        }
+        request.addData("grade", gradeBox.getValue());
+        request.addData("year", yearBox.getValue());
+        request.addData("college", collegeBox.getValue());
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK)
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+        else
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
     }
 
     @FXML
-    void sendMessage(ActionEvent event) {
-
+    public void chooseMedia(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("select file");
+        File file = fileChooser.showOpenDialog(ServerController.edu);
+        if (file != null) {
+            MediaHandler handler = new MediaHandler();
+            String path = file.getAbsolutePath();
+            this.file = handler.encode(path);
+        }
     }
 
     @FXML
     void back(ActionEvent event) {
+        stop = true;
+        EDU.sceneSwitcher.switchScene(event, "mainPage");
+    }
 
+    private void setTable() {
+        firstnameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        lastnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        studentCodeColumn.setCellValueFactory(new PropertyValueFactory<>("studentCode"));
+        gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
+    }
+
+    private void setBox() {
+        collegeBox.getItems().addAll(University.getUniversity().getCollegeName());
+        collegeBox.getItems().add("All colleges");
+        collegeBox.setValue("All colleges");
+        for (Grade grade : Grade.values()) {
+            gradeBox.getItems().add(grade.toString());
+        }
+        gradeBox.getItems().add("All grades");
+        gradeBox.setValue("All grades");
+        yearBox.getItems().addAll("All", "1400", "99", "98", "97", "96 and before");
+        yearBox.setValue("All");
+    }
+
+    private void setData(Map<String, Object> data) {
+        List<Student> students = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            if (entry.getKey().startsWith("student")) {
+                students.add((Student) entry.getValue());
+            }
+        }
+        table.getItems().clear();
+        table.getItems().addAll(students);
+    }
+
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Request request;
+                        if (studentCodeField.getText() == null) {
+                            request = new Request(RequestType.GET_ALL_STUDENTS_INFORMATION_MOHSENI);
+                        }
+                        else {
+                            request = new Request(RequestType.GET_STUDENTS_INFORMATION_MOHSENI);
+                            request.addData("studentCode", studentCodeField.getText());
+                        }
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            setData(response.getData());
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        stop = false;
+        setBox();
+        setTable();
+        Request request = new Request(RequestType.GET_ALL_STUDENTS_INFORMATION_MOHSENI);
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) setData(response.getData());
+        else
+            AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        updateData();
     }
 }

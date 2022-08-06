@@ -14,6 +14,7 @@ public class Message {
     private String type;
     private boolean isMedia;
     private String user;
+    private boolean isSender;
 
     public Message() {}
 
@@ -105,5 +106,13 @@ public class Message {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public boolean isSender() {
+        return isSender;
+    }
+
+    public void setSender(boolean sender) {
+        isSender = sender;
     }
 }

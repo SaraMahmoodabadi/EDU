@@ -1,4 +1,4 @@
-package server.database.dataHandlers.score;
+package server.database.dataHandlers.edu.score;
 
 import server.database.MySQLHandler;
 import shared.model.university.lesson.score.Score;

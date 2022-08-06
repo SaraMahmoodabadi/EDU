@@ -123,27 +123,20 @@ public class MessagesController implements Initializable {
         rectangle.setLayoutX(0);
         rectangle.setLayoutY(0);
         pane.getChildren().add(rectangle);
+        Button button = new Button();
         String fileImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "fileIconPath");
         ImageView file = new ImageView(fileImage);
         file.setFitHeight(50);
         file.setFitWidth(50);
-        file.setLayoutX(10);
-        file.setLayoutY(10);
-        pane.getChildren().add(file);
-        Button button = new Button();
-        String downloadImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "downloadIconPath");
-        ImageView download = new ImageView(downloadImage);
-        download.setFitHeight(50);
-        download.setFitWidth(50);
-        button.setGraphic(download);
-        button.setOnAction(event -> download(message));
+        button.setGraphic(file);
+        button.setOnAction(event -> open(message));
         button.setLayoutX(10);
         button.setLayoutY(290);
         pane.getChildren().add(button);
         messagePane.getChildren().add(pane);
     }
 
-    private void download(String message) {
+    private void open(String message) {
         //TODO
     }
 

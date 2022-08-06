@@ -1,9 +1,8 @@
 package server.logic.managers.edu.unitSelection;
 
 import server.database.MySQLHandler;
-import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
-import shared.model.user.student.Grade;
 import shared.request.Request;
 import shared.response.Response;
 import shared.response.ResponseStatus;

@@ -1,6 +1,6 @@
 package server.logic.managers.edu.unitSelection;
 
-import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.logic.managers.edu.user.UserManager;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;

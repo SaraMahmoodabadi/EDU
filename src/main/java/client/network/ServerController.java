@@ -20,6 +20,7 @@ public class ServerController {
     private final ObjectMapper objectMapper;
     private String token;
     public static EDU edu;
+    public static Request request;
 
     public ServerController(int port) {
         this.port = port;

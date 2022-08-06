@@ -1,4 +1,4 @@
-package server.database.dataHandlers.unitSelection;
+package server.database.dataHandlers.edu.unitSelection;
 
 import server.database.MySQLHandler;
 import shared.model.message.request.Type;

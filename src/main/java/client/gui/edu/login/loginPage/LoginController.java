@@ -61,6 +61,7 @@ public class LoginController implements Initializable {
     @FXML
     protected Circle person;
     Response response;
+    String usernameValue;
 
 
     public void recaptcha(ActionEvent actionEvent) {
@@ -72,6 +73,7 @@ public class LoginController implements Initializable {
 
     public void login(ActionEvent actionEvent) {
         if (isNull()) return;
+        usernameValue = username.getText();
         Request request = new Request(RequestType.LOGIN);
         request.addData("username", this.username.getText());
         request.addData("password", this.password.getText());
@@ -87,6 +89,7 @@ public class LoginController implements Initializable {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
+            EDU.username = usernameValue;
             EDU.userType = (UserType) response.getData("userType");
             if (EDU.userType == UserType.STUDENT || EDU.userType == UserType.PROFESSOR) {
                 EDU.collegeCode = (String) response.getData("collegeCode");

@@ -1,6 +1,6 @@
 package server.logic.managers.edu.registration;
 
-import server.database.dataHandlers.registration.RegistrationDataHandler;
+import server.database.dataHandlers.edu.registration.RegistrationDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;

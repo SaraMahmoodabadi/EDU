@@ -7,5 +7,6 @@ public enum ConfigType {
     QUERY,
     SERVER_MESSAGES,
     SERVER_PATH,
-    NETWORK
+    NETWORK,
+    ADMIN_MESSAGES
 }

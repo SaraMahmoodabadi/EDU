@@ -1,6 +1,6 @@
 package server.logic.managers.edu.profile;
 
-import server.database.dataHandlers.profile.ProfileDataHandler;
+import server.database.dataHandlers.edu.profile.ProfileDataHandler;
 import server.network.ClientHandler;
 import shared.model.user.UserType;
 import shared.model.user.professor.Professor;

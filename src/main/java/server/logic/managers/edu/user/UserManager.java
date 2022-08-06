@@ -1,9 +1,9 @@
 package server.logic.managers.edu.user;
 
 import server.database.MySQLHandler;
-import server.database.dataHandlers.MainDataHandler;
-import server.database.dataHandlers.UserHandler;
-import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
+import server.database.dataHandlers.edu.MainDataHandler;
+import server.database.dataHandlers.edu.UserHandler;
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.logic.captcha.Captcha;
 import server.network.ClientHandler;
 import shared.model.user.User;
@@ -17,7 +17,6 @@ import shared.util.media.ImageHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;

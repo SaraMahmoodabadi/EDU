@@ -46,6 +46,12 @@ public class Student extends User {
         this.enteringYear = enteringYear;
     }
 
+    public Student(String firstName, String lastName, String collegeCode, String studentCode, Grade grade) {
+        super(firstName, lastName, collegeCode);
+        this.studentCode = studentCode;
+        this.grade = grade;
+    }
+
     public String getStudentCode() {
         return studentCode;
     }

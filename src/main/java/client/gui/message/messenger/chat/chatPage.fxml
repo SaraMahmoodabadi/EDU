@@ -9,6 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -71,26 +72,23 @@
          </effect>
       </Rectangle>
       <ScrollPane layoutX="21.0" layoutY="104.0" prefHeight="582.0" prefWidth="561.0" style="-fx-background-color: #ffffff;">
-        <content>
-          <AnchorPane fx:id="allChatsPane" minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="550.0" style="-fx-background-image: #ffffff;">
-               <children>
-                  <Button fx:id="newChatButton" layoutX="470.0" layoutY="514.0" mnemonicParsing="false" onAction="#showNewChatPage" prefHeight="54.0" prefWidth="66.0" style="-fx-background-radius: 15; -fx-background-color: #b151b8;" textFill="WHITE">
-                     <graphic>
-                        <ImageView fitHeight="45.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../resource/images/newChatIcon.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </AnchorPane>
-        </content>
+         <content>
+            <VBox fx:id="allChatsPane" prefHeight="577.0" prefWidth="537.0" />
+         </content>
       </ScrollPane>
       <ScrollPane layoutX="614.0" layoutY="104.0" prefHeight="582.0" prefWidth="571.0" style="-fx-background-color: #ffffff;">
-        <content>
-          <AnchorPane fx:id="chatPane" minHeight="0.0" minWidth="0.0" prefHeight="576.0" prefWidth="560.0" style="-fx-background-color: #ffffff;" />
-        </content>
+         <content>
+            <VBox fx:id="chatPane" prefHeight="580.0" prefWidth="547.0" />
+         </content>
       </ScrollPane>
+      <Button fx:id="newChatButton" layoutX="526.0" layoutY="644.0" mnemonicParsing="false" onAction="#showNewChatPage" prefHeight="54.0" prefWidth="66.0" style="-fx-background-radius: 15; -fx-background-color: #b151b8;" textFill="WHITE">
+         <graphic>
+            <ImageView fitHeight="45.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resource/images/newChatIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>

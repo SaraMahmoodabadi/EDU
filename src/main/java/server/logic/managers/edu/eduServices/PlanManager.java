@@ -1,9 +1,9 @@
 package server.logic.managers.edu.eduServices;
 
 import server.database.MySQLHandler;
-import server.database.dataHandlers.MainDataHandler;
-import server.database.dataHandlers.eduServises.PlanDataHandler;
-import server.database.dataHandlers.unitSelection.UnitSelectionDataHandler;
+import server.database.dataHandlers.edu.MainDataHandler;
+import server.database.dataHandlers.edu.eduServises.PlanDataHandler;
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Lesson;
 import shared.model.user.UserType;
@@ -12,7 +12,6 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class PlanManager {

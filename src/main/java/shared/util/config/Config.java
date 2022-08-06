@@ -21,6 +21,10 @@ public class Config extends Properties {
         }
     }
 
+    public Properties getProperties() {
+        return properties;
+    }
+
     public static Config getConfig(ConfigType type) {
         Config config = getMainConfig();
         switch (type) {
@@ -38,6 +42,8 @@ public class Config extends Properties {
                 return new Config(config.getProperty(String.class, "serverPath"));
             case NETWORK:
                 return new Config(config.getProperty(String.class, "network"));
+            case ADMIN_MESSAGES:
+                return new Config(config.getProperty(String.class, "adminMessages"));
             default:
                 return getMainConfig();
         }
@@ -73,5 +79,9 @@ public class Config extends Properties {
             config = new Config(configPath);
         }
         return config;
+    }
+
+    public void write(String key, String value) {
+       properties.put(key, value);
     }
 }

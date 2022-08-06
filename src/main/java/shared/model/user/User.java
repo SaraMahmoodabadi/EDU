@@ -67,6 +67,18 @@ public class User {
         this.imageAddress = image;
     }
 
+    public User(String firstName, String lastName, String collegeCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
+        this.collegeCode = collegeCode;
+    }
+
+    public User(String username, UserType type) {
+        this.username = username;
+        this.userType = type;
+    }
+
     public String getFirstName() {
         return firstName;
     }

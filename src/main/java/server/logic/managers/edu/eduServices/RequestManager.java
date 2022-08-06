@@ -1,7 +1,7 @@
 package server.logic.managers.edu.eduServices;
 
-import server.database.dataHandlers.eduServises.ProfessorRequestDataHandler;
-import server.database.dataHandlers.eduServises.StudentRequestsDataHandler;
+import server.database.dataHandlers.edu.eduServises.ProfessorRequestDataHandler;
+import server.database.dataHandlers.edu.eduServises.StudentRequestsDataHandler;
 import server.network.ClientHandler;
 import shared.model.message.request.Type;
 import shared.model.user.student.Grade;
