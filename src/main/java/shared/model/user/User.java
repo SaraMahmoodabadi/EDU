@@ -79,6 +79,14 @@ public class User {
         this.userType = type;
     }
 
+    public User(String firstname, String lastname, String username, UserType student) {
+        this.firstName = firstname;
+        this.lastName = lastname;
+        this.fullName = firstname + " " + lastname;
+        this.userType = student;
+        this.username = username;
+    }
+
     public String getFirstName() {
         return firstName;
     }

@@ -136,6 +136,7 @@ public class NewChatController implements Initializable {
 
     private void updateData() {
         Request request = new Request(RequestType.SHOW_USERS_IN_NEW_CHAT);
+        request.addData("collegeCode", EDU.collegeCode);
         if (EDU.userType == UserType.PROFESSOR) request.addData("professorType", EDU.professorType);
         Thread loop = new Thread(() -> {
             while (!stop) {
@@ -174,6 +175,7 @@ public class NewChatController implements Initializable {
         setTable();
         setGroup();
         Request request = new Request(RequestType.SHOW_USERS_IN_NEW_CHAT);
+        request.addData("collegeCode", EDU.collegeCode);
         if (EDU.userType == UserType.PROFESSOR) request.addData("professorType", EDU.professorType);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) showData(response.getData());
