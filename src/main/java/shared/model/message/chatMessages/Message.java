@@ -28,6 +28,20 @@ public class Message {
         this.sendMessageTime = sendMessageTime;
     }
 
+    public Message(String name, String user, String userMessage, String date, String type) {
+        this.name = name;
+        this.user = user;
+        this.messageText = userMessage;
+        this.sendMessageTime = date;
+        this.type = type;
+    }
+
+    public Message(String user, String message, boolean isSender) {
+        this.user = user;
+        this.messageText = message;
+        this.isSender = isSender;
+    }
+
     public String getSender() {
         return sender;
     }

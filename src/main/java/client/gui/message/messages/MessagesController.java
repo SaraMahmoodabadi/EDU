@@ -29,6 +29,7 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.ImageHandler;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class MessagesController implements Initializable {
     protected Button back;
     @FXML
     protected VBox AllMessagesPane;
-    protected String user;
+    protected MessageLabel user;
     private boolean stop;
 
     @FXML
@@ -77,11 +78,13 @@ public class MessagesController implements Initializable {
         if (user == null) return;
         if (keyEvent.getCode().equals(KeyCode.ENTER)) {
             Request request = new Request(RequestType.SEND_MESSAGE_ADMIN);
-            request.addData("message", messageField.getText());
-            request.addData("username", user);
+            request.addData("answer", messageField.getText());
+            request.addData("username", user.user);
+            request.addData("userMessage", user.message);
+            request.addData("messageTime", user.time);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
-                makeTextMessageInPage(messageField.getText());
+                makeTextMessageInPage(messageField.getText(), true);
             }
             else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
@@ -90,14 +93,14 @@ public class MessagesController implements Initializable {
     private void sendRequestAnswer(boolean result) {
         Request request = new Request(RequestType.SEND_REQUEST_ANSWER);
         request.addData("result", result);
-        request.addData("userCode", user);
+        request.addData("userCode", user.user);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK)
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
         else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
     }
 
-    private void makeTextMessageInPage(String message) {
+    private void makeTextMessageInPage(String message, boolean isSender) {
         Label label = new Label();
         label.setAlignment(Pos.CENTER);
         label.setText(message);
@@ -109,7 +112,12 @@ public class MessagesController implements Initializable {
                 (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
         label.setWrapText(true);
         label.setMaxWidth(450);
-        messagePane.getChildren().add(label);
+        label.setLayoutY(0);
+        if (isSender) label.setLayoutX(540 - label.getWidth());
+        else label.setLayoutX(0);
+        Pane pane = new Pane();
+        pane.getChildren().add(label);
+        messagePane.getChildren().add(pane);
     }
 
     private void makeMediaMessage(String message) {
@@ -151,8 +159,21 @@ public class MessagesController implements Initializable {
             String message = newMessage.getMessageText();
             String user = newMessage.getUser();
             String type = newMessage.getType();
-            MessageLabel label = new MessageLabel(message, name, user, type);
+            String time = newMessage.getSendMessageTime();
+            MessageLabel label = new MessageLabel(message, name, user, type, time);
             AllMessagesPane.getChildren().add(label);
+        }
+    }
+
+    private void showMessages(Map<String, Object> data) {
+        String name = (String) data.get("name");
+        nameLabel.setText(name);
+        for (int i = 0; i < data.size(); i++) {
+            Message newMessage = (Message) data.get("message" + i);
+            if (newMessage == null) continue;
+            boolean isSender = newMessage.isSender();
+            if (newMessage.isMedia()) makeMediaMessage(newMessage.getMessageText());
+            else makeTextMessageInPage(newMessage.getMessageText(), isSender);
         }
     }
 
@@ -211,12 +232,14 @@ public class MessagesController implements Initializable {
         String name;
         String user;
         String type;
+        String time;
 
-        public MessageLabel(String message, String name, String user, String type) {
+        public MessageLabel(String message, String name, String user, String type, String time) {
             this.message = message;
             this.name = name;
             this.user = user;
             this.type = type;
+            this.time = time;
             makeLabel(name + "\n" + message);
         }
 
@@ -233,24 +256,23 @@ public class MessagesController implements Initializable {
             label.setOnMouseClicked(event -> {
                 Request request = new Request(RequestType.SHOW_MESSAGE);
                 request.addData("user", user);
+                request.addData("time", time);
+                request.addData("message", message);
                 request.addData("type", type);
                 Response response = EDU.serverController.sendRequest(request);
                 if (response.getStatus() == ResponseStatus.OK) {
-                    MessagesController.this.user = user;
-                    Message message = (Message) response.getData("message");
-                    if (message.isMedia()) {
-                        makeMediaMessage(message.getMessageText());
-                    }
-                    else {
-                        makeTextMessageInPage(message.getMessageText());
-                    }
+                    MessagesController.this.user = this;
                     if (EDU.userType == UserType.EDU_ADMIN) {
                         showTextField();
                     }
-                    else if (message.getType().equals("request")) {
-                        showButtons();
+                    Message message = (Message) response.getData("message");
+                    if (message != null) {
+                        if (message.getType().equals("request")) {
+                            showButtons();
+                        }
+                        else hideButtons();
                     }
-                    else hideButtons();
+                    else showMessages(response.getData());
                 }
                 else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             });
