@@ -48,8 +48,9 @@ public class NewChatDataHandler {
 
     public boolean sendRequest(String receiver, String sender, Type type) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
-        query = String.format(query, "request", "studentCode, professorCode, type",
-                getStringFormat(sender) + ", " +getStringFormat(receiver) + ", " + getStringFormat(type.toString()));
+        query = String.format(query, "request", "studentCode, professorCode, type, date1",
+                getStringFormat(sender) + ", " +getStringFormat(receiver) + ", " + getStringFormat(type.toString()) +
+                getStringFormat(LocalDateTime.now().toString()));
         return this.databaseHandler.updateData(query);
     }
     /**receiver is the username of someone who receives request and

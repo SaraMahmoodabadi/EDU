@@ -94,6 +94,7 @@ public class MessagesController implements Initializable {
         Request request = new Request(RequestType.SEND_REQUEST_ANSWER);
         request.addData("result", result);
         request.addData("userCode", user.user);
+        request.addData("date", user.time);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK)
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
@@ -256,6 +257,7 @@ public class MessagesController implements Initializable {
             label.setOnMouseClicked(event -> {
                 Request request = new Request(RequestType.SHOW_MESSAGE);
                 request.addData("user", user);
+                request.addData("name", name);
                 request.addData("time", time);
                 request.addData("message", message);
                 request.addData("type", type);
@@ -267,10 +269,13 @@ public class MessagesController implements Initializable {
                     }
                     Message message = (Message) response.getData("message");
                     if (message != null) {
-                        if (message.getType().equals("request")) {
+                        if (type.equals("request")) {
                             showButtons();
                         }
                         else hideButtons();
+                        makeTextMessageInPage(message.getMessageText(), false);
+                        String name = (String) response.getData("name");
+                        nameLabel.setText(name);
                     }
                     else showMessages(response.getData());
                 }

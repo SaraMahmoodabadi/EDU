@@ -81,7 +81,7 @@ public class AdminManager {
     public Response getMessage(Request request) {
         String user = String.valueOf(request.getData("user"));
         String userMessage = String.valueOf(request.getData("message"));
-        String time = String.valueOf(request.getData("messageTime"));
+        String time = String.valueOf(request.getData("time"));
         List<String> answers = this.dataHandler.getMessageAnswers(user, time);
         Response response = new Response(ResponseStatus.OK);
         String name = this.dataHandler.getName(user);

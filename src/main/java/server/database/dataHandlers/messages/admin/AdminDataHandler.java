@@ -47,7 +47,8 @@ public class AdminDataHandler {
 
     public boolean updateAnswers(String user, String message, String date, List<String> answers) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "adminmessages", "answers = " + getStringFormat(answers.toString())) +
+        query = String.format(query, "adminmessages", "answers = " + getStringFormat(answers.toString()) +
+                ", adminDate = " + getStringFormat(LocalDateTime.now().toString())) +
                 " user = " + getStringFormat(user) + " AND date = " + getStringFormat(date) + " AND message = " +
                 getStringFormat(message);
         return this.databaseHandler.updateData(query);
