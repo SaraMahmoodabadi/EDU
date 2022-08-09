@@ -11,6 +11,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -439,9 +440,10 @@ public class UnitSelectionDataHandler {
         String collegeCode = getCollege(username);
         String professorCode = getAssistant(collegeCode);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
-        query = String.format(query, "request", "studentCode, professorCode, type, information" ,
+        query = String.format(query, "request", "studentCode, professorCode, type, information, date1" ,
                 getStringFormat(studentCode) + ", " + getStringFormat(professorCode) + ", " +
-                        getStringFormat(Type.TAKE_LESSON.toString()) + ", " + getStringFormat(lessonCode));
+                getStringFormat(Type.TAKE_LESSON.toString()) + ", " + getStringFormat(lessonCode) + ", " +
+                getStringFormat(LocalDateTime.now().toString()));
         return this.databaseHandler.updateData(query);
     }
 
