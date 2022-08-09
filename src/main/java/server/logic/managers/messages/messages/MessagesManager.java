@@ -1,5 +1,6 @@
 package server.logic.managers.messages.messages;
 
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.database.dataHandlers.messages.messages.MessagesDataHandler;
 import server.network.ClientHandler;
 import shared.model.message.chatMessages.Message;
@@ -62,6 +63,54 @@ public class MessagesManager {
         }
         String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return sendErrorResponse(error);
+    }
+
+    public Response getRequestResult(Request request) {
+        String username = String.valueOf(request.getData("username"));
+        boolean requestResult = (boolean) request.getData("result");
+        String date = String.valueOf(request.getData("date"));
+        String userMessage = String.valueOf(request.getData("message"));
+        boolean result = false;
+        if (userMessage.equals("request : " + Type.SEND_MESSAGE)) {
+            result = this.dataHandler.setRequestResult(this.client.getUserName(), username, date, requestResult);
+            if (requestResult && result)
+                this.dataHandler.createChat(username, this.client.getUserName());
+        }
+        else {
+            String professorCode = this.dataHandler.findUserCode("professor", this.client.getUserName());
+            String studentCode = this.dataHandler.findUserCode("student", this.client.getUserName());
+            if (userMessage.equals("request : " + Type.MINOR)) {
+                String eduAssistant = this.dataHandler.getEduAssistant(this.client.getUserName());
+                if (professorCode.equals(eduAssistant))
+                    result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.MINOR,
+                            requestResult, true);
+                else  result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.MINOR,
+                        requestResult, false);
+            }
+            else if (userMessage.equals("request : " + Type.WITHDRAWAL)) {
+                result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.WITHDRAWAL,
+                        requestResult, true);
+            }
+            else if (userMessage.equals("request : " + Type.TAKE_LESSON)) {
+                result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.TAKE_LESSON,
+                        requestResult, true);
+                if (result && requestResult) {
+                    UnitSelectionDataHandler handler = new UnitSelectionDataHandler(this.client.getDataHandler());
+                    String lesson = this.dataHandler.findLesson(studentCode, date);
+                    handler.takeLesson(lesson, username);
+                }
+            }
+        }
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+            return sendErrorResponse(error);
+        }
     }
 
     private Response showRequest(String user, String name, String message, String time) {

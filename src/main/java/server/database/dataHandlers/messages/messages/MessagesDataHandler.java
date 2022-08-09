@@ -8,6 +8,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,6 +202,70 @@ public class MessagesDataHandler {
             e.printStackTrace();
         }
         return messages;
+    }
+
+    public String getEduAssistant(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
+        query = String.format(query, "c.educationalAssistantCode", "college c", "user u" ,
+                "u.collegeCode = c.collegeCode") + " u.username = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("educationalAssistantCode");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean setRequestResult(String username, String otherUser, String date, boolean result) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "request", "result = " + getStringFormat(String.valueOf(result)) +
+                ", date2 = " + getStringFormat(LocalDateTime.now().toString())) +
+                " studentCode = " + getStringFormat(otherUser) +
+                " AND type = " + getStringFormat(Type.SEND_MESSAGE.toString()) +
+                " AND professorCode = " + getStringFormat(username) +
+                " AND date1 = " + getStringFormat(date);
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean setRequestResult(String professorCode, String studentCode,
+                                    String date, Type type, boolean result, boolean isFirstResult) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        String request = String.format(query, "request", "result = " + getStringFormat(String.valueOf(result)) +
+                ", date2 = " + getStringFormat(LocalDateTime.now().toString())) +
+                " studentCode = " + getStringFormat(studentCode) +
+                " AND type = " + getStringFormat(type.toString()) +
+                " AND professorCode = " + getStringFormat(professorCode) +
+                " AND date1 = " + getStringFormat(date);
+        if (isFirstResult) {
+           query = request;
+        }
+        else {
+            query = String.format(query, "request", "secondResult = " + getStringFormat(String.valueOf(result)) +
+                    ", date2 = " + getStringFormat(LocalDateTime.now().toString())) +
+                    " studentCode = " + getStringFormat(studentCode) +
+                    " AND type = " + getStringFormat(type.toString()) +
+                    " AND professorCode = " + getStringFormat(professorCode) +
+                    " AND date1 = " + getStringFormat(date);
+        }
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean createChat(String receiver, String sender) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
+        query = String.format(query, "chat") + " receiver = " + getStringFormat(receiver) + " AND sender = " +
+                getStringFormat(sender);
+        this.databaseHandler.updateData(query);
+        query = String.format(query, "chat") + " receiver = " + getStringFormat(sender) + " AND sender = " +
+                getStringFormat(receiver);
+        this.databaseHandler.updateData(query);
+        query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "chat", "sender, receiver, lastMessage, date",
+                getStringFormat(receiver) + ", " + getStringFormat(sender) + ", chat created, " +
+                getStringFormat(LocalDateTime.now().toString()));
+        return this.databaseHandler.updateData(query);
     }
 
     private String getStringFormat(String value) {

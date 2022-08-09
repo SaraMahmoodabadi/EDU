@@ -93,8 +93,9 @@ public class MessagesController implements Initializable {
     private void sendRequestAnswer(boolean result) {
         Request request = new Request(RequestType.SEND_REQUEST_ANSWER);
         request.addData("result", result);
-        request.addData("userCode", user.user);
+        request.addData("username", user.user);
         request.addData("date", user.time);
+        request.addData("message", user.message);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK)
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
