@@ -36,13 +36,19 @@ public class NewChatManager {
                     l++;
                     boolean result = this.dataHandler.sendMessage(client.getUserName(), client.getUserType().toString(),
                             user.getUsername(), user.getUserType().toString(), message, false);
-                    if (result) t++;
+                    if (result)  {
+                        t++;
+                        this.dataHandler.updateChat(user.getUsername(), this.client.getUserName(), message);
+                    }
                 }
                 if (file != null) {
                     l++;
                     boolean result = this.dataHandler.sendMessage(client.getUserName(), client.getUserType().toString(),
                             user.getUsername(), user.getUserType().toString(), file, true);
-                    if (result) t++;
+                    if (result) {
+                        t++;
+                        this.dataHandler.updateChat(user.getUsername(), this.client.getUserName(), message);
+                    }
                 }
             }
         }

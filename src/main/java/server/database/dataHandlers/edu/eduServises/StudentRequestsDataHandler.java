@@ -9,6 +9,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,10 +65,12 @@ public class StudentRequestsDataHandler {
         try {
             if (resultSet1.next() && resultSet2.next() && resultSet3.next()) {
                 String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
-                finalQuery = String.format(finalQuery, items, getStringFormat(resultSet1.getString("studentCode")) +
-                        ", " + getStringFormat(resultSet2.getString("educationalAssistantCode")) + ", " +
+                finalQuery = String.format(finalQuery, items + ", date1",
+                        getStringFormat(resultSet1.getString("studentCode")) + ", " +
+                        getStringFormat(resultSet2.getString("educationalAssistantCode")) + ", " +
                         getStringFormat(String.valueOf(Type.MINOR)) + ", " +
-                        getStringFormat(resultSet3.getString("educationalAssistantCode")));
+                        getStringFormat(resultSet3.getString("educationalAssistantCode") + ", " +
+                        getStringFormat(LocalDateTime.now().toString())));
                 return this.databaseHandler.updateData(finalQuery);
             }
         } catch (SQLException e) {
@@ -99,9 +102,11 @@ public class StudentRequestsDataHandler {
         try {
             if (resultSet1.next() && resultSet2.next()) {
                 String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
-                finalQuery = String.format(finalQuery, items, getStringFormat(resultSet1.getString("studentCode")) +
-                        ", " + getStringFormat(professorCode) + ", " +
-                        getStringFormat(Type.RECOMMENDATION.toString()));
+                finalQuery = String.format(finalQuery, items + ", date1",
+                        getStringFormat(resultSet1.getString("studentCode")) + ", " +
+                        getStringFormat(professorCode) + ", " +
+                        getStringFormat(Type.RECOMMENDATION.toString()) + ", " +
+                        getStringFormat(LocalDateTime.now().toString()));
                 return this.databaseHandler.updateData(finalQuery);
             }
         } catch (SQLException e) {
@@ -120,9 +125,11 @@ public class StudentRequestsDataHandler {
         try {
             if (resultSet1.next() && resultSet2.next()) {
                 String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "registerRequest");
-                finalQuery = String.format(finalQuery, items, getStringFormat(resultSet1.getString("studentCode")) +
-                        ", " +  getStringFormat(resultSet2.getString("educationalAssistantCode")) + ", " +
-                        getStringFormat(Type.WITHDRAWAL.toString()));
+                finalQuery = String.format(finalQuery, items + ", date1",
+                        getStringFormat(resultSet1.getString("studentCode")) + ", " +
+                        getStringFormat(resultSet2.getString("educationalAssistantCode")) + ", " +
+                        getStringFormat(Type.WITHDRAWAL.toString()) + ", " +
+                        getStringFormat(LocalDateTime.now().toString()));
                 return this.databaseHandler.updateData(finalQuery);
             }
         } catch (SQLException e) {

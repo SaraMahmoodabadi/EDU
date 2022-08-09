@@ -7,6 +7,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 public class ProfessorRequestDataHandler {
     private final MySQLHandler databaseHandler;
@@ -23,7 +24,9 @@ public class ProfessorRequestDataHandler {
         String finalQuery = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         finalQuery = String.format(finalQuery, "request",  "firstBlank = " + getStringFormat(firstBlank) +
                 ", secondBlank = " + getStringFormat(secondBlank) +
-                ", thirdBlank = " + getStringFormat(thirdBlank)) + " studentCode = " + getStringFormat(studentCode) +
+                ", thirdBlank = " + getStringFormat(thirdBlank) +
+                ", date2 = " + getStringFormat(LocalDateTime.now().toString())) +
+                " studentCode = " + getStringFormat(studentCode) +
                 " AND type = " + getStringFormat(Type.RECOMMENDATION.toString()) +
                 " AND professorCode = " + getStringFormat(professorCode);
         return this.databaseHandler.updateData(finalQuery);
@@ -50,7 +53,8 @@ public class ProfessorRequestDataHandler {
         String professorCode = getProfessorCode(username);
         if (professorCode == null) return false;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        String request = String.format(query, "request", "result = " + getStringFormat(String.valueOf(result))) +
+        String request = String.format(query, "request", "result = " + getStringFormat(String.valueOf(result)) +
+                ", date2 = " + getStringFormat(LocalDateTime.now().toString())) +
                 " studentCode = " + getStringFormat(studentCode) +
                 " AND type = " + getStringFormat(requestType) + " AND professorCode = " + getStringFormat(professorCode);
         if (isMinor) {

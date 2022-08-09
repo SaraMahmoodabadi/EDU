@@ -179,6 +179,23 @@ public class NewChatDataHandler {
         return null;
     }
 
+    public void updateChat(String receiver, String sender, String message) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
+        query = String.format(query, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
+                getStringFormat(sender);
+        this.databaseHandler.updateData(query);
+        query = String.format(query, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
+                getStringFormat(receiver);
+        this.databaseHandler.updateData(query);
+        query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "chat", "user1, user2, sender, lastMessage, date",
+                getStringFormat(receiver) + ", " + getStringFormat(sender) + ", " +
+                        getStringFormat(sender) + ", " +
+                        getStringFormat(message) + ", " +
+                        getStringFormat(LocalDateTime.now().toString()));
+        this.databaseHandler.updateData(query);
+    }
+
     private String getStringFormat(String value) {
         return "'" + value + "'";
     }
