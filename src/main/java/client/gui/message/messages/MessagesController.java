@@ -30,7 +30,12 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.ImageHandler;
+import shared.util.media.MediaHandler;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +152,16 @@ public class MessagesController implements Initializable {
     }
 
     private void open(String message) {
-        //TODO
+        MediaHandler handler = new MediaHandler();
+        byte[] file = handler.decode(message);
+        String path = "src/main/java/client/resource/sentFiles/" + handler.getName();
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+            fos.write(file);
+            Desktop d = Desktop.getDesktop();
+            d.open(new File(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showData(Map<String, Object> data) {

@@ -55,17 +55,16 @@ public class ChangePasswordController implements Initializable {
         changeScene(actionEvent, response);
     }
 
-    //TODO : Change scene for other type of users
     private void changeScene(ActionEvent actionEvent, Response response) {
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
             if (EDU.userType == UserType.EDU_ADMIN) {
-
+                EDU.sceneSwitcher.switchScene(actionEvent, "messages");
             }
             else if(EDU.userType == UserType.MR_MOHSENI) {
-
+                EDU.sceneSwitcher.switchScene(actionEvent, "mohseni");
             }
             else {
                 EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
