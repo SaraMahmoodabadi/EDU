@@ -10,6 +10,11 @@ import server.logic.managers.edu.reportCard.ReportCardManager;
 import server.logic.managers.edu.unitSelection.UnitSelectionManager;
 import server.logic.managers.edu.unitSelection.UnitSelectionTimeManager;
 import server.logic.managers.edu.user.UserManager;
+import server.logic.managers.messages.admin.AdminManager;
+import server.logic.managers.messages.messages.MessagesManager;
+import server.logic.managers.messages.messenger.ChatManager;
+import server.logic.managers.messages.messenger.NewChatManager;
+import server.logic.managers.messages.mohseni.MohseniManager;
 import shared.model.user.UserType;
 import shared.request.Request;
 import shared.response.Response;
@@ -268,6 +273,71 @@ public class RequestHandler {
             case REGISTER_PHONE_NUMBER:
                 this.client.sendResponse(manager.changePhoneNumber(request));
                 break;
+            default:
+                handleMessages();
+        }
+    }
+
+    private void handleMessages() {
+        AdminManager adminManager = new AdminManager(this.client);
+        MessagesManager messagesManager = new MessagesManager(this.client);
+        ChatManager chatManager = new ChatManager(this.client);
+        NewChatManager newChatManager = new NewChatManager(this.client);
+        MohseniManager mohseniManager = new MohseniManager(this.client);
+        switch (this.request.getRequestType()) {
+            case SHOW_ALL_MESSAGES:
+                this.client.sendResponse(messagesManager.getAllMessages());
+                break;
+            case SHOW_MESSAGE:
+                this.client.sendResponse(messagesManager.getMessage(request));
+                break;
+            case SEND_MESSAGE_ADMIN:
+                this.client.sendResponse(adminManager.sendAnswer(request));
+                break;
+            case SEND_REQUEST_ANSWER:
+                this.client.sendResponse(messagesManager.getRequestResult(request));
+                break;
+            case SHOW_ALL_ADMIN_MESSAGES:
+                this.client.sendResponse(adminManager.showAllMessages());
+                break;
+            case SHOW_ADMIN_MESSAGE:
+                this.client.sendResponse(adminManager.getMessage(request));
+                break;
+            case SEND_MESSAGE_CHAT:
+                this.client.sendResponse(chatManager.sendMessage(request));
+                break;
+            case SHOW_ALL_CHATS:
+                this.client.sendResponse(chatManager.getAllChats());
+                break;
+            case SHOW_CHAT:
+                this.client.sendResponse(chatManager.getChat(request));
+                break;
+            case MAKE_NEW_CHAT:
+                this.client.sendResponse(newChatManager.sendMessage(request));
+                break;
+            case SHOW_USERS_IN_NEW_CHAT:
+                this.client.sendResponse(newChatManager.getUsers(request));
+                break;
+            case REQUEST_SEND_MESSAGE:
+                this.client.sendResponse(newChatManager.sendRequest(request));
+                break;
+            case SEND_MESSAGE_MOHSENI:
+                this.client.sendResponse(mohseniManager.sendMessage(request));
+                break;
+            case GET_STUDENT_PROFILE_MOHSENI:
+                this.client.sendResponse(mohseniManager.getStudentData(request));
+                break;
+            case GET_ALL_STUDENTS_INFORMATION_MOHSENI:
+                this.client.sendResponse(mohseniManager.getAllStudentsInfo());
+                break;
+            case GET_STUDENTS_INFORMATION_MOHSENI:
+                this.client.sendResponse(mohseniManager.getStudentsInfo(request));
+                break;
+            case SEND_MESSAGE_TO_ADMIN:
+                this.client.sendResponse(adminManager.sendMessageToAdmin(request));
+                break;
+            default:
+
         }
     }
 

@@ -203,7 +203,9 @@ public class MessagesController implements Initializable {
                 try {
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Request request = new Request(RequestType.SHOW_ALL_MESSAGES);
+                        Request request;
+                        if (EDU.userType == UserType.EDU_ADMIN)  request = new Request(RequestType.SHOW_ALL_ADMIN_MESSAGES);
+                        else request = new Request(RequestType.SHOW_ALL_MESSAGES);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             for (int i = 0; i < response.getData().size(); i++) {
@@ -220,7 +222,9 @@ public class MessagesController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
-        Request request = new Request(RequestType.SHOW_ALL_MESSAGES);
+        Request request;
+        if (EDU.userType == UserType.EDU_ADMIN)  request = new Request(RequestType.SHOW_ALL_ADMIN_MESSAGES);
+        else request = new Request(RequestType.SHOW_ALL_MESSAGES);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             showData(response.getData());
@@ -256,7 +260,9 @@ public class MessagesController implements Initializable {
 
         private void addActionEvent(Label label) {
             label.setOnMouseClicked(event -> {
-                Request request = new Request(RequestType.SHOW_MESSAGE);
+                Request request;
+                if (EDU.userType == UserType.EDU_ADMIN)  request = new Request(RequestType.SHOW_ADMIN_MESSAGE);
+                else request = new Request(RequestType.SHOW_MESSAGE);
                 request.addData("user", user);
                 request.addData("name", name);
                 request.addData("time", time);
