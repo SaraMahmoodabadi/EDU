@@ -66,7 +66,7 @@ public class ChatController implements Initializable {
             Request request = new Request(RequestType.SEND_MESSAGE_CHAT);
             request.addData("message", textMessage.getText());
             request.addData("username", user);
-            request.addData("isMedia", "false");
+            request.addData("isMedia", false);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.ERROR) {
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -85,7 +85,7 @@ public class ChatController implements Initializable {
             String message = handler.encode(path);
             Request request = new Request(RequestType.SEND_MESSAGE_CHAT);
             request.addData("message", message);
-            request.addData("isMedia", "true");
+            request.addData("isMedia", true);
             request.addData("username", user);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.ERROR) {
@@ -207,7 +207,7 @@ public class ChatController implements Initializable {
     private void open(String message) {
         MediaHandler handler = new MediaHandler();
         byte[] file = handler.decode(message);
-        String path = "C:\\" + handler.getName();
+        String path = "src/main/java/client/resource/sentFiles/" + handler.getName();
         try (FileOutputStream fos = new FileOutputStream(path)) {
             fos.write(file);
             Desktop d = Desktop.getDesktop();

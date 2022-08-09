@@ -170,8 +170,8 @@ public class MessagesDataHandler {
             if (resultSet.next()) {
                 String message = resultSet.getString("message");
                 String mediaMessage = resultSet.getString("mediaMessage");
-                if (message != null) messages.add(new Message("mohseni", message, false));
-                if (mediaMessage != null) messages.add(new Message("mohseni", mediaMessage, false));
+                if (message != null) messages.add(new Message("mohseni", message, false, false));
+                if (mediaMessage != null) messages.add(new Message("mohseni", mediaMessage, false, true));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -194,7 +194,7 @@ public class MessagesDataHandler {
                     String answersList = answers.substring(1, answers.length() - 1);
                     List<String> finalAnswers =  new ArrayList<>(Arrays.asList(answersList.split(", ")));
                     for (String answer : finalAnswers) {
-                        messages.add(new Message("1", answer, false));
+                        messages.add(new Message("1", answer, false, false));
                     }
                 }
             }
@@ -253,19 +253,20 @@ public class MessagesDataHandler {
         return this.databaseHandler.updateData(query);
     }
 
-    public boolean createChat(String receiver, String sender) {
+    public void createChat(String receiver, String sender) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
-        query = String.format(query, "chat") + " receiver = " + getStringFormat(receiver) + " AND sender = " +
+        query = String.format(query, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
                 getStringFormat(sender);
         this.databaseHandler.updateData(query);
-        query = String.format(query, "chat") + " receiver = " + getStringFormat(sender) + " AND sender = " +
+        query = String.format(query, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
                 getStringFormat(receiver);
         this.databaseHandler.updateData(query);
         query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
-        query = String.format(query, "chat", "sender, receiver, lastMessage, date",
-                getStringFormat(receiver) + ", " + getStringFormat(sender) + ", chat created, " +
+        query = String.format(query, "chat", "user1, user2, sender, lastMessage, date",
+                getStringFormat(receiver) + ", " + getStringFormat(sender) + ", " + getStringFormat(sender) +
+                        ", chat created, " +
                 getStringFormat(LocalDateTime.now().toString()));
-        return this.databaseHandler.updateData(query);
+        this.databaseHandler.updateData(query);
     }
 
     private String getStringFormat(String value) {

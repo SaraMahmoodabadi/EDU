@@ -42,6 +42,21 @@ public class Message {
         this.isSender = isSender;
     }
 
+    public Message(String user, String message, boolean isSender, boolean isMedia) {
+        this.user = user;
+        this.messageText = message;
+        this.isSender = isSender;
+        this.isMedia = isMedia;
+    }
+
+    public Message(String user, String message, String date, boolean isSender, boolean isMedia) {
+        this.user = user;
+        this.messageText = message;
+        this.sendMessageTime = date;
+        this.isSender = isSender;
+        this.isMedia = isMedia;
+    }
+
     public String getSender() {
         return sender;
     }

@@ -3,7 +3,7 @@ package shared.util.media;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 public class MediaHandler {
@@ -31,11 +31,7 @@ public class MediaHandler {
     }
 
     public String getName() {
-        byte[] bytes = new byte[24];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(bytes);
-        Base64.Encoder base64Encoder = Base64.getUrlEncoder();
-        return "newFile" + base64Encoder.encodeToString(bytes);
+        return "newFile" + LocalDateTime.now();
     }
 
 }
