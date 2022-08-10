@@ -93,6 +93,8 @@ public class MainPageController implements Initializable {
     @FXML
     protected MenuItem messenger;
     @FXML
+    protected MenuItem adminMessages;
+    @FXML
     protected MenuItem profileItem;
     @FXML
     protected ListView<String> rightList;
@@ -172,9 +174,18 @@ public class MainPageController implements Initializable {
     }
 
     public void showMessages(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "messages");
     }
 
     public void showMessenger(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "chat");
+    }
+
+    public void showAdminMessages(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "adminMessageUser");
     }
 
     public void showProfile(ActionEvent actionEvent) {

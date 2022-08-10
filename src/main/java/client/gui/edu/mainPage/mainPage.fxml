@@ -47,6 +47,7 @@
               <items>
                 <MenuItem fx:id="messagesItem" mnemonicParsing="false" onAction="#showMessages" text="Messages" />
                   <MenuItem fx:id="messenger" mnemonicParsing="false" onAction="#showMessenger" text="Messenger" />
+                  <MenuItem fx:id="adminMessages" mnemonicParsing="false" onAction="#showAdminMessages" text="Message to admin" />
               </items>
             </Menu>
             <Menu fx:id="profile" mnemonicParsing="false" text="Profile">
