@@ -57,7 +57,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <TextArea fx:id="messageArea" layoutX="685.0" layoutY="205.0" prefHeight="190.0" prefWidth="346.0" promptText="Message">
+      <TextArea fx:id="messageArea" layoutX="685.0" layoutY="205.0" prefHeight="190.0" prefWidth="346.0" promptText="Message" wrapText="true">
          <effect>
             <InnerShadow color="#ffd100" />
          </effect>

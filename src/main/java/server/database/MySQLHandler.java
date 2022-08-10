@@ -82,6 +82,17 @@ public class MySQLHandler {
         return false;
     }
 
+    public boolean removeData(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeQuery(query);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void closeConnection() {
         try {
             this.connection.close();

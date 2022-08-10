@@ -3,6 +3,8 @@ package client.gui.message.messenger.chat;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import com.sun.javafx.tk.FontLoader;
+import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -159,9 +161,11 @@ public class ChatController implements Initializable {
         label.setWrapText(true);
         label.setMaxWidth(450);
         label.setLayoutY(0);
-        if (isSender) label.setLayoutX(540 - label.getWidth());
+        FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
+        double width = fontLoader.computeStringWidth(label.getText(), label.getFont());
+        if (isSender) label.setLayoutX(540 - width);
         else label.setLayoutX(0);
-        chatPane.getChildren().add(pane);
+        pane.getChildren().add(label);
         Label time = new Label();
         time.setAlignment(Pos.CENTER);
         time.setText(messageTime);
@@ -170,9 +174,11 @@ public class ChatController implements Initializable {
         time.setWrapText(true);
         time.setMaxWidth(20);
         if (isSender) time.setLayoutX(430);
-        else time.setLayoutX(label.getWidth() - 115);
-        time.setLayoutY(label.getHeight() - 15);
-        pane.setPrefHeight(label.getHeight());
+        else time.setLayoutX(width - 115);
+        double height = pane.getHeight();
+        pane.setPrefHeight(height + 15);
+        time.setLayoutY(height);
+        pane.getChildren().add(time);
         chatPane.getChildren().add(pane);
         return pane.getHeight();
     }

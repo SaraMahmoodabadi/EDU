@@ -63,7 +63,7 @@ public class ChatManager {
         for (int i = 0; i < finalList.size(); i++) {
             response.addData("message" + i, finalList.get(i));
         }
-        return null;
+        return response;
     }
 
     public Response sendMessage(Request request) {

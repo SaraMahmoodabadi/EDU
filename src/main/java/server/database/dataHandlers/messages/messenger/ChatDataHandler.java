@@ -116,10 +116,10 @@ public class ChatDataHandler {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
         query = String.format(query, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
                 getStringFormat(sender);
-        this.databaseHandler.updateData(query);
+        this.databaseHandler.removeData(query);
         query = String.format(query, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
                 getStringFormat(receiver);
-        this.databaseHandler.updateData(query);
+        this.databaseHandler.removeData(query);
         query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "chat", "user1, user2, sender, lastMessage, date",
                 getStringFormat(receiver) + ", " + getStringFormat(sender) + ", " +
