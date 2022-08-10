@@ -56,7 +56,7 @@ public class AdminDataHandler {
 
     public List<Message> getAllMessages() {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "m.user, m.message, m.date", "adminmessages m, u.firstName, u.lastName" ,
+        query = String.format(query, "m.user, m.message, m.date, u.firstName, u.lastName", "adminmessages m",
                 "user u", "u.username = m.user");
         query = query.substring(0, query.length() - 6);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);

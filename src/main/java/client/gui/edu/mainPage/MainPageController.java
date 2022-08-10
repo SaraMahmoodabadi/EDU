@@ -240,7 +240,7 @@ public class MainPageController implements Initializable {
                 }
                 this.role.setText(EDU.userType.toString().toLowerCase());
                 getTableData(response);
-            } else {
+            } else if (EDU.userType == UserType.PROFESSOR) {
                 this.role.setText(EDU.professorType.toString().toLowerCase());
             }
         }

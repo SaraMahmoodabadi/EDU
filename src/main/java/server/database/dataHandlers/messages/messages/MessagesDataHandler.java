@@ -249,7 +249,7 @@ public class MessagesDataHandler {
 
     public String findMinorMajor(String studentCode, String date1) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "c.name", "request r", "professor p", "p.professorCode = r.anotherCollegeAssistantCode" +
+        query = String.format(query, "c.name", "request r", "professor p", "p.professorCode = r.anotherCollegeProfessorCode" +
                 " JOIN user u ON p.username = u.username" +
                 " JOIN college c ON c.collegeCode = u.collegeCode") +
                 " r.studentCode = " + getStringFormat(studentCode) +
@@ -275,7 +275,7 @@ public class MessagesDataHandler {
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                return resultSet.getString("name");
+                return resultSet.getString("information");
             }
         } catch (SQLException e) {
             e.printStackTrace();

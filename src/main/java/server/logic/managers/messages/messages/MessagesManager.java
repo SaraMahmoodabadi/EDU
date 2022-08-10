@@ -14,6 +14,7 @@ import shared.util.config.ConfigType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MessagesManager {
@@ -274,7 +275,7 @@ public class MessagesManager {
     }
 
     private List<String> getSortedTimes(List<String> times) {
-        List<String> sortedTimes = new ArrayList<>();
+        String[] sortedTimes = new String[times.size()];
         for (int i = 0; i < times.size(); i++) {
             int t = 0;
             LocalDateTime date1 = LocalDateTime.parse(times.get(i));
@@ -282,9 +283,9 @@ public class MessagesManager {
                 LocalDateTime date2 = LocalDateTime.parse(time);
                 if (date1.isBefore(date2)) t++;
             }
-            sortedTimes.set(t, times.get(i));
+            sortedTimes[t] = times.get(i);
         }
-        return sortedTimes;
+        return new ArrayList<>(Arrays.asList(sortedTimes));
     }
 
     private Response sendErrorResponse(String errorMessage) {

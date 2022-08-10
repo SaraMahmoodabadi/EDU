@@ -12,6 +12,7 @@ import shared.util.media.ImageHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -83,17 +84,17 @@ public class ChatManager {
     }
 
     private List<String> getSortedTimes(List<String> times) {
-        List<String> sortedTimes = new ArrayList<>();
+        String[] sortedTimes = new String[times.size()];
         for (int i = 0; i < times.size(); i++) {
             int t = 0;
+            LocalDateTime date1 = LocalDateTime.parse(times.get(i));
             for (String time : times) {
-                LocalDateTime date1 = LocalDateTime.parse(times.get(i));
                 LocalDateTime date2 = LocalDateTime.parse(time);
                 if (date1.isBefore(date2)) t++;
             }
-            sortedTimes.set(t, times.get(i));
+            sortedTimes[t] = times.get(i);
         }
-        return sortedTimes;
+        return new ArrayList<>(Arrays.asList(sortedTimes));
     }
 
     private Response sendErrorResponse(String errorMessage) {

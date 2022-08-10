@@ -2,6 +2,8 @@ package client.gui.message.messages;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import com.sun.javafx.tk.FontLoader;
+import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +23,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import shared.model.message.chatMessages.Message;
-import shared.model.university.lesson.Lesson;
 import shared.model.user.UserType;
 import shared.request.Request;
 import shared.request.RequestType;
@@ -29,16 +30,14 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
-import shared.util.media.ImageHandler;
 import shared.util.media.MediaHandler;
+
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -69,7 +68,10 @@ public class MessagesController implements Initializable {
 
     @FXML
     public void back(ActionEvent event) {
-        EDU.sceneSwitcher.switchScene(event, "mainPage");
+        stop = true;
+        if (EDU.userType == UserType.EDU_ADMIN)
+            EDU.sceneSwitcher.switchScene(event, "loginPage");
+        else EDU.sceneSwitcher.switchScene(event, "mainPage");
     }
 
     @FXML
@@ -90,6 +92,7 @@ public class MessagesController implements Initializable {
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
                 makeTextMessageInPage(messageField.getText(), true);
+                messageField.setText(null);
             }
             else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
@@ -120,7 +123,9 @@ public class MessagesController implements Initializable {
         label.setWrapText(true);
         label.setMaxWidth(450);
         label.setLayoutY(0);
-        if (isSender) label.setLayoutX(540 - label.getWidth());
+        FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
+        double width = fontLoader.computeStringWidth(label.getText(), label.getFont());
+        if (isSender) label.setLayoutX(540 - width);
         else label.setLayoutX(0);
         Pane pane = new Pane();
         pane.getChildren().add(label);
@@ -165,12 +170,14 @@ public class MessagesController implements Initializable {
     }
 
     private void showData(Map<String, Object> data) {
+        AllMessagesPane.getChildren().clear();
         int t = 0;
         for (int i = 0; i < data.size(); i++) {
             Message newMessage = (Message) data.get("message" + i);
             if (newMessage == null) continue;
             t++;
-            if (t > 7) AllMessagesPane.setPrefHeight(AllMessagesPane.getHeight() + 90);
+            if (AllMessagesPane.getHeight() < 90 * t)
+                AllMessagesPane.setPrefHeight(90 * t);
             String name = newMessage.getName();
             String message = newMessage.getMessageText();
             String user = newMessage.getUser();
@@ -187,7 +194,7 @@ public class MessagesController implements Initializable {
         for (int i = 0; i < data.size(); i++) {
             Message newMessage = (Message) data.get("message" + i);
             if (newMessage == null) continue;
-            boolean isSender = newMessage.isSender();
+            boolean isSender = newMessage.isTransmitter();
             if (newMessage.isMedia()) makeMediaMessage(newMessage.getMessageText());
             else makeTextMessageInPage(newMessage.getMessageText(), isSender);
         }
@@ -264,16 +271,22 @@ public class MessagesController implements Initializable {
         }
 
         private void makeLabel(String data) {
-            Label label = new Label(data);
-            label.setPrefWidth(533);
-            label.setPrefHeight(75);
+            this.setText(data);
+            this.setPrefWidth(533);
+            this.setPrefHeight(75);
             Font font = Font.font("System", FontWeight.BOLD,15);
-            label.setFont(font);
-            addActionEvent(label);
+            this.setFont(font);
+            this.setTextFill(Color.valueOf("#b151b8"));
+            this.setStyle(String.valueOf(Color.valueOf("#ffd100")));
+            this.setBackground(new Background(new BackgroundFill
+                    (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
+            addActionEvent(this);
         }
 
         private void addActionEvent(Label label) {
             label.setOnMouseClicked(event -> {
+                hideButtons();
+                messagePane.getChildren().clear();
                 Request request;
                 if (EDU.userType == UserType.EDU_ADMIN)  request = new Request(RequestType.SHOW_ADMIN_MESSAGE);
                 else request = new Request(RequestType.SHOW_MESSAGE);

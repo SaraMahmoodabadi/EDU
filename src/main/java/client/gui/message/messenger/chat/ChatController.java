@@ -110,7 +110,8 @@ public class ChatController implements Initializable {
             Message newChat = (Message) data.get("message" + i);
             if (newChat == null) continue;
             t++;
-            if (t > 7) allChatsPane.setPrefHeight(allChatsPane.getHeight() + 90);
+            if (allChatsPane.getHeight() < 90 * t)
+                allChatsPane.setPrefHeight(90 * t);
             String name = newChat.getName();
             String message = newChat.getMessageText();
             String user = newChat.getUser();
@@ -128,7 +129,7 @@ public class ChatController implements Initializable {
         for (int i = 0; i < data.size(); i++) {
             Message newMessage = (Message) data.get("message" + i);
             if (newMessage == null) continue;
-            boolean isSender = newMessage.isSender();
+            boolean isSender = newMessage.isTransmitter();
             if (newMessage.isMedia())
                 t += makeMediaMessage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
             else t += makeTextMessageInPage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
@@ -239,12 +240,16 @@ public class ChatController implements Initializable {
         }
 
         private void makeLabel(String data) {
-            Label label = new Label(data);
-            label.setPrefWidth(533);
-            label.setPrefHeight(75);
+            this.setText(data);
+            this.setPrefWidth(533);
+            this.setPrefHeight(75);
             Font font = Font.font("System", FontWeight.BOLD,15);
-            label.setFont(font);
-            addActionEvent(label);
+            this.setFont(font);
+            this.setTextFill(Color.valueOf("#b151b8"));
+            this.setStyle(String.valueOf(Color.valueOf("#ffd100")));
+            this.setBackground(new Background(new BackgroundFill
+                    (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
+            addActionEvent(this);
         }
 
         private void addActionEvent(Label label) {

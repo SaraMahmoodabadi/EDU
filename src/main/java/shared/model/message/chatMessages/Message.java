@@ -14,7 +14,7 @@ public class Message {
     private String type;
     private boolean isMedia;
     private String user;
-    private boolean isSender;
+    private boolean isTransmitter;
 
     public Message() {}
 
@@ -39,13 +39,13 @@ public class Message {
     public Message(String user, String message, boolean isSender) {
         this.user = user;
         this.messageText = message;
-        this.isSender = isSender;
+        this.isTransmitter = isSender;
     }
 
     public Message(String user, String message, boolean isSender, boolean isMedia) {
         this.user = user;
         this.messageText = message;
-        this.isSender = isSender;
+        this.isTransmitter = isSender;
         this.isMedia = isMedia;
     }
 
@@ -53,7 +53,7 @@ public class Message {
         this.user = user;
         this.messageText = message;
         this.sendMessageTime = date;
-        this.isSender = isSender;
+        this.isTransmitter = isSender;
         this.isMedia = isMedia;
     }
 
@@ -137,11 +137,11 @@ public class Message {
         this.user = user;
     }
 
-    public boolean isSender() {
-        return isSender;
+    public boolean isTransmitter() {
+        return isTransmitter;
     }
 
-    public void setSender(boolean sender) {
-        isSender = sender;
+    public void setTransmitter(boolean sender) {
+        isTransmitter = sender;
     }
 }

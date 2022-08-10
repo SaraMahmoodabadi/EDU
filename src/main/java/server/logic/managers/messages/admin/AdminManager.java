@@ -11,6 +11,7 @@ import shared.util.config.ConfigType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AdminManager {
@@ -89,24 +90,24 @@ public class AdminManager {
         Message mainMessage = new Message(user, userMessage, false);
         response.addData("message0", mainMessage);
         for (int i = 1; i <= answers.size() ; i++) {
-            Message message = new Message("1", answers.get(i), true);
+            Message message = new Message("1", answers.get(i - 1), true);
             response.addData("message" + i, message);
         }
         return response;
     }
 
     private List<String> getSortedTimes(List<String> times) {
-        List<String> sortedTimes = new ArrayList<>();
+        String[] sortedTimes = new String[times.size()];
         for (int i = 0; i < times.size(); i++) {
             int t = 0;
+            LocalDateTime date1 = LocalDateTime.parse(times.get(i));
             for (String time : times) {
-                LocalDateTime date1 = LocalDateTime.parse(times.get(i));
                 LocalDateTime date2 = LocalDateTime.parse(time);
                 if (date1.isBefore(date2)) t++;
             }
-            sortedTimes.set(t, times.get(i));
+            sortedTimes[t] = times.get(i);
         }
-        return sortedTimes;
+        return new ArrayList<>(Arrays.asList(sortedTimes));
     }
 
     private Response sendErrorResponse(String errorMessage) {
