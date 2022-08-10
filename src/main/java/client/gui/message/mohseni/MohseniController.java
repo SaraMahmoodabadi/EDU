@@ -56,6 +56,7 @@ public class MohseniController implements Initializable {
     @FXML
     protected TextField studentCodeField;
     private String file;
+    private String fileFormat;
     private boolean stop;
 
 
@@ -75,6 +76,7 @@ public class MohseniController implements Initializable {
         Request request = new Request(RequestType.SEND_MESSAGE_MOHSENI);
         if (file != null) {
             request.addData("file", file);
+            request.addData("fileFormat", fileFormat);
         }
         if (messageArea.getText() != null) {
             request.addData("message", messageArea.getText());
@@ -98,13 +100,15 @@ public class MohseniController implements Initializable {
             MediaHandler handler = new MediaHandler();
             String path = file.getAbsolutePath();
             this.file = handler.encode(path);
+            int n = path.split("\\.").length;
+            this.fileFormat = path.split("\\.")[n-1];
         }
     }
 
     @FXML
     void back(ActionEvent event) {
         stop = true;
-        EDU.sceneSwitcher.switchScene(event, "mainPage");
+        EDU.sceneSwitcher.switchScene(event, "loginPage");
     }
 
     private void setTable() {

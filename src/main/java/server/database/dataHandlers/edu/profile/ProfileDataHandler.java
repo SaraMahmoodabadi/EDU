@@ -4,6 +4,7 @@ import server.database.MySQLHandler;
 import shared.model.user.User;
 import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Professor;
+import shared.model.user.student.EducationalStatus;
 import shared.model.user.student.Grade;
 import shared.model.user.student.Student;
 import shared.util.config.Config;
@@ -23,7 +24,7 @@ public class ProfileDataHandler {
         User user = getUserInfo(username);
         if (user == null) return null;
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "studentCode, rate, grade, supervisorCode, enteringYear", "student") +
+        query = String.format(query, "studentCode, rate, grade, supervisorCode, enteringYear, status", "student") +
                 " username = " + getStringFormat(username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
@@ -33,9 +34,11 @@ public class ProfileDataHandler {
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
                 String supervisorCode = resultSet.getString("supervisorCode");
                 String enteringYear = resultSet.getString("enteringYear");
+                EducationalStatus status = EducationalStatus.valueOf(resultSet.getString("status"));
                 return new Student(user.getFirstName(), user.getLastName(), user.getNationalCode(),
                         user.getCollegeCode(), user.getEmailAddress(), user.getPhoneNumber(), user.getImageAddress(),
-                        studentCode, Double.parseDouble(rate), grade, supervisorCode, Integer.parseInt(enteringYear));
+                        studentCode, Double.parseDouble(rate), grade, supervisorCode, Integer.parseInt(enteringYear),
+                        status);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -115,7 +115,10 @@ public class ProfileController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
-        EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+        if (EDU.userType == UserType.MR_MOHSENI)
+            EDU.sceneSwitcher.switchScene(actionEvent, "mohseni");
+        else
+            EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
     private void makeFields() {
@@ -151,6 +154,7 @@ public class ProfileController implements Initializable {
         degreeLabel.setText(String.valueOf(student.getGrade()));
         supervisorLabel.setText(student.getSupervisorCode());
         enteringYearLabel.setText(String.valueOf(student.getEnteringYear()));
+        statusLabel.setText(String.valueOf(student.getStatus()));
     }
 
     private void getProfessorData() {

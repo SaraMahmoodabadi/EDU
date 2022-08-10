@@ -3,8 +3,10 @@ package server.database.dataHandlers.messages.messages;
 import server.database.MySQLHandler;
 import shared.model.message.chatMessages.Message;
 import shared.model.message.request.Type;
+import shared.model.user.student.EducationalStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -294,7 +296,8 @@ public class MessagesDataHandler {
                 String message = resultSet.getString("message");
                 String mediaMessage = resultSet.getString("mediaMessage");
                 if (message != null) messages.add(new Message("mohseni", message, false, false));
-                if (mediaMessage != null) messages.add(new Message("mohseni", mediaMessage, false, true));
+                if (mediaMessage != null) messages.add(new Message
+                        ("mohseni", new MediaHandler().encode(mediaMessage), false, true));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -374,6 +377,14 @@ public class MessagesDataHandler {
                     " AND date1 = " + getStringFormat(date);
         }
         return this.databaseHandler.updateData(query);
+    }
+
+    public void setWithdrawalStatus(String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "student", "status = " +
+                getStringFormat(EducationalStatus.WITHDRAWAL_FROM_EDUCATION.toString())) +
+                " studentCode = " + getStringFormat(studentCode);
+        this.databaseHandler.updateData(query);
     }
 
     public void createChat(String receiver, String sender) {

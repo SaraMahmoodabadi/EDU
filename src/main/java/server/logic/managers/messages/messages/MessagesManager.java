@@ -85,7 +85,7 @@ public class MessagesManager {
         }
         else {
             String professorCode = this.dataHandler.findUserCode("professor", this.client.getUserName());
-            String studentCode = this.dataHandler.findUserCode("student", this.client.getUserName());
+            String studentCode = this.dataHandler.findUserCode("student", username);
             if (userMessage.equals("request : " + Type.MINOR)) {
                 String eduAssistant = this.dataHandler.getEduAssistant(this.client.getUserName());
                 if (professorCode.equals(eduAssistant))
@@ -97,6 +97,7 @@ public class MessagesManager {
             else if (userMessage.equals("request : " + Type.WITHDRAWAL)) {
                 result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.WITHDRAWAL,
                         requestResult, true);
+                if (result && requestResult) this.dataHandler.setWithdrawalStatus(studentCode);
             }
             else if (userMessage.equals("request : " + Type.TAKE_LESSON)) {
                 result = this.dataHandler.setRequestResult(professorCode, studentCode, date,  Type.TAKE_LESSON,

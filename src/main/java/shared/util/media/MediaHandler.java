@@ -30,8 +30,21 @@ public class MediaHandler {
         return null;
     }
 
+    public void writeBytesToFile(String filePath, byte[] bytes) {
+        try {
+            Files.write(new File(filePath).toPath(), bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String createNameByUser(String user) {
+        return getName() + user;
+    }
+
     public String getName() {
-        return "newFile" + LocalDateTime.now();
+        String time = LocalDateTime.now().toString().replace(":", "-");
+        return "newFile" + time;
     }
 
 }

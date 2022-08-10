@@ -8,13 +8,16 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.util.List;
 
 public class MohseniManager {
+    private final ClientHandler client;
     private final MohseniDataHandler dataHandler;
 
     public MohseniManager(ClientHandler clientHandler) {
+        this.client = clientHandler;
         this.dataHandler = new MohseniDataHandler(clientHandler.getDataHandler());
     }
 
@@ -61,10 +64,13 @@ public class MohseniManager {
 
     public Response sendMessage(Request request) {
         String file = (String) request.getData("file");
+        String fileFormat = (String) request.getData("fileFormat");
         String message = (String) request.getData("message");
         String grade = (String) request.getData("grade");
         String year = (String) request.getData("year");
         String college = (String) request.getData("college");
+        String filePath = null;
+        if (file != null) filePath = saveFile(file, fileFormat);
         String item = "";
         int i = 0;
         if (!college.equals("All colleges")) {
@@ -87,16 +93,16 @@ public class MohseniManager {
         if (students == null) result = false;
         else {
             for (String student : students) {
-                if (file != null && message != null)  {
-                    boolean messageResult = this.dataHandler.sendMixMessage(message, file, student);
+                if (filePath != null && message != null)  {
+                    boolean messageResult = this.dataHandler.sendMixMessage(message, filePath, student);
                     if (messageResult) i++;
                 }
                 else if (message != null) {
                     boolean messageResult = this.dataHandler.sendTextMessage(message, student);
                     if (messageResult) i++;
                 }
-                else if (file != null) {
-                    boolean messageResult = this.dataHandler.sendMediaMessage(file, student);
+                else if (filePath != null) {
+                    boolean messageResult = this.dataHandler.sendMediaMessage(filePath, student);
                     if (messageResult) i++;
                 }
             }
@@ -111,6 +117,14 @@ public class MohseniManager {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
+    }
+
+    private String saveFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "mohseniFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
     }
 
     private Response sendErrorResponse(String errorMessage) {

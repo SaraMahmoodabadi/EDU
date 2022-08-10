@@ -2,6 +2,7 @@ package server.database.dataHandlers.messages.mohseni;
 
 import server.database.MySQLHandler;
 import shared.model.user.User;
+import shared.model.user.student.EducationalStatus;
 import shared.model.user.student.Grade;
 import shared.model.user.student.Student;
 import shared.util.config.Config;
@@ -22,7 +23,7 @@ public class MohseniDataHandler {
 
     public Student getStudentInfo(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "username, rate, grade, supervisorCode, enteringYear", "student") +
+        query = String.format(query, "username, rate, grade, supervisorCode, enteringYear, status", "student") +
                 " studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
@@ -32,11 +33,13 @@ public class MohseniDataHandler {
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
                 String supervisorCode = resultSet.getString("supervisorCode");
                 String enteringYear = resultSet.getString("enteringYear");
+                EducationalStatus status = EducationalStatus.valueOf(resultSet.getString("status"));
                 User user = getUserInfo(username);
                 if (user == null) return null;
                 return new Student(user.getFirstName(), user.getLastName(), user.getNationalCode(),
                         user.getCollegeCode(), user.getEmailAddress(), user.getPhoneNumber(), user.getImageAddress(),
-                        studentCode, Double.parseDouble(rate), grade, supervisorCode, Integer.parseInt(enteringYear));
+                        studentCode, Double.parseDouble(rate), grade, supervisorCode, Integer.parseInt(enteringYear),
+                        status);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,7 +76,7 @@ public class MohseniDataHandler {
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                return resultSet.getString("username");
+                return resultSet.getString("collegeCode");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,9 +103,9 @@ public class MohseniDataHandler {
 
     public boolean sendMixMessage(String message, String media, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
-        query = String.format(query, "mohsenimessages", "receiver, date, message",
+        query = String.format(query, "mohsenimessages", "receiver, date, message, mediaMessage",
                 getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) + ", " +
-                        getStringFormat(message));
+                        getStringFormat(message) + ", " + getStringFormat(media));
         return this.databaseHandler.updateData(query);
     }
 
@@ -124,14 +127,14 @@ public class MohseniDataHandler {
 
     public List<Student> getStudentsInfo(String code) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "u.firstName, u.lastName, u.collegeCode,  s.studentCode, s.grade",
-                "student", "user", "u.username = s.username");
+        query = String.format(query, "u.firstName, u.lastName, u.collegeCode, s.studentCode, s.grade",
+                "student s", "user u", "u.username = s.username");
         if (code != null) query += " studentCode LIKE " + getStringFormat(code + "%");
         else query = query.substring(0, query.length() - 6);
         List<Student> students = new ArrayList<>();
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 String firstName = resultSet.getString("firstName");
                 String lastName = resultSet.getString("lastName");
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));

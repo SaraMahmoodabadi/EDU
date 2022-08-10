@@ -163,7 +163,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="statusLabel" layoutX="257.0" layoutY="617.0" prefHeight="27.0" prefWidth="288.0" textFill="#b151b8">
+      <Label fx:id="statusLabel" layoutX="257.0" layoutY="617.0" prefHeight="27.0" prefWidth="342.0" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>

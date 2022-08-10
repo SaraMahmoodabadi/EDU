@@ -37,13 +37,14 @@ public class Student extends User {
 
     public Student(String firstName, String lastName, long nationalCode, String collegeCode,
                    String emailAddress, long phoneNumber, String imageAddress, String studentCode,
-                   double rate, Grade grade, String supervisorCode, int enteringYear) {
+                   double rate, Grade grade, String supervisorCode, int enteringYear, EducationalStatus status) {
         super(firstName, lastName, nationalCode, collegeCode, emailAddress, phoneNumber, imageAddress);
         this.studentCode = studentCode;
         this.rate = rate;
         this.grade = grade;
         this.supervisorCode = supervisorCode;
         this.enteringYear = enteringYear;
+        this.status = status;
     }
 
     public Student(String firstName, String lastName, String collegeCode, String studentCode, Grade grade) {

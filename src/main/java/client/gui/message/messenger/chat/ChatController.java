@@ -3,6 +3,7 @@ package client.gui.message.messenger.chat;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import shared.model.message.chatMessages.Message;
+import shared.model.user.UserType;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -58,6 +60,7 @@ public class ChatController implements Initializable {
     @FXML
     protected VBox chatPane;
     protected String user;
+    boolean stop;
 
     @FXML
     public void sendMessage(KeyEvent keyEvent) {
@@ -96,15 +99,18 @@ public class ChatController implements Initializable {
 
     @FXML
     public void showNewChatPage(ActionEvent event) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(event, "newChat");
     }
 
     @FXML
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
     private void showAllChats(Map<String, Object> data) {
+        allChatsPane.getChildren().clear();
         int t = 0;
         for (int i = 0; i < data.size(); i++) {
             Message newChat = (Message) data.get("message" + i);
@@ -121,6 +127,7 @@ public class ChatController implements Initializable {
     }
 
     private void showChat(Map<String, Object> data) {
+        chatPane.getChildren().clear();
         Object image = data.get("profileImage");
         this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
         String name = (String) data.get("name");
@@ -218,13 +225,56 @@ public class ChatController implements Initializable {
         }
     }
 
+    private void updateAllChats() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Request request = new Request(RequestType.SHOW_ALL_CHATS);
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            for (int i = 0; i < response.getData().size(); i++) {
+                                showAllChats(response.getData());
+                            }
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
+    private void updateChat() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        Request request = new Request(RequestType.SHOW_CHAT);
+                        request.addData("user", user);
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            for (int i = 0; i < response.getData().size(); i++) {
+                                showChat(response.getData());
+                            }
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         Request request = new Request(RequestType.SHOW_ALL_CHATS);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) showAllChats(response.getData());
         else
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        updateAllChats();
     }
 
     class ChatLabel extends Label{
@@ -254,11 +304,14 @@ public class ChatController implements Initializable {
 
         private void addActionEvent(Label label) {
             label.setOnMouseClicked(event -> {
+                ChatController.this.user = user;
+                chatPane.getChildren().clear();
                 Request request = new Request(RequestType.SHOW_CHAT);
                 request.addData("user", user);
                 Response response = EDU.serverController.sendRequest(request);
                 if (response.getStatus() == ResponseStatus.OK) {
                     showChat(response.getData());
+                    updateChat();
                 }
                 else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             });

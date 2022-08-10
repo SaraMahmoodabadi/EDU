@@ -2,6 +2,7 @@ package server.database.dataHandlers.edu.eduServises;
 
 import server.database.MySQLHandler;
 import shared.model.message.request.Type;
+import shared.model.user.student.EducationalStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
@@ -125,6 +126,14 @@ public class ProfessorRequestDataHandler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void setWithdrawalStatus(String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "student", "status = " +
+                getStringFormat(EducationalStatus.WITHDRAWAL_FROM_EDUCATION.toString())) +
+                " studentCode = " + getStringFormat(studentCode);
+        this.databaseHandler.updateData(query);
     }
 
     private String getStringFormat(String value) {

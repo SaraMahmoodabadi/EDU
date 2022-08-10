@@ -177,6 +177,8 @@ public class RequestManager {
                             (Boolean) request.getData("result"),
                             isMinor, String.valueOf(type));
             if (result) {
+                if (type == Type.WITHDRAWAL && (Boolean) request.getData("result"))
+                    this.pDataHandler.setWithdrawalStatus((String) request.getData("studentCode"));
                 Response response = new Response(ResponseStatus.OK);
                 String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
                 response.setNotificationMessage(note);

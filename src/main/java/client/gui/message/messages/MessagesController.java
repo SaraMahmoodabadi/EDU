@@ -145,13 +145,14 @@ public class MessagesController implements Initializable {
         pane.getChildren().add(rectangle);
         Button button = new Button();
         String fileImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "fileIconPath");
-        ImageView file = new ImageView(fileImage);
+        ImageView file = new ImageView("file:" + fileImage);
         file.setFitHeight(50);
         file.setFitWidth(50);
         button.setGraphic(file);
         button.setOnAction(event -> open(message));
-        button.setLayoutX(10);
-        button.setLayoutY(290);
+        button.setLayoutY(5);
+        button.setLayoutX(270);
+        button.setStyle("-fx-background-color: #b151b8");
         pane.getChildren().add(button);
         messagePane.getChildren().add(pane);
     }
