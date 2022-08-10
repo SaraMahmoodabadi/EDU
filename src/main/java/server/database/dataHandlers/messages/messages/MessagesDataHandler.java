@@ -59,11 +59,12 @@ public class MessagesDataHandler {
     }
 
     public List<Message> getAllProfessorRequests(String username) {
+        String professorCode = findUserCode("professor", username);
         List<Message> requests = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "u.firstName, u.lastName, u.username, r.date1, r.type", "request r", "professor p",
-                "p.professorCode = r.professorCode JOIN user u ON u.username = p.username") +
-                " u.username = " + getStringFormat(username);
+        query = String.format(query, "u.firstName, u.lastName, u.username, r.date1, r.type", "request r", "student s",
+                "s.studentCode = r.studentCode JOIN user u ON u.username = s.username") +
+                " r.professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             while (resultSet.next()) {
@@ -75,6 +76,90 @@ public class MessagesDataHandler {
                 String type = resultSet.getString("type");
                 String userMessage = "request : " + type;
                 Message message = new Message(name, user, userMessage, date, "request");
+                requests.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return requests;
+    }
+
+    public List<Message> getAllRequestsResult(String username) {
+        String studentCode = findUserCode("student", username);
+        List<Message> requests = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
+        query = String.format(query, "u.firstName, u.lastName, u.username, r.date2, r.type, r.result, r.secondResult",
+                "request r", "professor p",
+                "p.professorCode = r.professorCode JOIN user u ON u.username = p.username") +
+                " r.studentCode = " + getStringFormat(studentCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            while (resultSet.next()) {
+                String result1 = resultSet.getString("result");
+                String result2 = resultSet.getString("secondResult");
+                if (result1 == null && result2 == null) continue;
+                String firstname = resultSet.getString("firstName");
+                String lastname = resultSet.getString("lastName");
+                String name = firstname + " " + lastname;
+                String user = resultSet.getString("username");
+                String date = resultSet.getString("date2");
+                String type = resultSet.getString("type");
+                String userMessage = "request result : " + type;
+                Message message = new Message(name, user, userMessage, date, "request result");
+                requests.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return requests;
+    }
+
+    public List<Message> getAllRecommendation(String username) {
+        String studentCode = findUserCode("student", username);
+        List<Message> requests = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
+        query = String.format(query, "u.firstName, u.lastName, u.username, r.date2, r.firstBlank",
+                "request r", "professor p",
+                "p.professorCode = r.professorCode JOIN user u ON u.username = p.username") +
+                " r.studentCode = " + getStringFormat(studentCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            while (resultSet.next()) {
+                String firstBlank = resultSet.getString("firstBlank");
+                if (firstBlank == null) continue;
+                String firstname = resultSet.getString("firstName");
+                String lastname = resultSet.getString("lastName");
+                String name = firstname + " " + lastname;
+                String user = resultSet.getString("username");
+                String date = resultSet.getString("date2");
+                String userMessage = "request result : " + Type.RECOMMENDATION;
+                Message message = new Message(name, user, userMessage, date, "request result");
+                requests.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return requests;
+    }
+
+    public List<Message> getAllSendMessageResults(String username) {
+        List<Message> requests = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
+        query = String.format(query, "u.firstName, u.lastName, u.username, r.date2, r.result",
+                "request r", "user u", "u.username = r.professorCode") +
+                " r.studentCode = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            while (resultSet.next()) {
+                String result1 = resultSet.getString("result");
+                if (result1 == null) continue;
+                String firstname = resultSet.getString("firstName");
+                String lastname = resultSet.getString("lastName");
+                String name = firstname + " " + lastname;
+                String user = resultSet.getString("username");
+                String date = resultSet.getString("date2");
+                String userMessage = "request result : " + Type.SEND_MESSAGE;
+                Message message = new Message(name, user, userMessage, date, "request result");
                 requests.add(message);
             }
         } catch (SQLException e) {
@@ -122,6 +207,44 @@ public class MessagesDataHandler {
             e.printStackTrace();
         }
         return requests;
+    }
+
+    public List<String> getRequestResult(String user, String time, String username, Type type) {
+        List<String> results = new ArrayList<>();
+        String professorCode = user;
+        String studentCode = username;
+        if (type != Type.SEND_MESSAGE) {
+            professorCode = findUserCode("professor", user);
+            studentCode = findUserCode("student", username);
+        }
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "result, secondResult, firstBlank, secondBlank, thirdBlank", "request") +
+                " studentCode = " + getStringFormat(studentCode) +
+                " AND type = " + getStringFormat(type.toString()) +
+                " AND professorCode = " + getStringFormat(professorCode) +
+                " AND date2 = " + getStringFormat(time);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String firstBlank = resultSet.getString("firstBlank");
+                String secondBlank = resultSet.getString("secondBlank");
+                String thirdBlank = resultSet.getString("thirdBlank");
+                String result1 = resultSet.getString("result");
+                String result2 = resultSet.getString("secondResult");
+                if (type == Type.RECOMMENDATION) {
+                    results.add(firstBlank);
+                    results.add(secondBlank);
+                    results.add(thirdBlank);
+                }
+                else {
+                    results.add(result1);
+                    if (type == Type.MINOR) results.add(result2);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 
     public String findMinorMajor(String studentCode, String date1) {

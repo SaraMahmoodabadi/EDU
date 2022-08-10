@@ -29,8 +29,12 @@ public class MessagesManager {
         List<Message> messages = new ArrayList<>();
         messages.addAll(this.dataHandler.getAllSendMessageRequests(this.client.getUserName()));
         messages.addAll(this.dataHandler.getAllAdminMessages(this.client.getUserName()));
-        if (this.client.getUserType() == UserType.STUDENT)
+        messages.addAll(this.dataHandler.getAllSendMessageResults(this.client.getUserName()));
+        if (this.client.getUserType() == UserType.STUDENT) {
             messages.addAll(this.dataHandler.getAllMohseniMessages(this.client.getUserName()));
+            messages.addAll(this.dataHandler.getAllRequestsResult(this.client.getUserName()));
+            messages.addAll(this.dataHandler.getAllRecommendation(this.client.getUserName()));
+        }
         else messages.addAll(this.dataHandler.getAllProfessorRequests(this.client.getUserName()));
         List<String> times = new ArrayList<>();
         for (Message message : messages) times.add(message.getSendMessageTime());
@@ -60,6 +64,8 @@ public class MessagesManager {
                 return showMohseniMessage(time, name);
             case "adminMessage":
                 return showAdminMessage(time, name);
+            case "request result":
+                return showRequestResult(user, time, userMessage, name);
         }
         String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return sendErrorResponse(error);
@@ -157,6 +163,32 @@ public class MessagesManager {
         return response;
     }
 
+    private Response showRequestResult(String user, String time, String message, String name) {
+        List<String> results = this.dataHandler.getRequestResult(user, time, this.client.getUserName(),
+                Type.valueOf(message.split(" ")[3]));
+        String resultText = "";
+        if (message.equals("request result : " + Type.SEND_MESSAGE)) {
+            resultText = getSendMessageResult(name, results);
+        }
+        else if (message.equals("request result : " + Type.RECOMMENDATION)) {
+            resultText = getRecommendationResult(name, user, results);
+        }
+        else if (message.equals("request result : " + Type.WITHDRAWAL)) {
+            resultText = getWithdrawalResult(name, results);
+        }
+        else if (message.equals("request result : " + Type.MINOR)) {
+            resultText = getMinorResult(results);
+        }
+        else if (message.equals("request result : " + Type.TAKE_LESSON)) {
+            resultText = getTakeLessonResult(name, results);
+        }
+        Message requestResult = new Message(user, resultText, false);
+        Response response = new Response(ResponseStatus.OK);
+        response.addData("message", requestResult);
+        response.addData("name", name);
+        return response;
+    }
+
     private String getSendMessageRequest(String name) {
         String message = "User %s wants to send you message.";
         message = String.format(message, name);
@@ -193,6 +225,42 @@ public class MessagesManager {
         return message;
     }
 
+    private String getRecommendationResult(String name, String user, List<String> results) {
+        String result = "Professor %s has given you a recommendation.\nRecommendation text: " +
+                "I %s certify that, student with student code %s, passed the lessons %s " +
+                "with a grade of %s and also in courses %s Acted as an educational assistant";
+        String professorCode = this.dataHandler.findUserCode("professor", user);
+        String studentCode = this.dataHandler.findUserCode("student", this.client.getUserName());
+        result = String.format(result, professorCode, name, studentCode, results.get(0), results.get(1), results.get(2));
+        return result;
+    }
+
+    private String getSendMessageResult(String name, List<String> results) {
+        String result = "user %s answered your request. Your request: %s, result: %s";
+        result = String.format(result, name, Type.SEND_MESSAGE, results.get(0));
+        return result;
+    }
+
+    private String getWithdrawalResult(String name, List<String> results) {
+        String result = "user %s answered your request. Your request: %s, result: %s";
+        result = String.format(result, name, Type.WITHDRAWAL, results.get(0));
+        return result;
+    }
+
+    private String getMinorResult(List<String> results) {
+        String result = "Your request result. Your request: %s, your college: %s, other college: %s";
+        String result1 = results.get(0) == null ? "-" : results.get(0);
+        String result2 = results.get(1) == null ? "-" : results.get(1);
+        result = String.format(result, Type.MINOR, result1, result2);
+        return result;
+    }
+
+    private String getTakeLessonResult(String name, List<String> results) {
+        String result = "user %s answered your request. Your request: %s, result: %s";
+        result = String.format(result, name, Type.TAKE_LESSON, results.get(0));
+        return result;
+    }
+
     private String getLessonCode(String lesson) {
         String term = lesson.split("-")[0];
         int n = lesson.split("-").length;
@@ -209,8 +277,8 @@ public class MessagesManager {
         List<String> sortedTimes = new ArrayList<>();
         for (int i = 0; i < times.size(); i++) {
             int t = 0;
+            LocalDateTime date1 = LocalDateTime.parse(times.get(i));
             for (String time : times) {
-                LocalDateTime date1 = LocalDateTime.parse(times.get(i));
                 LocalDateTime date2 = LocalDateTime.parse(time);
                 if (date1.isBefore(date2)) t++;
             }
