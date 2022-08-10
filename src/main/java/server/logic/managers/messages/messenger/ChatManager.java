@@ -9,6 +9,7 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.ImageHandler;
+import shared.util.media.MediaHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,6 +70,10 @@ public class ChatManager {
         String user = (String) request.getData("username");
         String message = (String) request.getData("message");
         boolean isMedia = (boolean) request.getData("isMedia");
+        if (isMedia) {
+            String fileFormat = (String) request.getData("fileFormat");
+            message = saveFile(message, fileFormat);
+        }
         boolean result1 = this.dataHandler.sendMessage(this.client.getUserName(), user, message, isMedia);
         boolean result2 = this.dataHandler.updateChat(user, this.client.getUserName(), message);
         if (result1 && result2) {
@@ -95,6 +100,14 @@ public class ChatManager {
             sortedTimes[t] = times.get(i);
         }
         return new ArrayList<>(Arrays.asList(sortedTimes));
+    }
+
+    private String saveFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "chatFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
     }
 
     private Response sendErrorResponse(String errorMessage) {

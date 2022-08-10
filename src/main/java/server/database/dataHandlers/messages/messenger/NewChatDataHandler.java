@@ -57,10 +57,11 @@ public class NewChatDataHandler {
      sender is the username of someone who sends request
      */
 
-    public List<User> getCollegeStudents(String collegeCode) {
+    public List<User> getCollegeStudents(String collegeCode, String userName) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "firstName, lastName, username", "user") + " userType = " +
-                getStringFormat(UserType.STUDENT.toString()) + " AND collegeCode = " + getStringFormat(collegeCode);
+                getStringFormat(UserType.STUDENT.toString()) + " AND collegeCode = " + getStringFormat(collegeCode) +
+                " AND username != " + getStringFormat(userName);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<User> users = new ArrayList<>();
         try {
@@ -105,11 +106,11 @@ public class NewChatDataHandler {
         return null;
     }
 
-    public List<User> getSameYearStudents(int year, Grade grade) {
+    public List<User> getSameYearStudents(int year, Grade grade, String userName) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "u.firstName, u.lastName, u.username", "user u", "student s",
                 "u.username = s.username") + " s.enteringYear = " + year + " AND s.grade = " +
-                getStringFormat(grade.toString());
+                getStringFormat(grade.toString()) + " AND u.username != " + getStringFormat(userName);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<User> users = new ArrayList<>();
         try {

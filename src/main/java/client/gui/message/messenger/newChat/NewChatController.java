@@ -53,7 +53,8 @@ public class NewChatController implements Initializable {
     @FXML
     protected Button sendMediaButton;
     private String file;
-    private List<User> selectedUsers;
+    private String fileFormat;
+    protected static List<User> selectedUsers;
     private List<UserTable> users;
     private ToggleGroup userType;
     private boolean stop;
@@ -61,9 +62,15 @@ public class NewChatController implements Initializable {
 
     @FXML
     public void selectAll(ActionEvent event) {
-        for (UserTable user : users) {
-            user.select();
-            selectedUsers.add(new User(user.getUsername(), user.getType()));
+        if (selectAllCheckBox.isSelected()) {
+            for (UserTable user : users) {
+                user.select();
+            }
+        }
+        else {
+            for (UserTable user : users) {
+                user.notSelect();
+            }
         }
     }
 
@@ -76,6 +83,8 @@ public class NewChatController implements Initializable {
             MediaHandler handler = new MediaHandler();
             String path = file.getAbsolutePath();
             this.file = handler.encode(path);
+            int n = path.split("\\.").length;
+            this.fileFormat = path.split("\\.")[n-1];
         }
     }
 
@@ -85,6 +94,7 @@ public class NewChatController implements Initializable {
         Request request = new Request(RequestType.MAKE_NEW_CHAT);
         if (file != null) {
             request.addData("file", file);
+            request.addData("fileFormat", fileFormat);
         }
         if (messageArea.getText() != null) {
             request.addData("message", messageArea.getText());
@@ -118,6 +128,8 @@ public class NewChatController implements Initializable {
     }
 
     private void showData(Map<String, Object> data) {
+        users.clear();
+        List<UserTable> newList = new ArrayList<>();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             if (entry.getKey().startsWith("user")) {
                 User user = (User) entry.getValue();
@@ -125,11 +137,13 @@ public class NewChatController implements Initializable {
                         user.getUsername(), user.getUserType());
                 for (User selectedUser : selectedUsers) {
                     if (selectedUser.getUsername().equals(user.getUsername()))
-                        newUser.select();
+                        newList.add(newUser);
                 }
                 users.add(newUser);
             }
         }
+        selectedUsers.clear();
+        for (UserTable user : newList) user.select();
         table.getItems().clear();
         table.getItems().addAll(users);
     }

@@ -1,6 +1,7 @@
 package client.gui.message.messenger.newChat;
 
 import javafx.scene.control.CheckBox;
+import shared.model.user.User;
 import shared.model.user.UserType;
 
 public class UserTable {
@@ -16,6 +17,7 @@ public class UserTable {
         this.username = username;
         this.type = type;
         checkBox = new CheckBox();
+        addActionEvent();
     }
 
     public String getFirstname() {
@@ -60,5 +62,24 @@ public class UserTable {
 
     public void select() {
         checkBox.setSelected(true);
+        NewChatController.selectedUsers.add(new User(this.getUsername(), this.getType()));
+    }
+
+    public void notSelect() {
+        checkBox.setSelected(false);
+        User removedUser = null;
+        for (User user : NewChatController.selectedUsers) {
+            if (user.getUsername().equals(this.username)) removedUser = user;
+        }
+        if (removedUser != null) {
+            NewChatController.selectedUsers.remove(removedUser);
+        }
+    }
+
+    private void addActionEvent() {
+        this.checkBox.setOnAction(event -> {
+            if (checkBox.isSelected()) this.select();
+            else this.notSelect();
+        });
     }
 }

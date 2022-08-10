@@ -89,6 +89,9 @@ public class ChatController implements Initializable {
             Request request = new Request(RequestType.SEND_MESSAGE_CHAT);
             request.addData("message", message);
             request.addData("isMedia", true);
+            int n = path.split("\\.").length;
+            String fileFormat = path.split("\\.")[n-1];
+            request.addData("fileFormat", fileFormat);
             request.addData("username", user);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.ERROR) {
@@ -110,7 +113,6 @@ public class ChatController implements Initializable {
     }
 
     private void showAllChats(Map<String, Object> data) {
-        allChatsPane.getChildren().clear();
         int t = 0;
         for (int i = 0; i < data.size(); i++) {
             Message newChat = (Message) data.get("message" + i);
@@ -127,7 +129,6 @@ public class ChatController implements Initializable {
     }
 
     private void showChat(Map<String, Object> data) {
-        chatPane.getChildren().clear();
         Object image = data.get("profileImage");
         this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
         String name = (String) data.get("name");
@@ -194,9 +195,9 @@ public class ChatController implements Initializable {
         file.setFitWidth(50);
         button.setGraphic(file);
         button.setOnAction(event -> open(message));
-        button.setLayoutX(10);
-        if (isSender) button.setLayoutY(10);
-        else button.setLayoutY(290);
+        button.setLayoutY(10);
+        if (isSender) button.setLayoutX(10);
+        else button.setLayoutX(290);
         Label time = new Label();
         time.setAlignment(Pos.CENTER);
         time.setText(messageTime);
@@ -234,6 +235,7 @@ public class ChatController implements Initializable {
                         Request request = new Request(RequestType.SHOW_ALL_CHATS);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
+                            allChatsPane.getChildren().clear();
                             for (int i = 0; i < response.getData().size(); i++) {
                                 showAllChats(response.getData());
                             }
@@ -255,6 +257,7 @@ public class ChatController implements Initializable {
                         request.addData("user", user);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
+                            chatPane.getChildren().clear();
                             for (int i = 0; i < response.getData().size(); i++) {
                                 showChat(response.getData());
                             }

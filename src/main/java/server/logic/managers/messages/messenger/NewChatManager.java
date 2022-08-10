@@ -11,6 +11,7 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class NewChatManager {
     public Response sendMessage(Request request) {
         String message = (String) request.getData("message");
         String file = (String) request.getData("file");
+        String fileFormat = (String) request.getData("fileFormat");
+        String filePath = null;
+        if (file != null) filePath = saveFile(file, fileFormat);
         int t = 0;
         int l = 0;
         for (int i = 0; i < request.getData().size(); i++) {
@@ -41,10 +45,10 @@ public class NewChatManager {
                         this.dataHandler.updateChat(user.getUsername(), this.client.getUserName(), message);
                     }
                 }
-                if (file != null) {
+                if (filePath != null) {
                     l++;
                     boolean result = this.dataHandler.sendMessage(client.getUserName(), client.getUserType().toString(),
-                            user.getUsername(), user.getUserType().toString(), file, true);
+                            user.getUsername(), user.getUserType().toString(), filePath, true);
                     if (result) {
                         t++;
                         this.dataHandler.updateChat(user.getUsername(), this.client.getUserName(), message);
@@ -109,10 +113,10 @@ public class NewChatManager {
     }
 
     private Response getStudentUsers(String collegeCode) {
-        List<User> sameCollegeStudents = this.dataHandler.getCollegeStudents(collegeCode);
+        List<User> sameCollegeStudents = this.dataHandler.getCollegeStudents(collegeCode, this.client.getUserName());
         int year = this.dataHandler.findEnteringYear(this.client.getUserName());
         Grade grade = this.dataHandler.findGrade(this.client.getUserName());
-        List<User> sameYearStudents = this.dataHandler.getSameYearStudents(year, grade);
+        List<User> sameYearStudents = this.dataHandler.getSameYearStudents(year, grade, this.client.getUserName());
         User supervisor = this.dataHandler.findSupervisor(this.client.getUserName());
         List<User> finalList = new ArrayList<>();
         finalList.add(supervisor);
@@ -142,12 +146,20 @@ public class NewChatManager {
     }
 
     private Response getCollegeStudent(String collegeCode) {
-        List<User> students = this.dataHandler.getCollegeStudents(collegeCode);
+        List<User> students = this.dataHandler.getCollegeStudents(collegeCode, this.client.getUserName());
         Response response = new Response(ResponseStatus.OK);
         for (int i = 0; i < students.size(); i++) {
             response.addData("user" + i, students.get(i));
         }
         return response;
+    }
+
+    private String saveFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "chatFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
     }
 
     private Response sendErrorResponse(String errorMessage) {
