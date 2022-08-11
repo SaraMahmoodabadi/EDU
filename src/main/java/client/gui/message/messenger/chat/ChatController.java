@@ -217,8 +217,7 @@ public class ChatController implements Initializable {
         button.setGraphic(file);
         button.setStyle("-fx-background-color: #b151b8");
         button.setOnAction(event -> open(message));
-        if (isSender) button.setLayoutY(0);
-        else button.setLayoutY(10);
+        button.setLayoutY(0);
         if (isSender) button.setLayoutX(210);
         else button.setLayoutX(270);
         Label time = new Label();
