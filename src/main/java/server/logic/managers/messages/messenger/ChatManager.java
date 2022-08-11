@@ -50,6 +50,13 @@ public class ChatManager {
         for (Message message : messages) times.add(message.getSendMessageTime());
         List<String> sortedTimes = getSortedTimes(times);
         List<Message> finalList = new ArrayList<>();
+        MediaHandler handler = new MediaHandler();
+        for (Message message : messages) {
+            if (message.isMedia()) {
+                String media = handler.encode(message.getMessageText());
+                message.setMessageText(media);
+            }
+        }
         for (String time : sortedTimes) {
             for (Message message : messages)
                 if (message.getSendMessageTime().equals(time)) finalList.add(message);
@@ -75,6 +82,7 @@ public class ChatManager {
             message = saveFile(message, fileFormat);
         }
         boolean result1 = this.dataHandler.sendMessage(this.client.getUserName(), user, message, isMedia);
+        if (isMedia) message = "Media";
         boolean result2 = this.dataHandler.updateChat(user, this.client.getUserName(), message);
         if (result1 && result2) {
             Response response = new Response(ResponseStatus.OK);

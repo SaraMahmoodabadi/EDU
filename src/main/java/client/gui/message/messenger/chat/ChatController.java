@@ -76,6 +76,9 @@ public class ChatController implements Initializable {
             if (response.getStatus() == ResponseStatus.ERROR) {
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             }
+            else {
+                textMessage.clear();
+            }
         }
     }
 
@@ -140,17 +143,24 @@ public class ChatController implements Initializable {
             Message newMessage = (Message) data.get("message" + i);
             if (newMessage == null) continue;
             boolean isSender = newMessage.isTransmitter();
-            if (newMessage.isMedia())
-                t += makeMediaMessage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
-            else t += makeTextMessageInPage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
+            Pane pane;
+            if (newMessage.isMedia()) {
+                pane = makeMediaMessage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
+            }
+            else {
+                pane = makeTextMessageInPage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
+            }
+            t += pane.getHeight();
             if (t > chatPane.getHeight()) chatPane.setPrefHeight(t);
+            chatPane.getChildren().add(pane);
         }
     }
 
-    private double makeTextMessageInPage(String message, String messageTime, boolean isSender) {
+    private Pane makeTextMessageInPage(String message, String messageTime, boolean isSender) {
         Pane pane = new Pane();
         Label label = new Label();
-        label.setAlignment(Pos.CENTER);
+        label.setStyle("-fx-background-radius: 10");
+        label.setAlignment(Pos.TOP_LEFT);
         label.setText(message);
         Font font = Font.font("System", FontWeight.BOLD,15);
         label.setFont(font);
@@ -163,60 +173,68 @@ public class ChatController implements Initializable {
         label.setLayoutY(0);
         FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
         double width = fontLoader.computeStringWidth(label.getText(), label.getFont());
+        if (width < 180) width = 180;
+        label.setPrefWidth(width);
         if (isSender) label.setLayoutX(540 - width);
         else label.setLayoutX(0);
         pane.getChildren().add(label);
         Label time = new Label();
         time.setAlignment(Pos.CENTER);
-        time.setText(messageTime);
+        String date = (messageTime.substring(0, messageTime.length() - 7)).replace("T", " ");
+        time.setText(date);
         Font newFont = Font.font("System", FontWeight.BOLD,10);
         time.setFont(newFont);
         time.setWrapText(true);
-        time.setMaxWidth(20);
+        time.setMaxWidth(100);
         if (isSender) time.setLayoutX(430);
-        else time.setLayoutX(width - 115);
-        double height = pane.getHeight();
+        else time.setLayoutX(width - 100);
+        double height = pane.getHeight() + 30;
+        label.setPrefHeight(height + 15);
         pane.setPrefHeight(height + 15);
         time.setLayoutY(height);
         pane.getChildren().add(time);
-        chatPane.getChildren().add(pane);
-        return pane.getHeight();
+        return pane;
     }
 
-    private double makeMediaMessage(String message, String messageTime, boolean isSender) {
+    private Pane makeMediaMessage(String message, String messageTime, boolean isSender) {
         Pane pane = new Pane();
         pane.setPrefHeight(70);
         Rectangle rectangle = new Rectangle();
+        rectangle.setStyle("-fx-background-radius: 10");
         rectangle.setHeight(70);
         rectangle.setWidth(350);
         rectangle.setFill(Color.valueOf("#b151b8"));
         rectangle.setStroke(Color.valueOf("#b151b8"));
-        rectangle.setLayoutX(0);
+        if (isSender) rectangle.setLayoutX(200);
+        else rectangle.setLayoutX(0);
         rectangle.setLayoutY(0);
         pane.getChildren().add(rectangle);
         Button button = new Button();
         String fileImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "fileIconPath");
-        ImageView file = new ImageView(fileImage);
+        ImageView file = new ImageView("file:" + fileImage);
         file.setFitHeight(50);
         file.setFitWidth(50);
         button.setGraphic(file);
+        button.setStyle("-fx-background-color: #b151b8");
         button.setOnAction(event -> open(message));
-        button.setLayoutY(10);
-        if (isSender) button.setLayoutX(10);
-        else button.setLayoutX(290);
+        if (isSender) button.setLayoutY(0);
+        else button.setLayoutY(10);
+        if (isSender) button.setLayoutX(210);
+        else button.setLayoutX(270);
         Label time = new Label();
         time.setAlignment(Pos.CENTER);
-        time.setText(messageTime);
+        String date = (messageTime.substring(0, messageTime.length() - 7)).replace("T", " ");
+        time.setText(date);
         Font newFont = Font.font("System", FontWeight.BOLD,10);
         time.setFont(newFont);
         time.setWrapText(true);
-        time.setMaxWidth(20);
+        time.setMaxWidth(100);
         if (isSender) time.setLayoutX(430);
         else time.setLayoutX(rectangle.getWidth() - 115);
         time.setLayoutY(rectangle.getHeight() - 15);
         pane.getChildren().add(button);
-        chatPane.getChildren().add(pane);
-        return pane.getHeight();
+        pane.getChildren().add(time);
+        return pane;
     }
 
     private void open(String message) {
@@ -242,9 +260,7 @@ public class ChatController implements Initializable {
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             allChatsPane.getChildren().clear();
-                            for (int i = 0; i < response.getData().size(); i++) {
-                                showAllChats(response.getData());
-                            }
+                            showAllChats(response.getData());
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -264,9 +280,7 @@ public class ChatController implements Initializable {
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
                             chatPane.getChildren().clear();
-                            for (int i = 0; i < response.getData().size(); i++) {
-                                showChat(response.getData());
-                            }
+                            showChat(response.getData());
                         }
                     });
                 } catch (InterruptedException ignored) {}

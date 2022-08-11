@@ -113,7 +113,7 @@ public class NewChatController implements Initializable {
     public void sendRequest(ActionEvent event) {
         if (userCodeField.getText() == null) return;
         Request request = new Request(RequestType.REQUEST_SEND_MESSAGE);
-        request.addData("user", userType.getSelectedToggle());
+        request.addData("user", getUserType());
         request.addData("userCode", userCodeField.getText());
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK)
@@ -125,6 +125,11 @@ public class NewChatController implements Initializable {
     public void back(ActionEvent event) {
         stop = true;
         EDU.sceneSwitcher.switchScene(event, "chat");
+    }
+
+    private String getUserType() {
+        if (userType.getSelectedToggle() == professorRadioButton) return UserType.PROFESSOR.toString();
+        else return UserType.STUDENT.toString();
     }
 
     private void showData(Map<String, Object> data) {

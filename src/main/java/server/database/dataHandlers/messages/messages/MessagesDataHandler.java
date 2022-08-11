@@ -40,7 +40,7 @@ public class MessagesDataHandler {
         List<Message> requests = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "u.firstName, u.lastName, u.username, r.date1", "request r", "user u",
-                "u.username = r.professorCode") + " r.studentCode = " + getStringFormat(username) +
+                "u.username = r.studentCode") + " r.professorCode = " + getStringFormat(username) +
                 " AND r.type = " + getStringFormat(Type.SEND_MESSAGE.toString());
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
@@ -388,17 +388,17 @@ public class MessagesDataHandler {
     }
 
     public void createChat(String receiver, String sender) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
-        query = String.format(query, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
+        String query0 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
+        String query = String.format(query0, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
                 getStringFormat(sender);
         this.databaseHandler.removeData(query);
-        query = String.format(query, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
+        query = String.format(query0, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
                 getStringFormat(receiver);
         this.databaseHandler.removeData(query);
         query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "chat", "user1, user2, sender, lastMessage, date",
                 getStringFormat(receiver) + ", " + getStringFormat(sender) + ", " + getStringFormat(sender) +
-                        ", chat created, " +
+                        ", 'Chat created', " +
                 getStringFormat(LocalDateTime.now().toString()));
         this.databaseHandler.updateData(query);
     }

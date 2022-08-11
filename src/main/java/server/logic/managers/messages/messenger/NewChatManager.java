@@ -98,7 +98,7 @@ public class NewChatManager {
         }
         else {
             shared.model.user.professor.Type professorType =
-                    shared.model.user.professor.Type.valueOf((String) request.getData("professorType"));
+                    (shared.model.user.professor.Type) request.getData("professorType");
             switch (professorType) {
                 case DEAN:
                 case EDUCATIONAL_ASSISTANT:

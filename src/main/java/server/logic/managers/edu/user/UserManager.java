@@ -167,15 +167,15 @@ public class UserManager {
             List<String> middleList = new ArrayList<>();
             List<String> rightList = new ArrayList<>();
             if (table.get(0) != null) middleList.add(table.get(0));
-            else middleList.add("");
-            rightList.add("");
+            else middleList.add(" ");
+            rightList.add(" ");
             if (table.get(1) != null && table.get(2) != null) {
                 middleList.add("specified");
                 rightList.add(table.get(1) + " " + table.get(2));
             }
             else {
                 middleList.add("not specified");
-                rightList.add("");
+                rightList.add(" ");
             }
             if (Boolean.parseBoolean(table.get(3))) {
                 middleList.add("issued");
@@ -183,7 +183,7 @@ public class UserManager {
             }
             else {
                 middleList.add("not issued");
-                rightList.add("");
+                rightList.add(" ");
             }
             if (table.get(4) != null) {
                 middleList.add("specified");
@@ -191,7 +191,7 @@ public class UserManager {
             }
             else {
                 middleList.add("not specified");
-                rightList.add("");
+                rightList.add(" ");
             }
             response.addData("middleList", middleList.toString());
             response.addData("rightList", rightList.toString());

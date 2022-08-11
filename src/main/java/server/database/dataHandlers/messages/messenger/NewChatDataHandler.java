@@ -49,7 +49,7 @@ public class NewChatDataHandler {
     public boolean sendRequest(String receiver, String sender, Type type) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "request", "studentCode, professorCode, type, date1",
-                getStringFormat(sender) + ", " +getStringFormat(receiver) + ", " + getStringFormat(type.toString()) +
+                getStringFormat(sender) + ", " +getStringFormat(receiver) + ", " + getStringFormat(type.toString()) + ", " +
                 getStringFormat(LocalDateTime.now().toString()));
         return this.databaseHandler.updateData(query);
     }
@@ -181,11 +181,11 @@ public class NewChatDataHandler {
     }
 
     public void updateChat(String receiver, String sender, String message) {
-        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
-        query = String.format(query, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
+        String query0 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
+        String query = String.format(query0, "chat") + " user1 = " + getStringFormat(receiver) + " AND user2 = " +
                 getStringFormat(sender);
         this.databaseHandler.removeData(query);
-        query = String.format(query, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
+        query = String.format(query0, "chat") + " user1 = " + getStringFormat(sender) + " AND user2 = " +
                 getStringFormat(receiver);
         this.databaseHandler.removeData(query);
         query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");

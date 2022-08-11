@@ -52,7 +52,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Label alignment="CENTER" layoutX="679.0" layoutY="134.0" prefHeight="54.0" prefWidth="357.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" text="Fiest select users then send a message" textFill="#b151b8">
+      <Label alignment="CENTER" layoutX="679.0" layoutY="134.0" prefHeight="54.0" prefWidth="357.0" style="-fx-background-color: #ffd100; -fx-background-radius: 20;" text="First select users then send a message" textFill="#b151b8">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

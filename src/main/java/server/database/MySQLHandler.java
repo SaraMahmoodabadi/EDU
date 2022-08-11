@@ -84,8 +84,8 @@ public class MySQLHandler {
 
     public boolean removeData(String query) {
         try {
-            Statement statement = connection.createStatement();
-            statement.executeQuery(query);
+            Statement statement = this.connection.createStatement();
+            statement.executeUpdate(query);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
