@@ -83,6 +83,10 @@ public class CourseController implements Initializable {
         addStudentButton.setVisible(false);
         studentType.setVisible(false);
         teacherAssistantType.setVisible(false);
+        addEduMaterialButton.setDisable(true);
+        addEduMaterialButton.setVisible(false);
+        addExerciseButton.setDisable(true);
+        addExerciseButton.setVisible(true);
     }
 
     private void updateData() {
