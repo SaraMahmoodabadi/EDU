@@ -63,6 +63,7 @@ public class ChatController implements Initializable {
     protected VBox chatPane;
     protected String user;
     boolean stop;
+    double size;
 
     @FXML
     public void sendMessage(KeyEvent keyEvent) {
@@ -150,7 +151,7 @@ public class ChatController implements Initializable {
             else {
                 pane = makeTextMessageInPage(newMessage.getMessageText(), newMessage.getSendMessageTime(), isSender);
             }
-            t += pane.getHeight();
+            t += size + 15;
             if (t > chatPane.getHeight()) chatPane.setPrefHeight(t);
             chatPane.getChildren().add(pane);
         }
@@ -188,11 +189,12 @@ public class ChatController implements Initializable {
         time.setMaxWidth(100);
         if (isSender) time.setLayoutX(430);
         else time.setLayoutX(width - 100);
-        double height = pane.getHeight() + 30;
+        double height = label.getHeight() + 30;
         label.setPrefHeight(height + 15);
         pane.setPrefHeight(height + 15);
         time.setLayoutY(height);
         pane.getChildren().add(time);
+        this.size = label.getPrefHeight();
         return pane;
     }
 
@@ -233,6 +235,7 @@ public class ChatController implements Initializable {
         time.setLayoutY(rectangle.getHeight() - 15);
         pane.getChildren().add(button);
         pane.getChildren().add(time);
+        this.size = rectangle.getHeight();
         return pane;
     }
 
