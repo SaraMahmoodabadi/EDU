@@ -2,10 +2,7 @@ package client.gui.courseware.course.exercise.addExercise;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 public class NewExerciseController {
     @FXML
@@ -30,6 +27,12 @@ public class NewExerciseController {
     protected RadioButton mediaType;
     @FXML
     protected TextField fileField;
+    @FXML
+    protected DatePicker openDate;
+    @FXML
+    protected DatePicker closeDate;
+    @FXML
+    protected DatePicker uploadDate;
 
     @FXML
     public void addFile(ActionEvent event) {
