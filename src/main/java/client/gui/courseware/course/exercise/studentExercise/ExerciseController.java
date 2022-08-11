@@ -41,12 +41,12 @@ public class ExerciseController implements Initializable {
     protected Button registerFileButton;
 
     @FXML
-    public void addFile(ActionEvent event) {
+    public void downloadExercise(ActionEvent event) {
 
     }
 
     @FXML
-    public void downloadExercise(ActionEvent event) {
+    public void addFile(ActionEvent event) {
 
     }
 
