@@ -1,5 +1,6 @@
 package shared.model.university.lesson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
@@ -16,6 +17,13 @@ public class Group {
         this.lessonCode = lessonCode;
         this.capacity= capacity;
         this.professorCode = professorCode;
+    }
+
+    public Group(String lessonCode, String group, String professorCode, ArrayList<String> students) {
+        this.lessonCode = lessonCode;
+        this.groupNumber = Integer.parseInt(group);
+        this.professorCode = professorCode;
+        this.students = students;
     }
 
     public String getLessonCode() {

@@ -1,6 +1,7 @@
 package client.gui.courseware.course.course;
 
 import client.gui.EDU;
+import client.network.ServerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,6 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import shared.model.user.UserType;
+import shared.request.Request;
+import shared.response.Response;
+import shared.response.ResponseStatus;
 
 import java.net.URL;
 import java.util.Optional;
@@ -39,6 +43,7 @@ public class CourseController implements Initializable {
     private boolean stop;
     private String eduMaterialName;
     private String exerciseName;
+    private String courseCode;
 
     @FXML
     public void addEduMaterial(ActionEvent event) {
@@ -97,5 +102,14 @@ public class CourseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
         if (EDU.userType != UserType.PROFESSOR) hide();
+        Request request = ServerController.request;
+        this.courseCode = (String) request.getData("courseCode");
+        Response response = EDU.serverController.sendRequest(request);
+        if (response.getStatus() == ResponseStatus.OK) {
+
+        }
+        else {
+
+        }
     }
 }

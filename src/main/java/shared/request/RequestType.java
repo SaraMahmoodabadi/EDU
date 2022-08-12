@@ -91,5 +91,9 @@ public enum RequestType {
 
     SEND_MESSAGE_TO_ADMIN,
 
+    GET_ALL_COURSES,
+    GET_MAIN_CALENDAR_DATA,
+    SHOW_COURSE,
+
     END_CONNECTION
 }

@@ -31,6 +31,12 @@ public class Exercise {
         this.itemType = itemType;
     }
 
+    public Exercise(String exerciseCode, String name, String uploadingTimeWithoutDeductingScores) {
+        this.exerciseCode = exerciseCode;
+        this.name = name;
+        this.uploadingTimeWithoutDeductingScores = uploadingTimeWithoutDeductingScores;
+    }
+
     public String getExerciseCode() {
         return exerciseCode;
     }

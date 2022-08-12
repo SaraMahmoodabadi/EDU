@@ -106,6 +106,7 @@ public class MessagesManager {
                     UnitSelectionDataHandler handler = new UnitSelectionDataHandler(this.client.getDataHandler());
                     String lesson = this.dataHandler.findLesson(studentCode, date);
                     handler.takeLesson(lesson, username);
+                    handler.addStudentToGroup(getLessonCode(lesson), getGroup(lesson), username);
                 }
             }
         }

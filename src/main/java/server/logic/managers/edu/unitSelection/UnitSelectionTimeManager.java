@@ -2,6 +2,7 @@ package server.logic.managers.edu.unitSelection;
 
 import server.database.MySQLHandler;
 import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
+import server.logic.managers.courseware.mainPage.CoursesManager;
 import server.network.ClientHandler;
 import shared.request.Request;
 import shared.response.Response;
@@ -51,7 +52,7 @@ public class UnitSelectionTimeManager {
                             for (String student : students) {
                                 checkLessons(student, handler);
                             }
-                            makeCourses(college);
+                            makeCourses(college, handler);
                             dataHandler.finalCollegeRegistration(college);
                         }
                     }
@@ -132,8 +133,9 @@ public class UnitSelectionTimeManager {
         dataHandler.updateStudentLessons(studentCode, lessons);
     }
 
-    private static void makeCourses(String collegeCode) {
-        //TODO : Check if course has been created
+    private static void makeCourses(String collegeCode, MySQLHandler handler) {
+        CoursesManager manager = new CoursesManager(handler);
+        manager.createAllCollegeLessons(collegeCode);
     }
 
     private Response sendOKResponse() {
