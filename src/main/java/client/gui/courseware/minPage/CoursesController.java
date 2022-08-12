@@ -115,7 +115,7 @@ public class CoursesController implements Initializable {
         updateCalendar();
     }
 
-    static class CourseLabel extends Label {
+    class CourseLabel extends Label {
         String courseCode;
         String name;
 
@@ -143,6 +143,8 @@ public class CoursesController implements Initializable {
                 Request request = new Request(RequestType.SHOW_COURSE);
                 request.addData("courseCode", this.courseCode);
                 ServerController.request = request;
+                CoursesController.this.stop = true;
+                EDU.sceneSwitcher.switchScene(new ActionEvent(), "course");
             });
         }
     }

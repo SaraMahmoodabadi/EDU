@@ -5,7 +5,7 @@ import shared.model.courseware.educationalMaterial.ItemType;
 import java.util.List;
 
 public class Exercise {
-
+    private String courseCode;
     private String exerciseCode;
     private String name;
     private String openingTime;
@@ -35,6 +35,22 @@ public class Exercise {
         this.exerciseCode = exerciseCode;
         this.name = name;
         this.uploadingTimeWithoutDeductingScores = uploadingTimeWithoutDeductingScores;
+    }
+
+    public Exercise(String courseCode, String exerciseCode, String name, String openingTime, String closingTime) {
+        this.courseCode = courseCode;
+        this.exerciseCode = exerciseCode;
+        this.name = name;
+        this.openingTime = openingTime;
+        this.closingTime = closingTime;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getExerciseCode() {
