@@ -101,7 +101,6 @@ public class EducationalMaterialManager {
     public Response editTextItem(Request request) {
         String itemCode = (String) request.getData("itemCode");
         String text = (String) request.getData("text");
-        String eduMaterialCode = (String) request.getData("educationalMaterialCode");
         boolean result = this.dataHandler.editItem(itemCode, text);
         if (result) {
             Response response = new Response(ResponseStatus.OK);
