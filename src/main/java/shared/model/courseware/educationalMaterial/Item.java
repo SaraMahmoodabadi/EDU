@@ -14,6 +14,12 @@ public class Item {
         this.itemType = itemType;
     }
 
+    public Item(String itemCode, ItemType type, String item) {
+        this.itemCode = itemCode;
+        this.itemType = type;
+        this.text = item;
+    }
+
     public String getItemCode() {
         return itemCode;
     }

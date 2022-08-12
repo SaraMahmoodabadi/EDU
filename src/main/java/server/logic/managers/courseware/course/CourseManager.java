@@ -30,12 +30,7 @@ public class CourseManager {
         String timeType = (String) request.getData("time");
         ArrayList<EducationalMaterial> eduMaterials = getEduMaterials(courseCode);
         ArrayList<Exercise> exercises = getExercises(courseCode, timeType);
-        ArrayList<String> assistants = this.dataHandler.getAssistants(courseCode);
-        boolean isAssistant = false;
-        if (this.client.getUserType() == UserType.STUDENT) {
-            String studentCode = this.dataHandler.getUserCode("student", this.client.getUserName());
-            if (assistants.contains(studentCode)) isAssistant = true;
-        }
+        boolean isAssistant = isAssistant(courseCode);
         Response response = new Response(ResponseStatus.OK);
         response.addData("isAssistant", isAssistant);
         response.addData("educationalMaterialSize", eduMaterials.size());
@@ -47,6 +42,15 @@ public class CourseManager {
             response.addData("exercise" + i, exercises.get(i));
         }
         return response;
+    }
+
+    public boolean isAssistant(String courseCode) {
+        ArrayList<String> assistants = this.dataHandler.getAssistants(courseCode);
+        if (this.client.getUserType() == UserType.STUDENT) {
+            String studentCode = this.dataHandler.getUserCode("student", this.client.getUserName());
+            return assistants.contains(studentCode);
+        }
+        return false;
     }
 
     private ArrayList<EducationalMaterial> getEduMaterials(String courseCode) {

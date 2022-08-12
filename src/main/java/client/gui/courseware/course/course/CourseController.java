@@ -80,8 +80,11 @@ public class CourseController implements Initializable {
             request.addData("name", eduMaterialName);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
-                stop = true;
+                request = new Request(RequestType.SHOW_EDUCATIONAL_MATERIAL);
+                request.addData("courseCode", this.courseCode);
+                request.addData("educationalMaterialCode", courseCode + "-" + eduMaterialName);
                 ServerController.request = request;
+                stop = true;
                 EDU.sceneSwitcher.switchScene(event, "eduMaterial");
             }
             else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -253,6 +256,7 @@ public class CourseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        isAssistant = false;
         stop = false;
         if (EDU.userType == UserType.PROFESSOR) makeToggleGroup();
         else hide();
