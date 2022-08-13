@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import shared.model.courseware.educationalMaterial.ItemType;
 import shared.model.courseware.exercise.Answer;
 import shared.request.Request;
@@ -308,7 +309,10 @@ public class ExerciseController implements Initializable {
             showAnswer.setOnAction(event -> {
                 MediaHandler handler = new MediaHandler();
                 byte[] file = handler.decode(this.answer);
-                String path = "src/main/java/client/resource/sentFiles/" + handler.getName();
+                String path = chooseDirectory();
+                if (path == null)
+                    path = "src/main/java/client/resource/sentFiles/" + handler.getName();
+                else path = path + "/" + handler.getName();
                 try (FileOutputStream fos = new FileOutputStream(path)) {
                     fos.write(file);
                     Desktop d = Desktop.getDesktop();
@@ -316,9 +320,15 @@ public class ExerciseController implements Initializable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                File currentFile = new File(path);
-                currentFile.deleteOnExit();
             });
+        }
+
+        private String chooseDirectory() {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Select directory");
+            File file = directoryChooser.showDialog(ServerController.edu);
+            if (file != null) return file.getAbsolutePath();
+            return null;
         }
 
         private void makeTextButton() {
