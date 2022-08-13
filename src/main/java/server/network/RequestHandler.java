@@ -1,5 +1,11 @@
 package server.network;
 
+import server.logic.managers.courseware.course.CourseManager;
+import server.logic.managers.courseware.course.EducationalMaterialManager;
+import server.logic.managers.courseware.course.exercise.AddExerciseManager;
+import server.logic.managers.courseware.course.exercise.ProfessorExerciseManager;
+import server.logic.managers.courseware.course.exercise.StudentExerciseManager;
+import server.logic.managers.courseware.mainPage.CoursesManager;
 import server.logic.managers.edu.eduServices.PlanManager;
 import server.logic.managers.edu.eduServices.RequestManager;
 import server.logic.managers.edu.profile.ProfileManager;
@@ -59,25 +65,6 @@ public class RequestHandler {
                 break;
             case SHOW_MAIN_PAGE:
                 client.sendResponse(manager.getMainPageData());
-                break;
-            default:
-                handleMainRequests();
-        }
-    }
-
-    private void handleMainRequests() {
-        switch (this.request.getRequestType()) {
-            case SHOW_NEW_USER_PAGE:
-                break;
-            case SHOW_UNIT_SELECTION_PAGE:
-                break;
-            case SHOW_COURSEWARE:
-                break;
-            case SHOW_MESSAGES_PAGE:
-                break;
-            case SHOW_MESSENGER:
-                break;
-            case LOGOUT:
                 break;
             default:
                 handleRegistrationRequests();
@@ -337,7 +324,75 @@ public class RequestHandler {
                 this.client.sendResponse(adminManager.sendMessageToAdmin(request));
                 break;
             default:
+                handleCoursewareRequests();
+        }
+    }
 
+    private void handleCoursewareRequests() {
+        CoursesManager coursesManager = new CoursesManager(this.client);
+        CourseManager courseManager = new CourseManager(this.client);
+        EducationalMaterialManager eduMaterialManager = new EducationalMaterialManager(this.client);
+        AddExerciseManager newExerciseManager = new AddExerciseManager(this.client);
+        ProfessorExerciseManager pExerciseManager = new ProfessorExerciseManager(this.client);
+        StudentExerciseManager sExerciseManager = new StudentExerciseManager(this.client);
+        switch (this.request.getRequestType()) {
+            case GET_ALL_COURSES:
+                this.client.sendResponse(coursesManager.getAllCourses());
+                break;
+            case GET_MAIN_CALENDAR_DATA:
+                this.client.sendResponse(coursesManager.getAllEvents(this.request));
+                break;
+            case SHOW_COURSE:
+                this.client.sendResponse(courseManager.showCourse(this.request));
+                break;
+            case SHOW_COURSE_CALENDAR:
+                this.client.sendResponse(courseManager.getCourseEvents(this.request));
+                break;
+            case CREATE_EDUCATIONAL_MATERIAL:
+                this.client.sendResponse(courseManager.addEduMaterial(this.request));
+                break;
+            case CREATE_EXERCISE:
+                this.client.sendResponse(courseManager.addExercise(this.request));
+                break;
+            case ADD_STUDENT_TO_COURSE:
+                this.client.sendResponse(courseManager.addStudent(this.request));
+                break;
+            case SHOW_EDUCATIONAL_MATERIAL:
+                this.client.sendResponse(eduMaterialManager.showItems(this.request));
+                break;
+            case SEND_MEDIA_ITEM:
+                this.client.sendResponse(eduMaterialManager.addMediaItem(this.request));
+                break;
+            case SEND_TEXT_ITEM:
+                this.client.sendResponse(eduMaterialManager.addTextItem(this.request));
+                break;
+            case DELETE_EDUCATIONAL_MATERIAL:
+                this.client.sendResponse(eduMaterialManager.deleteEducationalMaterial(this.request));
+                break;
+            case REMOVE_ITEM:
+                this.client.sendResponse(eduMaterialManager.removeItem(this.request));
+                break;
+            case EDIT_ITEM_TEXT:
+                this.client.sendResponse(eduMaterialManager.editTextItem(this.request));
+                break;
+            case EDIT_ITEM_MEDIA:
+                this.client.sendResponse(eduMaterialManager.editMediaItem(this.request));
+                break;
+            case ADD_EXERCISE_DESCRIPTION:
+                this.client.sendResponse(newExerciseManager.addExercise(this.request));
+                break;
+            case SHOW_EXERCISE_PROFESSOR:
+                this.client.sendResponse(pExerciseManager.getAnswers(this.request));
+                break;
+            case REGISTER_EXERCISE_SCORE:
+                this.client.sendResponse(pExerciseManager.registerScore(this.request));
+                break;
+            case SHOW_EXERCISE_STUDENT:
+                this.client.sendResponse(sExerciseManager.getExercise(this.request));
+                break;
+            case SEND_EXERCISE_ANSWER:
+                this.client.sendResponse(sExerciseManager.getAnswer(this.request));
+                break;
         }
     }
 
