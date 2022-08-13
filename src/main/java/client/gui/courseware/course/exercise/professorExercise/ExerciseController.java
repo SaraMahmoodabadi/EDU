@@ -199,6 +199,22 @@ public class ExerciseController implements Initializable {
             this.displayStudentCode = displayStudentCode;
         }
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getStudentCode() {
+            return studentCode;
+        }
+
+        public void setStudentCode(String studentCode) {
+            this.studentCode = studentCode;
+        }
+
         public String getUploadTime() {
             return uploadTime;
         }
