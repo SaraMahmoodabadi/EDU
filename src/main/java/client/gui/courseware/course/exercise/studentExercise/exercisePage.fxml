@@ -23,7 +23,7 @@
       </Rectangle>
       <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="520.0" layoutX="102.0" layoutY="156.0" stroke="#ffd100" strokeType="INSIDE" width="442.0">
          <effect>
-            <InnerShadow color="#ffd100" />
+            <InnerShadow choke="0.3" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
       </Rectangle>
       <Text fx:id="exerciseName" fill="#b151b8" layoutX="412.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="name" textAlignment="CENTER" wrappingWidth="389.6708984375">
@@ -68,7 +68,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Text fill="#b151b8" layoutX="130.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upload time without deducting marks" textAlignment="CENTER" wrappingWidth="162.67088270187378">
+      <Text fill="#b151b8" layoutX="130.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Upload time without deducting marks" textAlignment="CENTER" wrappingWidth="162.67088270187378">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>

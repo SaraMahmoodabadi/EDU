@@ -2,12 +2,14 @@ package server.logic.managers.courseware.course.exercise;
 
 import server.database.dataHandlers.courseware.course.exercise.ProfessorExerciseDataHandler;
 import server.network.ClientHandler;
+import shared.model.courseware.educationalMaterial.ItemType;
 import shared.model.courseware.exercise.Answer;
 import shared.request.Request;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.util.ArrayList;
 
@@ -24,8 +26,12 @@ public class ProfessorExerciseManager {
         ArrayList<Answer> answers = this.dataHandler.getAnswers(exerciseCode);
         Response response = new Response(ResponseStatus.OK);
         response.addData("name", name);
+        MediaHandler handler = new MediaHandler();
         for (int i = 0; i < answers.size(); i++) {
-            response.addData("answer" + i, answers.get(i));
+            Answer answer = answers.get(i);
+            if (answer.getAnswerType() == ItemType.MEDIA_FILE)
+                answer.setFileAddress(handler.encode(answer.getFileAddress()));
+            response.addData("answer" + i, answer);
         }
         return response;
     }

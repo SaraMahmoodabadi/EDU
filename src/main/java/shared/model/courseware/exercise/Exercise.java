@@ -46,6 +46,18 @@ public class Exercise {
         this.closingTime = closingTime;
     }
 
+    public Exercise(String exerciseCode, String name, String openTime, String closeTime,
+                    String uploadTime, String descriptions, String fileAddress, ItemType type) {
+        this.exerciseCode = exerciseCode;
+        this.name = name;
+        this.openingTime = openTime;
+        this.closingTime = closeTime;
+        this.uploadingTimeWithoutDeductingScores = uploadTime;
+        this.fileAddress = fileAddress;
+        this.descriptions = descriptions;
+        this.itemType = type;
+    }
+
     public String getCourseCode() {
         return courseCode;
     }
