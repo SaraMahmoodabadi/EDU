@@ -1,12 +1,15 @@
 package shared.model.courseware.exercise;
 
-public class Answer {
+import shared.model.courseware.educationalMaterial.ItemType;
 
+public class Answer {
+    private String studentName;
     private String studentCode;
     private String text;
     private String fileAddress;
     private String sendTime;
     private String exerciseCode;
+    private ItemType answerType;
 
     public Answer() {}
 
@@ -14,6 +17,14 @@ public class Answer {
         this.studentCode = studentCode;
         this.sendTime = sendTime;
         this.exerciseCode = exerciseCode;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public String getStudentCode() {
@@ -54,5 +65,13 @@ public class Answer {
 
     public void setExerciseCode(String exerciseCode) {
         this.exerciseCode = exerciseCode;
+    }
+
+    public ItemType getAnswerType() {
+        return answerType;
+    }
+
+    public void setAnswerType(ItemType answerType) {
+        this.answerType = answerType;
     }
 }

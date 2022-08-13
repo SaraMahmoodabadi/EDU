@@ -8,8 +8,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import shared.model.courseware.educationalMaterial.ItemType;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -23,17 +25,17 @@ import java.util.ResourceBundle;
 
 public class ExerciseController implements Initializable {
     @FXML
-    protected TableView<?> table;
+    protected TableView<ExerciseTable> table;
     @FXML
-    protected TableColumn<?, ?> nameColumn;
+    protected TableColumn<ExerciseTable, String> nameColumn;
     @FXML
-    protected TableColumn<?, ?> codeColumn;
+    protected TableColumn<ExerciseTable, String> codeColumn;
     @FXML
-    protected TableColumn<?, ?> timeColumn;
+    protected TableColumn<ExerciseTable, String> timeColumn;
     @FXML
-    protected TableColumn<?, ?> scoreColumn;
+    protected TableColumn<ExerciseTable, String> scoreColumn;
     @FXML
-    protected TableColumn<?, ?> answerColumn;
+    protected TableColumn<ExerciseTable, Button> answerColumn;
     @FXML
     protected Text exerciseName;
     @FXML
@@ -103,6 +105,14 @@ public class ExerciseController implements Initializable {
 
     }
 
+    private void makeTable() {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("displayName"));
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("displayStudentCode"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("uploadTime"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        answerColumn.setCellValueFactory(new PropertyValueFactory<>("showAnswer"));
+    }
+
     private void updateData() {
         Thread loop = new Thread(() -> {
             while (!stop) {
@@ -127,6 +137,7 @@ public class ExerciseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.stop = false;
         selectedStudent = null;
+        makeTable();
         Request request = ServerController.request;
         this.courseCode = (String) request.getData("courseCode");
         this.exerciseCode = (String) request.getData("exerciseCode");
@@ -138,5 +149,102 @@ public class ExerciseController implements Initializable {
         }
         else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         updateData();
+    }
+
+    class ExerciseTable {
+        private String displayName;
+        private String name;
+        private String displayStudentCode;
+        private String studentCode;
+        private String uploadTime;
+        private String score;
+        private String answer;
+        private ItemType answerType;
+        private Button showAnswer;
+
+        public ExerciseTable(String name, String studentCode, String uploadTime,
+                             String score, String answer, ItemType answerType) {
+            this.name = name;
+            this.studentCode = studentCode;
+            if (isAssistant) {
+                this.displayName = "****";
+                this.displayStudentCode = "****";
+            }
+            else {
+                this.displayName = name;
+                this.displayStudentCode = studentCode;
+            }
+            this.uploadTime = uploadTime;
+            this.score = score;
+            this.answer = answer;
+            this.answerType = answerType;
+            showAnswer = new Button("show answer");
+            if (answerType == ItemType.TEXT) makeTextButton();
+            else makeMediaButton();
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayStudentCode() {
+            return displayStudentCode;
+        }
+
+        public void setDisplayStudentCode(String displayStudentCode) {
+            this.displayStudentCode = displayStudentCode;
+        }
+
+        public String getUploadTime() {
+            return uploadTime;
+        }
+
+        public void setUploadTime(String uploadTime) {
+            this.uploadTime = uploadTime;
+        }
+
+        public String getScore() {
+            return score;
+        }
+
+        public void setScore(String score) {
+            this.score = score;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public void setAnswer(String answer) {
+            this.answer = answer;
+        }
+
+        public ItemType getAnswerType() {
+            return answerType;
+        }
+
+        public void setAnswerType(ItemType answerType) {
+            this.answerType = answerType;
+        }
+
+        public Button getShowAnswer() {
+            return showAnswer;
+        }
+
+        public void setShowAnswer(Button showAnswer) {
+            this.showAnswer = showAnswer;
+        }
+
+        private void makeMediaButton() {
+
+        }
+
+        private void makeTextButton() {
+
+        }
     }
 }
