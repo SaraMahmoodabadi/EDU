@@ -87,6 +87,34 @@ public class StudentExerciseDataHandler {
         return "-";
     }
 
+    public String getOpeningTime(String exerciseCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "openingTime", "exercise") + " exerciseCode = " + getStringFormat(exerciseCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("openingTime");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getClosingTime(String exerciseCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "closingTime", "exercise") + " exerciseCode = " + getStringFormat(exerciseCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("closingTime");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean saveMediaAnswer(String exerciseCode, String userName, ItemType type, String path) {
         String studentCode = getStudentCode(userName);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");

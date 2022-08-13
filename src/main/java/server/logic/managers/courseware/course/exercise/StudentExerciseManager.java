@@ -12,6 +12,7 @@ import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 public class StudentExerciseManager {
     private final ClientHandler client;
@@ -54,6 +55,12 @@ public class StudentExerciseManager {
         String exerciseCode = (String) request.getData("exerciseCode");
         ItemType type = (ItemType) request.getData("type");
         String answer = (String) request.getData("answer");
+        String checkTime = checkUploadTime(exerciseCode);
+        if (checkTime == null) {
+            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "errorMessage");
+            return sendErrorResponse(error);
+        }
+        else if (!checkTime.equals("OK")) return sendErrorResponse(checkTime);
         boolean hasSubmitted = this.dataHandler.hasSubmitted(exerciseCode, this.client.getUserName());
         boolean result;
         if (type == ItemType.MEDIA_FILE) {
@@ -83,6 +90,37 @@ public class StudentExerciseManager {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
+    }
+
+    private String checkUploadTime(String exerciseCode) {
+        String openingTime = this.dataHandler.getOpeningTime(exerciseCode);
+        String closingTime = this.dataHandler.getClosingTime(exerciseCode);
+        if (openingTime == null || closingTime == null) {
+            return Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+        }
+        String openingTimeMessage = checkOpeningTime(openingTime);
+        if (!openingTimeMessage.equals("OK")) return openingTimeMessage;
+        String closingTimeMessage = checkClosingTime(closingTime);
+        if (!closingTimeMessage.equals("OK")) return closingTimeMessage;
+        return "OK";
+    }
+
+    private String checkOpeningTime(String openingTime) {
+        LocalDateTime now = LocalDateTime.now();
+        String time = openingTime.substring(0, 10) + "T" + openingTime.substring(11, 16) + ":00.000";
+        LocalDateTime openTime = LocalDateTime.parse(time);
+        if (openTime.isBefore(now))
+            return Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "exerciseOpeningTime");
+        return "OK";
+    }
+
+    private String checkClosingTime(String closingTime) {
+        LocalDateTime now = LocalDateTime.now();
+        String time = closingTime.substring(0, 10) + "T" + closingTime.substring(11, 16) + ":00.000";
+        LocalDateTime closeTime = LocalDateTime.parse(time);
+        if (closeTime.isBefore(now))
+            return Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "exerciseClosingTime");
+        return "OK";
     }
 
     private String saveFile(String file, String fileFormat) {
