@@ -11,6 +11,7 @@ import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,11 @@ public class EducationalMaterialManager {
         boolean result1 = this.dataHandler.removeEduMaterial(eduMaterialCode);
         boolean result2 = this.dataHandler.updateCourseEduMaterials(courseCode, eduMaterialCode);
         if (result1 && result2) {
+            List<Item> items = this.dataHandler.getItems(eduMaterialCode);
+            for (Item item : items) {
+                this.dataHandler.removeItem(item.getItemCode());
+                if (item.getItemType() == ItemType.MEDIA_FILE) deleteFile(item.getText());
+            }
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
@@ -62,8 +68,10 @@ public class EducationalMaterialManager {
     public Response removeItem(Request request) {
         String itemCode = (String) request.getData("itemCode");
         String eduMaterialCode = (String) request.getData("educationalMaterialCode");
+        Item lastItem = this.dataHandler.getItem(itemCode);
         boolean result1 = this.dataHandler.removeItem(itemCode);
         if (result1) {
+            if (lastItem.getItemType() == ItemType.MEDIA_FILE) deleteFile(lastItem.getText());
             ArrayList<String> items = this.dataHandler.getItemsList(eduMaterialCode);
             items.remove(itemCode);
             boolean result2 = this.dataHandler.updateItems(items, eduMaterialCode);
@@ -112,12 +120,67 @@ public class EducationalMaterialManager {
         return sendErrorResponse(error);
     }
 
+    public Response addMediaItem(Request request) {
+        String media = (String) request.getData("media");
+        String fileFormat = (String) request.getData("fileFormat");
+        String eduMaterialCode = (String) request.getData("educationalMaterialCode");
+        String item = saveFile(media, fileFormat);
+        ArrayList<String> items = this.dataHandler.getItemsList(eduMaterialCode);
+        String itemCode = generateCode(eduMaterialCode, items);
+        boolean result1 = this.dataHandler.addItem(itemCode, ItemType.TEXT, item);
+        if (result1) {
+            items.add(itemCode);
+            boolean result2 = this.dataHandler.updateItems(items, eduMaterialCode);
+            if (result2) {
+                Response response = new Response(ResponseStatus.OK);
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
+                response.setNotificationMessage(note);
+                return response;
+            }
+        }
+        String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+        return sendErrorResponse(error);
+    }
+
+    public Response editMediaItem(Request request) {
+        String itemCode = (String) request.getData("itemCode");
+        String media = (String) request.getData("media");
+        String fileFormat = (String) request.getData("fileFormat");
+        Item lastItem = this.dataHandler.getItem(itemCode);
+        String item = saveFile(media, fileFormat);
+        boolean result = this.dataHandler.editItem(itemCode, item);
+        if (result) {
+            deleteFile(lastItem.getText());
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+        return sendErrorResponse(error);
+    }
+
     private String generateCode(String code, ArrayList<String> items) {
         for (int i = 1; i <= items.size() + 1; i++) {
             String itemCode = code + "-" + i;
             if (!items.contains(itemCode)) return itemCode;
         }
         return "";
+    }
+
+    private void deleteFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            boolean result = file.delete();
+        }
+    }
+
+    private String saveFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "eduMaterialFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
     }
 
     private Response sendErrorResponse(String errorMessage) {

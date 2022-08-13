@@ -48,7 +48,7 @@ public class EducationalMaterialDataHandler {
         return items;
     }
 
-    private Item getItem(String itemCode) {
+    public Item getItem(String itemCode) {
         ArrayList<Item> items = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
         query = String.format(query, "*", "item") + " itemCode = " + getStringFormat(itemCode);
