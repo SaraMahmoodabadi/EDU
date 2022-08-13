@@ -338,9 +338,14 @@ public class CourseController implements Initializable {
 
         private void addActionEvent(Label label) {
             label.setOnMouseClicked(event -> {
-                Request request = new Request(RequestType.SHOW_EXERCISE);
+                Request request;
+                if (EDU.userType == UserType.STUDENT && !isAssistant) {
+                    request = new Request(RequestType.SHOW_EXERCISE_STUDENT);
+                }
+                else request = new Request(RequestType.SHOW_EXERCISE_PROFESSOR);
                 request.addData("courseCode", this.courseCode);
                 request.addData("exerciseCode", this.exerciseCode);
+                request.addData("isAssistant", isAssistant);
                 ServerController.request = request;
                 CourseController.this.stop = true;
                 if (EDU.userType == UserType.STUDENT && !isAssistant)

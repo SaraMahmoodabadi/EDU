@@ -18,10 +18,11 @@ public class Exercise {
 
     public Exercise() {}
 
-    public Exercise(String courseCode, String name, String openingTime,
+    public Exercise(String courseCode, String exerciseCode, String name, String openingTime,
                     String closingTime, String uploadingTimeWithoutDeductingScores,
                     String fileAddress, String descriptions, ItemType itemType) {
-        this.exerciseCode = this.generateCode(courseCode);
+        this.courseCode = courseCode;
+        this.exerciseCode = exerciseCode;
         this.name = name;
         this.openingTime = openingTime;
         this.closingTime = closingTime;

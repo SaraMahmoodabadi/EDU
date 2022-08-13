@@ -214,7 +214,7 @@ public class EduMaterialController implements Initializable {
                 try {
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Request request = new Request(RequestType.SHOW_COURSE);
+                        Request request = new Request(RequestType.SHOW_EDUCATIONAL_MATERIAL);
                         request.addData("courseCode", this.courseCode);
                         request.addData("educationalMaterialCode", this.eduMaterialCode);
                         Response response = EDU.serverController.sendRequest(request);
