@@ -11,6 +11,8 @@ import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
 
+import java.io.File;
+
 public class StudentExerciseManager {
     private final ClientHandler client;
     private final StudentExerciseDataHandler dataHandler;
@@ -46,6 +48,57 @@ public class StudentExerciseManager {
         response.addData("submissionStatus", submissionStatus);
         response.addData("score", score);
         return response;
+    }
+
+    public Response getAnswer(Request request) {
+        String exerciseCode = (String) request.getData("exerciseCode");
+        ItemType type = (ItemType) request.getData("type");
+        String answer = (String) request.getData("answer");
+        boolean hasSubmitted = this.dataHandler.hasSubmitted(exerciseCode, this.client.getUserName());
+        boolean result;
+        if (type == ItemType.MEDIA_FILE) {
+            String fileFormat = (String) request.getData("fileFormat");
+            String path = saveFile(answer, fileFormat);
+            if (hasSubmitted) {
+                String lastFile = this.dataHandler.getFileAddress(exerciseCode, this.client.getUserName());
+                result = this.dataHandler.updateMediaAnswer(exerciseCode, this.client.getUserName(), path);
+                if (result) deleteFile(lastFile);
+            }
+            else
+                result = this.dataHandler.saveMediaAnswer(exerciseCode, this.client.getUserName(), type, path);
+        }
+        else {
+            if (hasSubmitted)
+                result = this.dataHandler.updateTextAnswer(exerciseCode, this.client.getUserName(), answer);
+            else
+                result = this.dataHandler.saveTextAnswer(exerciseCode, this.client.getUserName(), type, answer);
+        }
+        if (result) {
+            Response response = new Response(ResponseStatus.OK);
+            String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
+            response.setNotificationMessage(note);
+            return response;
+        }
+        else {
+            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+            return sendErrorResponse(error);
+        }
+    }
+
+    private String saveFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty
+                (String.class, "answerFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
+    }
+
+    private void deleteFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            boolean result = file.delete();
+        }
     }
 
     private Response sendErrorResponse(String errorMessage) {

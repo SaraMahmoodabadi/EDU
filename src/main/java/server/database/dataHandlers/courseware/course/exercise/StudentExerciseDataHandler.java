@@ -8,6 +8,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 public class StudentExerciseDataHandler {
     private final MySQLHandler databaseHandler;
@@ -68,6 +69,58 @@ public class StudentExerciseDataHandler {
             e.printStackTrace();
         }
         return "-";
+    }
+
+    public String getFileAddress(String exerciseCode, String username) {
+        String studentCode = getStudentCode(username);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "fileAddress", "answer") + " exerciseCode = " + getStringFormat(exerciseCode) +
+                " AND studentCode = " + getStringFormat(studentCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("fileAddress");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "-";
+    }
+
+    public boolean saveMediaAnswer(String exerciseCode, String userName, ItemType type, String path) {
+        String studentCode = getStudentCode(userName);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "answer", "exerciseCode, studentCode, sendTime, fileAddress, type",
+                getStringFormat(exerciseCode) + ", " + getStringFormat(studentCode) + ", " +
+                getStringFormat(LocalDateTime.now().toString()) + ", " + getStringFormat(path) + ", " +
+                getStringFormat(type.toString()));
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean saveTextAnswer(String exerciseCode, String userName, ItemType type, String answer) {
+        String studentCode = getStudentCode(userName);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "answer", "exerciseCode, studentCode, sendTime, text, type",
+                getStringFormat(exerciseCode) + ", " + getStringFormat(studentCode) + ", " +
+                        getStringFormat(LocalDateTime.now().toString()) + ", " + getStringFormat(answer) + ", " +
+                        getStringFormat(type.toString()));
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean updateMediaAnswer(String exerciseCode, String userName, String path) {
+        String studentCode = getStudentCode(userName);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "answer", "fileAddress = " + getStringFormat(path)) + " exerciseCode = " +
+                getStringFormat(exerciseCode) + " AND studentCode = " + getStringFormat(studentCode);
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean updateTextAnswer(String exerciseCode, String userName, String answer) {
+        String studentCode = getStudentCode(userName);
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "answer", "text = " + getStringFormat(answer)) + " exerciseCode = " +
+                getStringFormat(exerciseCode) + " AND studentCode = " + getStringFormat(studentCode);
+        return this.databaseHandler.updateData(query);
     }
 
     private String getStudentCode(String username) {
