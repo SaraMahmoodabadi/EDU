@@ -33,8 +33,9 @@
             </ImageView>
          </graphic>
       </Button>
-      <TableView fx:id="table" layoutX="235.0" layoutY="155.0" onMouseClicked="#selectStudent" prefHeight="262.0" prefWidth="730.0">
+      <TableView fx:id="table" layoutX="197.0" layoutY="155.0" onMouseClicked="#selectStudent" prefHeight="262.0" prefWidth="808.0">
         <columns>
+            <TableColumn fx:id="idColumn" prefWidth="75.0" text="Number" />
           <TableColumn fx:id="nameColumn" prefWidth="189.0" text="Name" />
           <TableColumn fx:id="codeColumn" prefWidth="201.0" text="Student code" />
             <TableColumn fx:id="timeColumn" prefWidth="136.0" text="Upload time" />
@@ -55,7 +56,7 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Text>
-      <TextField fx:id="studentField" alignment="TOP_LEFT" layoutX="416.0" layoutY="485.0" prefHeight="31.0" prefWidth="170.0" promptText="selected student">
+      <TextField fx:id="studentField" alignment="TOP_LEFT" editable="false" layoutX="416.0" layoutY="485.0" prefHeight="31.0" prefWidth="170.0" promptText="selected student">
          <effect>
             <InnerShadow choke="0.3" color="#b151b8" height="40.0" radius="19.5" width="40.0" />
          </effect>

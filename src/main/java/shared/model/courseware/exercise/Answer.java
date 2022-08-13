@@ -10,6 +10,7 @@ public class Answer {
     private String sendTime;
     private String exerciseCode;
     private ItemType answerType;
+    private String score;
 
     public Answer() {}
 
@@ -17,6 +18,28 @@ public class Answer {
         this.studentCode = studentCode;
         this.sendTime = sendTime;
         this.exerciseCode = exerciseCode;
+    }
+
+    public Answer(String exerciseCode, String studentCode, String name, ItemType type,
+                  String sendTime, String text, String studentScore) {
+        this.exerciseCode = exerciseCode;
+        this.studentCode = studentCode;
+        this.studentName = name;
+        this.answerType = type;
+        this.sendTime = sendTime;
+        this.text = text;
+        this.score = studentScore;
+    }
+
+    public Answer(String exerciseCode, String studentCode, String name, String sendTime,
+                  ItemType type, String fileAddress, String studentScore) {
+        this.exerciseCode = exerciseCode;
+        this.studentCode = studentCode;
+        this.studentName = name;
+        this.answerType = type;
+        this.sendTime = sendTime;
+        this.fileAddress = fileAddress;
+        this.score = studentScore;
     }
 
     public String getStudentName() {
@@ -73,5 +96,13 @@ public class Answer {
 
     public void setAnswerType(ItemType answerType) {
         this.answerType = answerType;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
     }
 }

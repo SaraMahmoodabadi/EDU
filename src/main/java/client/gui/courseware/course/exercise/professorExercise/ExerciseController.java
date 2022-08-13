@@ -8,24 +8,36 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import shared.model.courseware.educationalMaterial.ItemType;
+import shared.model.courseware.exercise.Answer;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ExerciseController implements Initializable {
     @FXML
     protected TableView<ExerciseTable> table;
+    @FXML
+    protected TableColumn<ExerciseTable, Integer> idColumn;
     @FXML
     protected TableColumn<ExerciseTable, String> nameColumn;
     @FXML
@@ -49,7 +61,7 @@ public class ExerciseController implements Initializable {
     private boolean isAssistant;
     private boolean stop;
     private String selectedStudent;
-
+    private ArrayList<ExerciseTable> students;
 
     @FXML
     public void registerScore(ActionEvent event) {
@@ -80,7 +92,9 @@ public class ExerciseController implements Initializable {
 
     @FXML
     public void selectStudent(MouseEvent mouseEvent) {
-
+        ExerciseTable exerciseTable = table.getSelectionModel().getSelectedItem();
+        this.selectedStudent = getStudentCodeByID(exerciseTable);
+        this.studentField.setText(exerciseTable.getDisplayStudentCode());
     }
 
     @FXML
@@ -102,10 +116,33 @@ public class ExerciseController implements Initializable {
     }
 
     private void showData(Map<String, Object> data) {
+        students.clear();
+        for (int i = 0; i < data.size(); i++) {
+            Answer answer = (Answer) data.get("answer" + i);
+            if (answer == null) continue;
+            int id = students.size() + 1;
+            ExerciseTable exerciseTable;
+            if (answer.getAnswerType() == ItemType.TEXT)
+                exerciseTable = new ExerciseTable(id, answer.getStudentName(), answer.getStudentCode(),
+                    answer.getSendTime(), answer.getScore(), answer.getText(), answer.getAnswerType());
+            else exerciseTable = new ExerciseTable(id, answer.getStudentName(), answer.getStudentCode(),
+                    answer.getSendTime(), answer.getScore(), answer.getFileAddress(), answer.getAnswerType());
+            students.add(exerciseTable);
+        }
+        table.getItems().clear();
+        table.getItems().addAll(students);
+    }
 
+    private String getStudentCodeByID(ExerciseTable exerciseTable) {
+        for (ExerciseTable student : students) {
+            if (student.getId() == exerciseTable.getId())
+                return student.getStudentCode();
+        }
+        return "";
     }
 
     private void makeTable() {
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("displayName"));
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("displayStudentCode"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("uploadTime"));
@@ -117,7 +154,7 @@ public class ExerciseController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                     Platform.runLater(() -> {
                         Request request = new Request(RequestType.SHOW_EXERCISE_PROFESSOR);
                         request.addData("courseCode", this.courseCode);
@@ -137,6 +174,8 @@ public class ExerciseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.stop = false;
         selectedStudent = null;
+        students = new ArrayList<>();
+        answerArea.setVisible(false);
         makeTable();
         Request request = ServerController.request;
         this.courseCode = (String) request.getData("courseCode");
@@ -152,6 +191,7 @@ public class ExerciseController implements Initializable {
     }
 
     class ExerciseTable {
+        private int id;
         private String displayName;
         private String name;
         private String displayStudentCode;
@@ -162,8 +202,9 @@ public class ExerciseController implements Initializable {
         private ItemType answerType;
         private Button showAnswer;
 
-        public ExerciseTable(String name, String studentCode, String uploadTime,
+        public ExerciseTable(int id, String name, String studentCode, String uploadTime,
                              String score, String answer, ItemType answerType) {
+            this.id = id;
             this.name = name;
             this.studentCode = studentCode;
             if (isAssistant) {
@@ -181,6 +222,14 @@ public class ExerciseController implements Initializable {
             showAnswer = new Button("show answer");
             if (answerType == ItemType.TEXT) makeTextButton();
             else makeMediaButton();
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getDisplayName() {
@@ -256,11 +305,27 @@ public class ExerciseController implements Initializable {
         }
 
         private void makeMediaButton() {
-
+            showAnswer.setOnAction(event -> {
+                MediaHandler handler = new MediaHandler();
+                byte[] file = handler.decode(this.answer);
+                String path = "src/main/java/client/resource/sentFiles/" + handler.getName();
+                try (FileOutputStream fos = new FileOutputStream(path)) {
+                    fos.write(file);
+                    Desktop d = Desktop.getDesktop();
+                    d.open(new File(path));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                File currentFile = new File(path);
+                currentFile.deleteOnExit();
+            });
         }
 
         private void makeTextButton() {
-
+            showAnswer.setOnAction(event -> {
+                answerArea.setVisible(true);
+                answerArea.setText(this.answer);
+            });
         }
     }
 }
