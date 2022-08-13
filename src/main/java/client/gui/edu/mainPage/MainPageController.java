@@ -171,6 +171,8 @@ public class MainPageController implements Initializable {
     }
 
     public void showCourseware(ActionEvent actionEvent) {
+        Stage stage = (Stage) (logOut.getScene().getWindow());
+        EDU.sceneSwitcher.switchScenes(stage, "courseware");
     }
 
     public void showMessages(ActionEvent actionEvent) {
