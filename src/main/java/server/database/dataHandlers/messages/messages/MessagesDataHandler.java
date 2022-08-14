@@ -195,14 +195,19 @@ public class MessagesDataHandler {
     public List<Message> getAllAdminMessages(String username) {
         List<Message> requests = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "adminDate, answers", "adminmessages") + " user = " + getStringFormat(username);
+        query = String.format(query, "adminDate, answers, adminMedia", "adminmessages") + " user = " + getStringFormat(username);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             while (resultSet.next()) {
                 String date = resultSet.getString("adminDate");
                 if (date == null) continue;
                 String answers = resultSet.getString("answers");
-                String userMessage = "admin message : " + answers.substring(1, answers.length() - 1);
+                String adminMedia = resultSet.getString("adminMedia");
+                String userMessage;
+                if (answers != null)
+                    userMessage = "admin message : " + answers.substring(1, answers.length() - 1);
+                else if (adminMedia != null) userMessage = "media";
+                else userMessage = "-";
                 Message message = new Message("Admin", "1", userMessage, date, "adminMessage");
                 requests.add(message);
             }
