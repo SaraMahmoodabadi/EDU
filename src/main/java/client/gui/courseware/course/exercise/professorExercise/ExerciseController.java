@@ -94,8 +94,10 @@ public class ExerciseController implements Initializable {
     @FXML
     public void selectStudent(MouseEvent mouseEvent) {
         ExerciseTable exerciseTable = table.getSelectionModel().getSelectedItem();
-        this.selectedStudent = getStudentCodeByID(exerciseTable);
-        this.studentField.setText(exerciseTable.getDisplayStudentCode());
+        if (exerciseTable != null) {
+            this.selectedStudent = getStudentCodeByID(exerciseTable);
+            this.studentField.setText(exerciseTable.getDisplayStudentCode());
+        }
     }
 
     @FXML
@@ -123,6 +125,7 @@ public class ExerciseController implements Initializable {
             if (answer == null) continue;
             int id = students.size() + 1;
             ExerciseTable exerciseTable;
+            answer.setSendTime(answer.getSendTime().replace("T", " "));
             if (answer.getAnswerType() == ItemType.TEXT)
                 exerciseTable = new ExerciseTable(id, answer.getStudentName(), answer.getStudentCode(),
                     answer.getSendTime(), answer.getScore(), answer.getText(), answer.getAnswerType());
