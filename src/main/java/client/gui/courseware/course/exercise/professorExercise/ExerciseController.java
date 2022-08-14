@@ -191,7 +191,7 @@ public class ExerciseController implements Initializable {
         updateData();
     }
 
-    class ExerciseTable {
+    public class ExerciseTable {
         private int id;
         private String displayName;
         private String name;

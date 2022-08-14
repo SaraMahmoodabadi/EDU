@@ -61,13 +61,13 @@ public class ProfessorExerciseDataHandler {
 
     private String getStudentName(String studentCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "u.firsName, u.lastName", "user u", "student s", "s.username = u.username") +
+        query = String.format(query, "u.firstName, u.lastName", "user u", "student s", "s.username = u.username") +
                 " s.studentCode = " + getStringFormat(studentCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                String firstname = resultSet.getString("firstname");
-                String lastname = resultSet.getString("lastname");
+                String firstname = resultSet.getString("firstName");
+                String lastname = resultSet.getString("lastName");
                 return firstname + " " + lastname;
             }
         } catch (SQLException e) {

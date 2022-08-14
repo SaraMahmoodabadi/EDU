@@ -41,6 +41,7 @@ public class StudentExerciseManager {
         if (hasSubmitted) {
             submissionStatus = "submitted";
             score = this.dataHandler.getScore(exerciseCode, this.client.getUserName());
+            if (score == null) score = "-";
         }
         else {
             submissionStatus = "not submitted";
@@ -98,7 +99,7 @@ public class StudentExerciseManager {
         String openingTime = this.dataHandler.getOpeningTime(exerciseCode);
         String closingTime = this.dataHandler.getClosingTime(exerciseCode);
         if (openingTime == null || closingTime == null) {
-            return Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+            return null;
         }
         String openingTimeMessage = checkOpeningTime(openingTime);
         if (!openingTimeMessage.equals("OK")) return openingTimeMessage;
@@ -111,7 +112,7 @@ public class StudentExerciseManager {
         LocalDateTime now = LocalDateTime.now();
         String time = openingTime.substring(0, 10) + "T" + openingTime.substring(11, 16) + ":00.000";
         LocalDateTime openTime = LocalDateTime.parse(time);
-        if (openTime.isBefore(now))
+        if (openTime.isAfter(now))
             return Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "exerciseOpeningTime");
         return "OK";
     }

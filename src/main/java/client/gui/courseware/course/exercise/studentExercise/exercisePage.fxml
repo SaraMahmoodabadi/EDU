@@ -103,7 +103,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextArea fx:id="answerArea" editable="false" layoutX="607.0" layoutY="464.0" prefHeight="176.0" prefWidth="465.0" promptText="Answer" wrapText="true">
+      <TextArea fx:id="answerArea" layoutX="607.0" layoutY="464.0" prefHeight="176.0" prefWidth="465.0" promptText="Answer" wrapText="true">
          <effect>
             <InnerShadow choke="0.3" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
          </effect>
