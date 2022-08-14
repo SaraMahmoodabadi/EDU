@@ -171,6 +171,10 @@ public class EduMaterialController implements Initializable {
                 addTextButton.setDisable(true);
                 addMediaButton.setDisable(true);
             }
+            else if (t < 5) {
+                addTextButton.setDisable(false);
+                addMediaButton.setDisable(false);
+            }
         }
     }
 
