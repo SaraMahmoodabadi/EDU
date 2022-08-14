@@ -12,6 +12,9 @@ import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public class StudentExerciseManager {
@@ -133,9 +136,10 @@ public class StudentExerciseManager {
     }
 
     private void deleteFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            boolean result = file.delete();
+        try {
+            Files.deleteIfExists(Paths.get(path));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

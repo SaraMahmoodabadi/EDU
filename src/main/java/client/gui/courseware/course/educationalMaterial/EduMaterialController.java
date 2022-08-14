@@ -157,24 +157,25 @@ public class EduMaterialController implements Initializable {
     }
 
     private void showData(Map<String, Object> data) {
-        itemsPane.getChildren().clear();
         int t = 0;
-        double height = 0;
+        double height = 10;
         for (int i = 0; i < data.size() ; i++) {
             Item item = (Item) data.get("item" + i);
             if (item == null) continue;
             t++;
             ItemPane itemPane = new ItemPane(item.getItemCode(), item.getText(), item.getItemType());
-            height += itemPane.getPrefHeight();
-            if (height < itemsPane.getHeight()) this.itemsPane.setPrefHeight(height);
+            height += itemPane.getPrefHeight() + 15;
+            if (height > itemsPane.getHeight()) this.itemsPane.setPrefHeight(height);
             this.itemsPane.getChildren().add(itemPane);
             if (t == 5) {
                 addTextButton.setDisable(true);
+                addMediaButton.setDisable(true);
             }
         }
     }
 
     private void hideMediaOption() {
+        mediaAddress.clear();
         mediaAddress.setVisible(false);
         registerMediaButton.setVisible(false);
         registerMediaButton.setDisable(true);
@@ -187,6 +188,7 @@ public class EduMaterialController implements Initializable {
     }
 
     private void hideTextOption() {
+        textArea.clear();
         textArea.setVisible(false);
         registerTextButton.setVisible(false);
         registerTextButton.setDisable(true);
@@ -220,6 +222,7 @@ public class EduMaterialController implements Initializable {
                         request.addData("educationalMaterialCode", this.eduMaterialCode);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
+                            itemsPane.getChildren().clear();
                             showData(response.getData());
                         }
                     });
@@ -285,13 +288,13 @@ public class EduMaterialController implements Initializable {
 
         private void makeMediaPane(String data) {
             this.setPrefWidth(500);
-            this.setPrefHeight(80);
+            this.setPrefHeight(60);
             this.setStyle(String.valueOf(Color.valueOf("#ffd100")));
             this.setBackground(new Background(new BackgroundFill
                     (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
             Rectangle rectangle = new Rectangle();
             rectangle.setStyle("-fx-background-radius: 10");
-            rectangle.setHeight(70);
+            rectangle.setHeight(50);
             rectangle.setWidth(300);
             rectangle.setFill(Color.valueOf("#b151b8"));
             rectangle.setStroke(Color.valueOf("#b151b8"));
@@ -322,6 +325,8 @@ public class EduMaterialController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            File newFile = new File(path);
+            newFile.deleteOnExit();
         }
 
         private void addDeleteButton() {

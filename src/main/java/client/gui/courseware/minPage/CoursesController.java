@@ -43,7 +43,6 @@ public class CoursesController implements Initializable {
     }
 
     private void showData(HashMap<String, Object> data) {
-        coursesPane.getChildren().clear();
         int t = 0;
         for (int i = 0; i < data.size(); i++) {
             Course course = (Course) data.get("course" + i);
@@ -75,6 +74,7 @@ public class CoursesController implements Initializable {
                         Request request = new Request(RequestType.GET_ALL_COURSES);
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
+                            coursesPane.getChildren().clear();
                             showData(response.getData());
                         }
                     });

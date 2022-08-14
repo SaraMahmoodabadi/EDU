@@ -133,7 +133,6 @@ public class CourseController implements Initializable {
     }
 
     private void showEduMaterials(Map<String, Object> data) {
-        eduMaterialPane.getChildren().clear();
         int size = (int) data.get("educationalMaterialSize");
         int t = 0;
         for (int i = 0; i < size; i++) {
@@ -150,7 +149,6 @@ public class CourseController implements Initializable {
     }
 
     private void showExercises(Map<String, Object> data) {
-        exercisesPane.getChildren().clear();
         int size = (int) data.get("exerciseSize");
         int t = 0;
         for (int i = 0; i < size; i++) {
@@ -223,7 +221,9 @@ public class CourseController implements Initializable {
                         request.addData("time", getSelectedTime());
                         Response response = EDU.serverController.sendRequest(request);
                         if (response.getStatus() == ResponseStatus.OK) {
+                            eduMaterialPane.getChildren().clear();
                             showEduMaterials(response.getData());
+                            exercisesPane.getChildren().clear();
                             showExercises(response.getData());
                         }
                     });
