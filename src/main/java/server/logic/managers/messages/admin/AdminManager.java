@@ -8,6 +8,7 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +26,20 @@ public class AdminManager {
 
     public Response sendMessageToAdmin(Request request) {
         String message = (String) request.getData("message");
-        boolean result = this.dataHandler.sendMessageToAdmin(message, client.getUserName());
+        String file = (String) request.getData("file");
+        String fileFormat = (String) request.getData("fileFormat");
+        String filePath = null;
+        if (file != null) filePath = saveUserFile(file, fileFormat);
+        boolean result = false;
+        if (filePath != null && message != null)  {
+            result = this.dataHandler.sendMixMessageToAdmin(message, filePath, client.getUserName());
+        }
+        else if (message != null) {
+            result = this.dataHandler.sendTextMessageToAdmin(message, client.getUserName());
+        }
+        else if (filePath != null) {
+            result = this.dataHandler.sendMediaMessageToAdmin(filePath, client.getUserName());
+        }
         if (result) {
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
@@ -108,6 +122,22 @@ public class AdminManager {
             sortedTimes[t] = times.get(i);
         }
         return new ArrayList<>(Arrays.asList(sortedTimes));
+    }
+
+    private String saveUserFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "userFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
+    }
+
+    private String saveAdminFile(String file, String fileFormat) {
+        String path = Config.getConfig(ConfigType.SERVER_PATH).getProperty(String.class, "adminFiles");
+        MediaHandler handler = new MediaHandler();
+        path = path + "/" + handler.createNameByUser(this.client.getUserName()) + "." + fileFormat;
+        handler.writeBytesToFile(path, handler.decode(file));
+        return path;
     }
 
     private Response sendErrorResponse(String errorMessage) {

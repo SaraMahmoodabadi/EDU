@@ -2,6 +2,7 @@ package client.gui.message.messages;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.ServerController;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
@@ -22,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import shared.model.message.chatMessages.Message;
 import shared.model.user.UserType;
 import shared.request.Request;
@@ -42,6 +44,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MessagesController implements Initializable {
+    @FXML
+    protected Button mediaButton;
     @FXML
     protected TextField messageField;
     @FXML
@@ -89,12 +93,38 @@ public class MessagesController implements Initializable {
             request.addData("username", user.user);
             request.addData("userMessage", user.message);
             request.addData("messageTime", user.time);
+            request.addData("isMedia", false);
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
                 makeTextMessageInPage(messageField.getText(), true);
                 messageField.setText(null);
             }
             else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        }
+    }
+
+    @FXML
+    public void chooseMedia(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("select file");
+        File file = fileChooser.showOpenDialog(ServerController.edu);
+        if (file != null) {
+            MediaHandler handler = new MediaHandler();
+            String path = file.getAbsolutePath();
+            String message = handler.encode(path);
+            Request request = new Request(RequestType.SEND_MESSAGE_ADMIN);
+            request.addData("answer", message);
+            request.addData("isMedia", true);
+            int n = path.split("\\.").length;
+            String fileFormat = path.split("\\.")[n-1];
+            request.addData("fileFormat", fileFormat);
+            request.addData("username", user.user);
+            request.addData("userMessage", user.message);
+            request.addData("messageTime", user.time);
+            Response response = EDU.serverController.sendRequest(request);
+            if (response.getStatus() == ResponseStatus.ERROR) {
+                AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+            }
         }
     }
 

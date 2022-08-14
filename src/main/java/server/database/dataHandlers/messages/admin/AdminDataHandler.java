@@ -19,11 +19,27 @@ public class AdminDataHandler {
         this.databaseHandler = dataHandler;
     }
 
-    public boolean sendMessageToAdmin(String message, String username) {
+    public boolean sendMixMessageToAdmin(String message,String media, String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "adminmessages", "user, date, message, userMedia",
+                getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) + ", " +
+                getStringFormat(message) + ", " + getStringFormat(media));
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean sendTextMessageToAdmin(String message, String username) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "adminmessages", "user, date, message",
                 getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) + ", " +
-                getStringFormat(message));
+                        getStringFormat(message));
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean sendMediaMessageToAdmin(String media, String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "adminmessages", "user, date, userMedia",
+                getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) + ", " +
+                        getStringFormat(media));
         return this.databaseHandler.updateData(query);
     }
 
@@ -56,7 +72,7 @@ public class AdminDataHandler {
 
     public List<Message> getAllMessages() {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
-        query = String.format(query, "m.user, m.message, m.date, u.firstName, u.lastName", "adminmessages m",
+        query = String.format(query, "m.user, m.message, m.userMedia, m.date, u.firstName, u.lastName", "adminmessages m",
                 "user u", "u.username = m.user");
         query = query.substring(0, query.length() - 6);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
