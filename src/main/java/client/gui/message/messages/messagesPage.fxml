@@ -92,7 +92,7 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button fx:id="mediaButton" layoutX="1087.0" layoutY="755.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="31.0" prefWidth="23.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;" visible="false">
+      <Button fx:id="mediaButton" disable="true" layoutX="1087.0" layoutY="755.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="31.0" prefWidth="23.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;" visible="false">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                <image>

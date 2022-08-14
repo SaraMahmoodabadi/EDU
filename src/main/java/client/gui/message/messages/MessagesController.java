@@ -235,6 +235,8 @@ public class MessagesController implements Initializable {
 
     private void showTextField() {
         messageField.setVisible(true);
+        mediaButton.setVisible(true);
+        mediaButton.setDisable(false);
     }
 
     private void showButtons() {
