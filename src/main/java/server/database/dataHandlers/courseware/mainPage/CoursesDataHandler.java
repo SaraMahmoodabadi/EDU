@@ -9,6 +9,7 @@ import shared.util.config.ConfigType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -244,6 +245,28 @@ public class CoursesDataHandler {
             if (resultSet.next()) {
                 if (resultSet.getString("examTime") != null)
                     return resultSet.getString("examTime");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void updateSystemMessages(String username, String message) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
+        query = String.format(query, "system_messages", "sender, receiver, time, message",
+                "Courseware, " + getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) +
+                ", " + getStringFormat(message));
+        this.databaseHandler.updateData(query);
+    }
+
+    public String getUsername(String type, String userCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "username", type) + " " + type + "Code = " + getStringFormat(userCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("username");
             }
         } catch (SQLException e) {
             e.printStackTrace();

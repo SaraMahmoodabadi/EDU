@@ -2,6 +2,7 @@ package server.logic.managers.courseware.course;
 
 import server.database.dataHandlers.courseware.course.CourseDataHandler;
 import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
+import server.logic.managers.courseware.mainPage.CoursesManager;
 import server.network.ClientHandler;
 import shared.model.courseware.educationalMaterial.EducationalMaterial;
 import shared.model.courseware.exercise.Exercise;
@@ -138,6 +139,7 @@ public class CourseManager {
         boolean result2 = this.dataHandler.updateStudentCourses(studentCode, courseCode, type);
         if (result1 && result2) {
             if (studentType.equals("student")) addStudentToLesson(studentCode, courseCode);
+            informAddToCourse(studentCode, courseCode, studentType);
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
@@ -147,6 +149,11 @@ public class CourseManager {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
+    }
+
+    public void informAddToCourse(String studentCode, String courseCode, String type) {
+        CoursesManager manager = new CoursesManager(this.client.getDataHandler());
+        manager.informAddToCourse(studentCode, courseCode, type);
     }
 
     private void addStudentToLesson(String studentCode, String lesson) {

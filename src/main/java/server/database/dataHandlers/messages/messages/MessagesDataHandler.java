@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class MessagesDataHandler {
@@ -211,6 +212,25 @@ public class MessagesDataHandler {
         return requests;
     }
 
+    public List<Message> getAllSystemMessages(String username) {
+        List<Message> messages = new ArrayList<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "time, message, sender", "system_messages") + " receiver = " + getStringFormat(username);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            while (resultSet.next()) {
+                String date = resultSet.getString("time");
+                String messageText = resultSet.getString("message");
+                String sender = resultSet.getString("sender");
+                Message message = new Message(sender, "system", messageText, date, "systemMessages");
+                messages.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
     public List<String> getRequestResult(String user, String time, String username, Type type) {
         List<String> results = new ArrayList<>();
         String professorCode = user;
@@ -308,14 +328,18 @@ public class MessagesDataHandler {
     public List<Message> getAdminMessage(String username, String date) {
         List<Message> messages = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "message, answers", "adminmessages") + " user = " + getStringFormat(username) +
+        query = String.format(query, "message, userMedia, answers, adminMedia", "adminmessages") +
+                " user = " + getStringFormat(username) +
                 " AND adminDate = " + getStringFormat(date);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
                 String message = resultSet.getString("message");
+                String userMedia = resultSet.getString("userMedia");
                 String answers = resultSet.getString("answers");
-                if (message != null) messages.add(new Message(username, message, true));
+                String adminMedia = resultSet.getString("adminMedia");
+                if (message != null) messages.add(new Message(username, message, true, false));
+                if (userMedia != null) messages.add(new Message(username, userMedia, true, true));
                 if (answers != null && !answers.equals("[]")) {
                     String answersList = answers.substring(1, answers.length() - 1);
                     List<String> finalAnswers =  new ArrayList<>(Arrays.asList(answersList.split(", ")));
@@ -323,11 +347,34 @@ public class MessagesDataHandler {
                         messages.add(new Message("1", answer, false, false));
                     }
                 }
+                if (adminMedia != null && !adminMedia.equals("[]")) {
+                    String answersList = adminMedia.substring(1, adminMedia.length() - 1);
+                    List<String> finalAnswers =  new ArrayList<>(Arrays.asList(answersList.split(", ")));
+                    for (String answer : finalAnswers) {
+                        messages.add(new Message("1", answer, false, true));
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return messages;
+    }
+
+    public Message getSystemMessage(String username, String time) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "message", "system_messages") + " receiver = " + getStringFormat(username) +
+                " AND time = " + getStringFormat(time);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String message = resultSet.getString("message");
+                return new Message("mohseni", message, false, false);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getEduAssistant(String username) {

@@ -11,6 +11,7 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
+import shared.util.media.MediaHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class MessagesManager {
         messages.addAll(this.dataHandler.getAllSendMessageRequests(this.client.getUserName()));
         messages.addAll(this.dataHandler.getAllAdminMessages(this.client.getUserName()));
         messages.addAll(this.dataHandler.getAllSendMessageResults(this.client.getUserName()));
+        messages.addAll(this.dataHandler.getAllSystemMessages(this.client.getUserName()));
         if (this.client.getUserType() == UserType.STUDENT) {
             messages.addAll(this.dataHandler.getAllMohseniMessages(this.client.getUserName()));
             messages.addAll(this.dataHandler.getAllRequestsResult(this.client.getUserName()));
@@ -67,6 +69,8 @@ public class MessagesManager {
                 return showAdminMessage(time, name);
             case "request result":
                 return showRequestResult(user, time, userMessage, name);
+            case "systemMessages" :
+                return showSystemMessage(time, name);
         }
         String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
         return sendErrorResponse(error);
@@ -160,9 +164,24 @@ public class MessagesManager {
         List<Message> messages = this.dataHandler.getAdminMessage(this.client.getUserName(), time);
         Response response = new Response(ResponseStatus.OK);
         response.addData("name", name);
+        MediaHandler handler = new MediaHandler();
         for (int i = 0; i < messages.size(); i++) {
-            response.addData("message" + i, messages.get(i));
+            Message message = messages.get(i);
+            if (message.isMedia()) message.setMessageText(handler.encode(message.getMessageText()));
+            response.addData("message" + i, message);
         }
+        return response;
+    }
+
+    private Response showSystemMessage(String time, String name) {
+        Message message = this.dataHandler.getSystemMessage(this.client.getUserName(), time);
+        if (message == null) {
+            String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
+            return sendErrorResponse(error);
+        }
+        Response response = new Response(ResponseStatus.OK);
+        response.addData("name", name);
+        response.addData("message", message);
         return response;
     }
 

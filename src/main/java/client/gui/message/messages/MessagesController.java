@@ -162,7 +162,8 @@ public class MessagesController implements Initializable {
         messagePane.getChildren().add(pane);
     }
 
-    private void makeMediaMessage(String message) {
+
+    private void makeMediaMessage(String message, boolean isSender) {
         Pane pane = new Pane();
         pane.setPrefHeight(70);
         Rectangle rectangle = new Rectangle();
@@ -170,8 +171,9 @@ public class MessagesController implements Initializable {
         rectangle.setWidth(350);
         rectangle.setFill(Color.valueOf("#b151b8"));
         rectangle.setStroke(Color.valueOf("#b151b8"));
-        rectangle.setLayoutX(0);
         rectangle.setLayoutY(0);
+        if (isSender) rectangle.setLayoutX(200);
+        else rectangle.setLayoutX(0);
         pane.getChildren().add(rectangle);
         Button button = new Button();
         String fileImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "fileIconPath");
@@ -181,7 +183,8 @@ public class MessagesController implements Initializable {
         button.setGraphic(file);
         button.setOnAction(event -> open(message));
         button.setLayoutY(5);
-        button.setLayoutX(270);
+        if (isSender) button.setLayoutX(210);
+        else button.setLayoutX(270);
         button.setStyle("-fx-background-color: #b151b8");
         pane.getChildren().add(button);
         messagePane.getChildren().add(pane);
@@ -228,7 +231,7 @@ public class MessagesController implements Initializable {
             Message newMessage = (Message) data.get("message" + i);
             if (newMessage == null) continue;
             boolean isSender = newMessage.isTransmitter();
-            if (newMessage.isMedia()) makeMediaMessage(newMessage.getMessageText());
+            if (newMessage.isMedia()) makeMediaMessage(newMessage.getMessageText(), isSender);
             else makeTextMessageInPage(newMessage.getMessageText(), isSender);
         }
     }

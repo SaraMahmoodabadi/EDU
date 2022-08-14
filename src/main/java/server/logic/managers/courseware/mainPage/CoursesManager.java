@@ -45,8 +45,22 @@ public class CoursesManager {
             this.dataHandler.updateProfessorCourses(professorCode, courseCode);
             for (String student : students) {
                 this.dataHandler.updateStudentCourses(student, courseCode);
+                informAddToCourse(student, courseCode, "student");
             }
         }
+    }
+
+    public void informAddToCourse(String studentCode, String courseCode, String type) {
+        String message;
+        if (type.equals("student"))
+            message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "addStudentToCourse");
+        else
+            message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "addAssistantToCourse");
+        String courseName = this.dataHandler.getLessonName(getLessonCode(courseCode));
+        message = String.format(message, courseName);
+        String username = this.dataHandler.getUsername("student", studentCode);
+        if (username == null) username = "-";
+        this.dataHandler.updateSystemMessages(username, message);
     }
 
     private boolean isCreated(String lessonCode, String group) {
