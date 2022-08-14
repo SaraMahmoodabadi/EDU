@@ -322,7 +322,8 @@ public class UnitSelectionDataHandler {
         String studentCode = getStudentCode(username);
         List<String> students = getGroupStudents(lessonCode, group);
         if (students == null) students = new ArrayList<>();
-        students.add(studentCode);
+        if (!students.contains(studentCode))
+            students.add(studentCode);
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "edu.group", "students = " + getStringFormat(students.toString()))
                 + " lessonCode = " + getStringFormat(lessonCode) +

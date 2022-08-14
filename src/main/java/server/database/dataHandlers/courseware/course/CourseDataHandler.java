@@ -33,6 +33,20 @@ public class CourseDataHandler {
         return "";
     }
 
+    public String getUsername(String studentCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "username", "student") + " studentCode = " + getStringFormat(studentCode);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public ArrayList<EducationalMaterial> getEduMaterials(String courseCode) {
         ArrayList<EducationalMaterial> educationalMaterials = new ArrayList<>();
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");

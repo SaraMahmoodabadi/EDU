@@ -1,6 +1,7 @@
 package server.logic.managers.courseware.course;
 
 import server.database.dataHandlers.courseware.course.CourseDataHandler;
+import server.database.dataHandlers.edu.unitSelection.UnitSelectionDataHandler;
 import server.network.ClientHandler;
 import shared.model.courseware.educationalMaterial.EducationalMaterial;
 import shared.model.courseware.exercise.Exercise;
@@ -134,6 +135,7 @@ public class CourseManager {
         type = studentType.equals("student") ? "courses" : "assistantCourses";
         boolean result2 = this.dataHandler.updateStudentCourses(studentCode, courseCode, type);
         if (result1 && result2) {
+            if (studentType.equals("student")) addStudentToLesson(studentCode, courseCode);
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
             response.setNotificationMessage(note);
@@ -143,6 +145,17 @@ public class CourseManager {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
+    }
+
+    private void addStudentToLesson(String studentCode, String lesson) {
+        String username = this.dataHandler.getUsername(studentCode);
+        String term = lesson.split("-")[0];
+        int n = lesson.split("-").length;
+        String group = lesson.split("-")[n - 1];
+        String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+        UnitSelectionDataHandler handler = new UnitSelectionDataHandler(this.client.getDataHandler());
+        handler.takeLesson(lesson, username);
+        handler.addStudentToGroup(lessonCode, group, username);
     }
 
     public Response addEduMaterial(Request request) {
