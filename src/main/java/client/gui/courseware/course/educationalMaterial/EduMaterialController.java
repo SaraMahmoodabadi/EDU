@@ -90,6 +90,7 @@ public class EduMaterialController implements Initializable {
     public void deleteEduMaterial(ActionEvent event) {
         Request request = new Request(RequestType.DELETE_EDUCATIONAL_MATERIAL);
         request.addData("educationalMaterialCode", eduMaterialCode);
+        request.addData("courseCode", courseCode);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
@@ -269,18 +270,16 @@ public class EduMaterialController implements Initializable {
 
         private void makeTextPane(String data) {
             this.setPrefWidth(500);
-            this.setPrefHeight(110);
+            this.setPrefHeight(150);
             this.setStyle(String.valueOf(Color.valueOf("#ffd100")));
             this.setBackground(new Background(new BackgroundFill
                     (Color.valueOf("#ffd100"), CornerRadii.EMPTY, Insets.EMPTY)));
             TextArea textArea = new TextArea(data);
             textArea.setWrapText(true);
-            Font font = Font.font("System", FontWeight.BOLD,15);
-            textArea.setFont(font);
-            textArea.setPrefHeight(100);
+            textArea.setPrefHeight(140);
             textArea.setPrefWidth(300);
             textArea.setLayoutX(5);
-            textArea.setPrefHeight(5);
+            textArea.setLayoutY(5);
             this.getChildren().add(textArea);
         }
 
@@ -302,8 +301,8 @@ public class EduMaterialController implements Initializable {
             Button button = new Button();
             String fileImage = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "fileIconPath");
             ImageView file = new ImageView("file:" + fileImage);
-            file.setFitHeight(50);
-            file.setFitWidth(50);
+            file.setFitHeight(30);
+            file.setFitWidth(30);
             button.setGraphic(file);
             button.setStyle("-fx-background-color: #b151b8");
             button.setOnAction(event -> open(data));
@@ -329,11 +328,11 @@ public class EduMaterialController implements Initializable {
             Button button = new Button();
             String removeIcn = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "removeIcnPath");
             ImageView removeImage = new ImageView("file:" + removeIcn);
-            removeImage.setFitHeight(50);
-            removeImage.setFitWidth(50);
+            removeImage.setFitHeight(30);
+            removeImage.setFitWidth(30);
             button.setGraphic(removeImage);
             button.setStyle("-fx-background-color: #b151b8");
-            button.setLayoutY(5);
+            button.setLayoutY(10);
             button.setLayoutX(330);
             button.setOnAction(event -> remove());
             this.getChildren().add(button);
@@ -356,11 +355,11 @@ public class EduMaterialController implements Initializable {
             Button button = new Button();
             String editIcn = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "editIconPath");
             ImageView editImage = new ImageView("file:" + editIcn);
-            editImage.setFitHeight(50);
-            editImage.setFitWidth(50);
+            editImage.setFitHeight(30);
+            editImage.setFitWidth(30);
             button.setGraphic(editImage);
             button.setStyle("-fx-background-color: #b151b8");
-            button.setLayoutY(5);
+            button.setLayoutY(10);
             button.setLayoutX(430);
             button.setOnAction(event -> edit());
             this.getChildren().add(button);
@@ -369,7 +368,10 @@ public class EduMaterialController implements Initializable {
         private void edit() {
             isEditing = true;
             EduMaterialController.this.itemCode = this.itemCode;
-            if (itemType == ItemType.TEXT) showTextOption();
+            if (itemType == ItemType.TEXT) {
+                showTextOption();
+                textArea.setText(item);
+            }
             else {
                 showMediaOption();
                 FileChooser fileChooser = new FileChooser();

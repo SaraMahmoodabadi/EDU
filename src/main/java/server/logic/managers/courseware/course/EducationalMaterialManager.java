@@ -38,7 +38,7 @@ public class EducationalMaterialManager {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             if (item.getItemType() == ItemType.MEDIA_FILE) item.setText(handler.encode(item.getText()));
-            response.addData("items" + i, item);
+            response.addData("item" + i, item);
         }
         return response;
     }
@@ -46,10 +46,10 @@ public class EducationalMaterialManager {
     public Response deleteEducationalMaterial(Request request) {
         String courseCode = (String) request.getData("courseCode");
         String eduMaterialCode = (String) request.getData("educationalMaterialCode");
+        List<Item> items = this.dataHandler.getItems(eduMaterialCode);
         boolean result1 = this.dataHandler.removeEduMaterial(eduMaterialCode);
         boolean result2 = this.dataHandler.updateCourseEduMaterials(courseCode, eduMaterialCode);
         if (result1 && result2) {
-            List<Item> items = this.dataHandler.getItems(eduMaterialCode);
             for (Item item : items) {
                 this.dataHandler.removeItem(item.getItemCode());
                 if (item.getItemType() == ItemType.MEDIA_FILE) deleteFile(item.getText());
@@ -127,7 +127,7 @@ public class EducationalMaterialManager {
         String item = saveFile(media, fileFormat);
         ArrayList<String> items = this.dataHandler.getItemsList(eduMaterialCode);
         String itemCode = generateCode(eduMaterialCode, items);
-        boolean result1 = this.dataHandler.addItem(itemCode, ItemType.TEXT, item);
+        boolean result1 = this.dataHandler.addItem(itemCode, ItemType.MEDIA_FILE, item);
         if (result1) {
             items.add(itemCode);
             boolean result2 = this.dataHandler.updateItems(items, eduMaterialCode);

@@ -24,7 +24,7 @@ public class CoursesDataHandler {
         String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getDataWithJoin");
         query = String.format(query, "l.lessonCode, g.groupNumber, g.students, g.professorCode", "lesson l",
-                "group g", "g.lessonCode = l.lessonCode") +
+                "edu.group g", "g.lessonCode = l.lessonCode") +
                 " l.term = " + thisTerm + " AND l.collegeCode = " + getStringFormat(collegeCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<Group> groups = new ArrayList<>();
