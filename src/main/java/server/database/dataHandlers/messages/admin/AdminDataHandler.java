@@ -8,9 +8,7 @@ import shared.util.config.ConfigType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class AdminDataHandler {
     private final MySQLHandler databaseHandler;
@@ -61,9 +59,36 @@ public class AdminDataHandler {
         return null;
     }
 
-    public boolean updateAnswers(String user, String message, String date, List<String> answers) {
+    public List<String> getMediaAnswers(String username, String time) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "adminMedia", "adminmessages") + " user = " + getStringFormat(username) +
+                " AND date = " + getStringFormat(time);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String answers = resultSet.getString("adminMedia");
+                if (answers == null || answers.equals("[]")) return new ArrayList<>();
+                String answersList = answers.substring(1, answers.length() - 1);
+                return new ArrayList<>(Arrays.asList(answersList.split(", ")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updateTextAnswers(String user, String message, String date, List<String> answers) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
         query = String.format(query, "adminmessages", "answers = " + getStringFormat(answers.toString()) +
+                ", adminDate = " + getStringFormat(LocalDateTime.now().toString())) +
+                " user = " + getStringFormat(user) + " AND date = " + getStringFormat(date) + " AND message = " +
+                getStringFormat(message);
+        return this.databaseHandler.updateData(query);
+    }
+
+    public boolean updateMediaAnswers(String user, String message, String date, List<String> answers) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
+        query = String.format(query, "adminmessages", "adminMedia = " + getStringFormat(answers.toString()) +
                 ", adminDate = " + getStringFormat(LocalDateTime.now().toString())) +
                 " user = " + getStringFormat(user) + " AND date = " + getStringFormat(date) + " AND message = " +
                 getStringFormat(message);
@@ -82,11 +107,35 @@ public class AdminDataHandler {
                 String user = resultSet.getString("user");
                 String date = resultSet.getString("date");
                 String userMessage = resultSet.getString("message");
+                String media = resultSet.getString("userMedia");
+                String messageText;
+                if (userMessage != null) messageText = userMessage;
+                else if (media != null) messageText = "media";
+                else messageText = "-";
                 String firstname = resultSet.getString("firstName");
                 String lastname = resultSet.getString("lastName");
                 String name = firstname + " " + lastname;
-                Message message = new Message(name, user, userMessage, date, "adminMessage");
+                Message message = new Message(name, user, messageText, date, "adminMessage");
                 messages.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
+    public Map<String, String> getMessage(String username, String time) {
+        Map<String, String> messages = new HashMap<>();
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "message, userMedia", "adminmessages") + " user = " + getStringFormat(username) +
+                " AND date = " + getStringFormat(time);
+        ResultSet resultSet = this.databaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                String message = resultSet.getString("message");
+                String media = resultSet.getString("userMedia");
+                messages.put("message", message);
+                messages.put("media", media);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class AdminManager {
     private final ClientHandler client;
@@ -57,13 +58,24 @@ public class AdminManager {
         String username = String.valueOf(request.getData("username"));
         String userMessage = String.valueOf(request.getData("userMessage"));
         String time = String.valueOf(request.getData("messageTime"));
-        List<String> answers = this.dataHandler.getMessageAnswers(username, time);
+        boolean isMedia = (boolean) request.getData("isMedia");
+        String fileFormat = String.valueOf(request.getData("fileFormat"));
+        List<String> answers;
+        if (isMedia)
+            answers = this.dataHandler.getMessageAnswers(username, time);
+        else
+            answers = this.dataHandler.getMediaAnswers(username, time);
         if (answers == null) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
         }
+        if (isMedia) answer = saveAdminFile(answer, fileFormat);
         answers.add(answer);
-        boolean result = this.dataHandler.updateAnswers(username,userMessage, time, answers);
+        boolean result;
+        if (isMedia)
+            result = this.dataHandler.updateTextAnswers(username,userMessage, time, answers);
+        else
+            result = this.dataHandler.updateMediaAnswers(userMessage, userMessage, time, answers);
         if (result) {
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
@@ -97,14 +109,36 @@ public class AdminManager {
         String user = String.valueOf(request.getData("user"));
         String userMessage = String.valueOf(request.getData("message"));
         String time = String.valueOf(request.getData("time"));
+        Map<String, String> messages = this.dataHandler.getMessage(user, time);
+        String textMessage = messages.get("message");
+        String media = messages.get("media");
         List<String> answers = this.dataHandler.getMessageAnswers(user, time);
+        List<String> mediaAnswers = this.dataHandler.getMediaAnswers(user, time);
         Response response = new Response(ResponseStatus.OK);
         String name = this.dataHandler.getName(user);
         response.addData("name", name);
-        Message mainMessage = new Message(user, userMessage, false);
-        response.addData("message0", mainMessage);
-        for (int i = 1; i <= answers.size() ; i++) {
-            Message message = new Message("1", answers.get(i - 1), true);
+        MediaHandler handler = new MediaHandler();
+        int t = 0;
+        if (textMessage != null) {
+            Message message = new Message(user, userMessage, false, false);
+            response.addData("message" + t, message);
+            t++;
+        }
+        if (media != null) {
+            userMessage = handler.encode(userMessage);
+            Message message = new Message(user, userMessage, false, true);
+            response.addData("message" + t, message);
+            t++;
+        }
+        int m = t;
+        for (int i = t; i < answers.size() + t ; i++) {
+            Message message = new Message("1", answers.get(i - t), true, false);
+            response.addData("message" + i, message);
+            m++;
+        }
+        for (int i = m; i < answers.size() + m ; i++) {
+            String answer = handler.encode(mediaAnswers.get(i - t));
+            Message message = new Message("1", answer, true, true);
             response.addData("message" + i, message);
         }
         return response;

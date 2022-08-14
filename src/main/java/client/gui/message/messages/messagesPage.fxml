@@ -79,7 +79,7 @@
             </VBox>
          </content>
       </ScrollPane>
-      <TextField fx:id="messageField" layoutX="670.0" layoutY="755.0" onKeyPressed="#sendMessage" prefHeight="31.0" prefWidth="407.0" promptText="Message" style="-fx-background-radius: 20;" />
+      <TextField fx:id="messageField" layoutX="670.0" layoutY="755.0" onKeyPressed="#sendMessage" prefHeight="31.0" prefWidth="407.0" promptText="Message" style="-fx-background-radius: 20;" visible="false" />
       <ScrollPane layoutX="613.0" layoutY="101.0" prefHeight="628.0" prefWidth="575.0" style="-fx-background-color: #ffffff;">
          <content>
             <VBox fx:id="messagePane" prefHeight="623.0" prefWidth="553.0" spacing="15.0">
@@ -92,7 +92,7 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button fx:id="mediaButton" layoutX="1087.0" layoutY="755.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="31.0" prefWidth="23.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;">
+      <Button fx:id="mediaButton" layoutX="1087.0" layoutY="755.0" mnemonicParsing="false" onAction="#chooseMedia" prefHeight="31.0" prefWidth="23.0" style="-fx-background-radius: 30; -fx-background-color: #ffffff;" visible="false">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                <image>

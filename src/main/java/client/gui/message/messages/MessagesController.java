@@ -198,6 +198,8 @@ public class MessagesController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File newFile = new File(path);
+        newFile.deleteOnExit();
     }
 
     private void showData(Map<String, Object> data) {
