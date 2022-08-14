@@ -33,14 +33,14 @@
             </ImageView>
          </graphic>
       </Button>
-      <TableView fx:id="table" layoutX="197.0" layoutY="155.0" onMouseClicked="#selectStudent" prefHeight="262.0" prefWidth="808.0">
+      <TableView fx:id="table" layoutX="173.0" layoutY="156.0" onMouseClicked="#selectStudent" prefHeight="262.0" prefWidth="856.0" AnchorPane.leftAnchor="172.0" AnchorPane.rightAnchor="172.0">
         <columns>
             <TableColumn fx:id="idColumn" prefWidth="75.0" text="Number" />
           <TableColumn fx:id="nameColumn" prefWidth="189.0" text="Name" />
           <TableColumn fx:id="codeColumn" prefWidth="201.0" text="Student code" />
             <TableColumn fx:id="timeColumn" prefWidth="136.0" text="Upload time" />
             <TableColumn fx:id="scoreColumn" prefWidth="93.0" text="Score" />
-            <TableColumn fx:id="answerColumn" prefWidth="110.0" text="Answer" />
+            <TableColumn fx:id="answerColumn" prefWidth="161.0" text="Answer" />
         </columns>
          <effect>
             <InnerShadow choke="0.3" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
