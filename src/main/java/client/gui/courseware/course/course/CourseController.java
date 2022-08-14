@@ -184,7 +184,7 @@ public class CourseController implements Initializable {
         addEduMaterialButton.setDisable(true);
         addEduMaterialButton.setVisible(false);
         addExerciseButton.setDisable(true);
-        addExerciseButton.setVisible(true);
+        addExerciseButton.setVisible(false);
     }
 
     private void makeToggleGroup() {
@@ -258,8 +258,8 @@ public class CourseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         isAssistant = false;
         stop = false;
-        if (EDU.userType == UserType.PROFESSOR) makeToggleGroup();
-        else hide();
+        makeToggleGroup();
+        if (EDU.userType != UserType.PROFESSOR) hide();
         Request request = ServerController.request;
         this.courseCode = (String) request.getData("courseCode");
         request.addData("time", getSelectedTime());

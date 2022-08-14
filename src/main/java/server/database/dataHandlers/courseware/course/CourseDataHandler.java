@@ -269,7 +269,7 @@ public class CourseDataHandler {
         }
         if (!exerciseList.contains(exerciseCode)) exerciseList.add(exerciseCode);
         query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "course", " exercise = " + getStringFormat(exerciseList.toString()))
+        query = String.format(query, "course", " exercises = " + getStringFormat(exerciseList.toString()))
                 + " courseCode = " + getStringFormat(courseCode);
         return this.databaseHandler.updateData(query);
     }

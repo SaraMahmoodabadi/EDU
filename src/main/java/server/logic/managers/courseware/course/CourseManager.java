@@ -75,6 +75,7 @@ public class CourseManager {
         ArrayList<String> times = new ArrayList<>();
         for (Exercise exercise : exercises) {
             String time;
+            if (exercise.getOpeningTime() == null || exercise.getClosingTime() == null) continue;
             if (timeType.equals("openingTime")) {
                 time = exercise.getOpeningTime().substring(0, 10) + "T" +
                         exercise.getOpeningTime().substring(11, 16) + ":00.000";
@@ -90,6 +91,7 @@ public class CourseManager {
         for (String time : sortedTimes) {
             for (Exercise exercise : exercises) {
                 String exerciseTime;
+                if (exercise.getOpeningTime() == null || exercise.getClosingTime() == null) continue;
                 if (timeType.equals("openingTime")) {
                     exerciseTime = exercise.getOpeningTime().substring(0, 10) + "T" +
                             exercise.getOpeningTime().substring(11, 16) + ":00.000";

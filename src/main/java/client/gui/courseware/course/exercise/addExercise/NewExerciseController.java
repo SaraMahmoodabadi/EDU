@@ -150,7 +150,7 @@ public class NewExerciseController implements Initializable{
         this.courseCode = (String) request.getData("courseCode");
         this.nameField.setText((String) request.getData("name"));
         this.nameField.setEditable(false);
-        this.exerciseCode = courseCode + "-" + this.nameField;
+        this.exerciseCode = courseCode + "-" + this.nameField.getText();
         makeBoxes();
         makeToggle();
     }

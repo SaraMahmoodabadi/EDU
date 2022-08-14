@@ -271,8 +271,9 @@ public class EduMaterialController implements Initializable {
             this.itemType = itemType;
             if (itemType == ItemType.TEXT) makeTextPane(item);
             else makeMediaPane(item);
-            addEditButton();
-            if (!isAssistant) addDeleteButton();
+            if (isAssistant || EDU.userType == UserType.PROFESSOR)
+                addEditButton();
+            if (EDU.userType == UserType.PROFESSOR) addDeleteButton();
         }
 
         private void makeTextPane(String data) {

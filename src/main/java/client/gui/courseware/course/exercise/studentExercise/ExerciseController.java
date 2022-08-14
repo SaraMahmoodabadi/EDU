@@ -3,6 +3,7 @@ package client.gui.courseware.course.exercise.studentExercise;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -59,6 +60,7 @@ public class ExerciseController implements Initializable {
     private String courseCode;
     private String exerciseCode;
     private String exerciseFile;
+    private boolean stop;
 
     @FXML
     public void downloadExercise(ActionEvent event) {
@@ -123,6 +125,7 @@ public class ExerciseController implements Initializable {
         Request request = new Request(RequestType.SHOW_COURSE);
         request.addData("courseCode", this.courseCode);
         ServerController.request = request;
+        stop = true;
         EDU.sceneSwitcher.switchScene(new ActionEvent(), "course");
     }
 
@@ -157,8 +160,29 @@ public class ExerciseController implements Initializable {
         }
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(5000);
+                    Platform.runLater(() -> {
+                        Request request = new Request(RequestType.SHOW_EXERCISE_STUDENT);
+                        request.addData("courseCode", this.courseCode);
+                        request.addData("exerciseCode", this.exerciseCode);
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (response.getStatus() == ResponseStatus.OK) {
+                            showData(response.getData());
+                        }
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         Request request = ServerController.request;
         this.courseCode = (String) request.getData("courseCode");
         this.exerciseCode = (String) request.getData("exerciseCode");
@@ -167,5 +191,6 @@ public class ExerciseController implements Initializable {
             showData(response.getData());
         }
         else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+        updateData();
     }
 }

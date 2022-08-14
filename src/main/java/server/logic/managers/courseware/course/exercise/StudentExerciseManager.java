@@ -34,8 +34,7 @@ public class StudentExerciseManager {
             return sendErrorResponse(error);
         }
         MediaHandler handler = new MediaHandler();
-        if (exercise.getItemType() == ItemType.MEDIA_FILE)
-            exercise.setFileAddress(handler.encode(exercise.getFileAddress()));
+        exercise.setFileAddress(handler.encode(exercise.getFileAddress()));
         boolean hasSubmitted = this.dataHandler.hasSubmitted(exerciseCode, this.client.getUserName());
         String submissionStatus;
         String score;
