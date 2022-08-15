@@ -2,8 +2,7 @@ package client.network.offlineClient;
 
 import client.Client;
 import client.network.ServerController;
-import client.network.offlineClient.dataHandler.LoginDtaHandler;
-import client.network.offlineClient.dataHandler.MainPageDataHandler;
+import client.network.offlineClient.dataHandler.*;
 import shared.request.Request;
 import shared.response.Response;
 import shared.response.ResponseStatus;
@@ -21,17 +20,21 @@ public class OfflineClientHandler {
                 MainPageDataHandler mainPageDataHandler = new MainPageDataHandler();
                 return mainPageDataHandler.getMainPageData();
             case SHOW_WEEKLY_SCHEDULE_PAGE:
-                break;
             case SHOW_EXAM_LIST_PAGE:
-                break;
+                LessonDataHandler lessonDataHandler = new LessonDataHandler();
+                return lessonDataHandler.getLessons();
             case SHOW_EDU_STATUS_PAGE:
-                break;
+                EduStatusDataHandler eduStatusDataHandler = new EduStatusDataHandler();
+                return eduStatusDataHandler.getEduStatus();
             case SHOW_PROFILE_PAGE:
-                break;
+                ProfilePageDataHandler profilePageDataHandler = new ProfilePageDataHandler();
+                return profilePageDataHandler.getProfile();
             case SHOW_ALL_CHATS:
-                break;
+                ChatDataHandler chatDataHandler = new ChatDataHandler();
+                return chatDataHandler.getChats();
             case SHOW_CHAT:
-                break;
+                chatDataHandler = new ChatDataHandler();
+                return chatDataHandler.getChat(request);
         }
         String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "offlineError");
         Response response = new Response(ResponseStatus.ERROR);

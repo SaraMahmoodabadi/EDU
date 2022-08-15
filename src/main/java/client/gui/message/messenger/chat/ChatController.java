@@ -151,7 +151,9 @@ public class ChatController implements Initializable {
 
     private void showChat(Map<String, Object> data) {
         Object image = data.get("profileImage");
-        this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        if (image != null) {
+            this.profilePicture.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        }
         String name = (String) data.get("name");
         nameLabel.setText(name);
         int t = 0;
@@ -359,6 +361,7 @@ public class ChatController implements Initializable {
                 chatPane.getChildren().clear();
                 Request request = new Request(RequestType.SHOW_CHAT);
                 request.addData("user", user);
+                request.addData("name", name);
                 Response response = EDU.serverController.sendRequest(request);
                 if (response.getStatus() == ResponseStatus.OK) {
                     showChat(response.getData());

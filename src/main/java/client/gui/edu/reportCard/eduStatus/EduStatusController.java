@@ -162,6 +162,8 @@ public class EduStatusController implements Initializable {
                                         scores.add((Score) V);
                                     }
                                 });
+                                numberPassedLabel.setText(String.valueOf(response.getData("numberPassed")));
+                                averageLabel.setText(String.valueOf(response.getData("average")));
                                 table.getItems().clear();
                                 table.getItems().addAll(scores);
                             }
