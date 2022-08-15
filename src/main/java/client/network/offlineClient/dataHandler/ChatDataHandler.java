@@ -92,7 +92,7 @@ public class ChatDataHandler {
 
     private List<Message> getChatMessages(String user) {
         List<Message> messages = new ArrayList<>();
-        String path = this.chatAddress + "/user" + EDU.username + ".json";
+        String path = this.messageAddress + "/user" + EDU.username + ".json";
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
