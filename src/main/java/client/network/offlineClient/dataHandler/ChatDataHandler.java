@@ -96,11 +96,10 @@ public class ChatDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            JSONArray jsonArray = (JSONArray) jo.get("messages");
+            JSONArray jsonArray = (JSONArray) jo.get(user + "Messages");
             for (Object o : jsonArray) {
                 Message message = (Message) o;
-                if (message.getSender().equals(user) || message.getReceiver().equals(user))
-                    messages.add(message);
+                messages.add(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
