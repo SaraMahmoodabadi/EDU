@@ -33,7 +33,27 @@ public class RequestHandler {
         this.client = client;
         this.request = request;
         if (this.request == null) return;
-        handleConnectionRequest();
+        handleOfflineRequest();
+    }
+
+    public void handleOfflineRequest() {
+        switch (request.getRequestType()) {
+            case GET_USER_INFO:
+                server.logic.managers.offlineClient.UserManager userManager =
+                        new server.logic.managers.offlineClient.UserManager(this.client);
+                this.client.sendResponse(userManager.getUser());
+                break;
+            case GET_USER_LESSONS:
+                break;
+            case GET_USER_SCORES:
+                break;
+            case GET_USER_CHATS:
+                break;
+            case GET_USER_LAST_MESSAGES:
+                break;
+            default:
+                handleConnectionRequest();
+        }
     }
 
     private void handleConnectionRequest() {
