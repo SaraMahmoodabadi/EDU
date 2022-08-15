@@ -10,8 +10,7 @@ public class Client {
         this.port = port;
     }
 
-    //TODO : START GUI
-    protected void start() {
+    public void start() {
         serverController = new ServerController(this.port);
         serverController.connectToServer();
     }

@@ -3,6 +3,8 @@ package client.gui.edu.profile;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,7 +29,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ProfileController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -100,6 +105,7 @@ public class ProfileController implements Initializable {
     protected Label enteringYearLabel;
     @FXML
     protected Label statusLabel;
+    private boolean stop;
 
 
     public void registerEmail(ActionEvent actionEvent) {
@@ -115,10 +121,21 @@ public class ProfileController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         if (EDU.userType == UserType.MR_MOHSENI)
             EDU.sceneSwitcher.switchScene(actionEvent, "mohseni");
         else
             EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void makeFields() {
@@ -186,8 +203,24 @@ public class ProfileController implements Initializable {
         }
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    if (!EDU.isOnline) break;
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeFields();
         if (EDU.userType == UserType.STUDENT) getStudentData();
         else if (EDU.userType == UserType.PROFESSOR) getProfessorData();
@@ -206,5 +239,6 @@ public class ProfileController implements Initializable {
                 phoneNumberField.setEditable(false);
             }
         }
+        updateData();
     }
 }

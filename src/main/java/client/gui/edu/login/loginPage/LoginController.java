@@ -1,10 +1,13 @@
 package client.gui.edu.login.loginPage;
 
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
@@ -32,6 +35,10 @@ public class LoginController implements Initializable {
     //color 1 : #b151b8
     //color 2 : #ffd100
 
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Rectangle leftRectangle;
     @FXML
@@ -62,6 +69,7 @@ public class LoginController implements Initializable {
     protected Circle person;
     Response response;
     String usernameValue;
+    private boolean stop;
 
 
     public void recaptcha(ActionEvent actionEvent) {
@@ -72,6 +80,7 @@ public class LoginController implements Initializable {
     }
 
     public void login(ActionEvent actionEvent) {
+        stop = true;
         if (isNull()) return;
         usernameValue = username.getText();
         Request request = new Request(RequestType.LOGIN);
@@ -81,6 +90,16 @@ public class LoginController implements Initializable {
         request.addData("captchaValue", response.getData("captchaValue"));
         Response response = EDU.serverController.sendRequest(request);
         changeScene(actionEvent, response);
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void changeScene(ActionEvent actionEvent, Response response) {
@@ -130,7 +149,7 @@ public class LoginController implements Initializable {
     private boolean isNull() {
         if (this.username.getText() == null ||
                 this.password.getText() == null ||
-                this.captchaText.getText() == null) {
+                (EDU.isOnline && this.captchaText.getText() == null)) {
             String errorMessage = Config.getConfig(ConfigType.GUI_TEXT).
                     getProperty(String.class, "nullFieldsError");
             AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
@@ -139,10 +158,30 @@ public class LoginController implements Initializable {
         return false;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    if (!EDU.isOnline) break;
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
-        Object image = response.getData("captchaImage");
-        this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        stop = false;
+        if (EDU.isOnline) {
+            response = EDU.serverController.sendRequest(new Request(RequestType.START_CONNECTION));
+            Object image = response.getData("captchaImage");
+            this.captchaImage.setImage(new ImageHandler().getImage(String.valueOf(image)));
+        }
+        else showOfflineMood();
+        updateData();
     }
 }

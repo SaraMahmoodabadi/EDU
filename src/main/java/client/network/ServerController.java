@@ -1,9 +1,9 @@
 package client.network;
 
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import org.codehaus.jackson.map.ObjectMapper;
 import shared.request.Request;
-import shared.request.RequestType;
 import shared.response.Response;
 import shared.util.Jackson;
 
@@ -21,10 +21,12 @@ public class ServerController {
     private String token;
     public static EDU edu;
     public static Request request;
+    public OfflineClientHandler offlineClientHandler;
 
     public ServerController(int port) {
         this.port = port;
         this.objectMapper = Jackson.getNetworkObjectMapper();
+        this.offlineClientHandler = new OfflineClientHandler();
     }
 
     //TODO : set socket address
@@ -36,30 +38,37 @@ public class ServerController {
             getToken();
             edu = new EDU(this);
         } catch (IOException e) {
-            e.printStackTrace();
+            edu = new EDU(this);
+            EDU.isOnline = false;
         }
     }
 
     public Response sendRequest(Request request) {
-        try {
-            request.addData("token", this.token);
-            String requestString = this.objectMapper.writeValueAsString(request);
-            this.printStream.println(requestString);
-            this.printStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (EDU.isOnline) {
+            try {
+                request.addData("token", this.token);
+                String requestString = this.objectMapper.writeValueAsString(request);
+                this.printStream.println(requestString);
+                this.printStream.flush();
+            } catch (IOException e) {
+                EDU.isOnline = false;
+            }
+            return getResponse();
         }
-        return getResponse();
+        else return offlineClientHandler.handleRequest(request);
     }
 
    public Response getResponse() {
-       Response response = new Response();
-       try {
-           response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-       return response;
+        if (EDU.isOnline) {
+            Response response = new Response();
+            try {
+                response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
+            } catch (IOException e) {
+                EDU.isOnline = false;
+            }
+            return response;
+        }
+        else return offlineClientHandler.handleRequest(request);
    }
 
    private void getToken() {

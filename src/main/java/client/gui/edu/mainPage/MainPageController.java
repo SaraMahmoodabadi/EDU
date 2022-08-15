@@ -2,6 +2,8 @@ package client.gui.edu.mainPage;
 
 import client.gui.EDU;
 import client.gui.AlertMonitor;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import shared.model.university.lesson.score.Score;
 import shared.model.user.UserType;
 import shared.model.user.professor.Type;
 import shared.request.Request;
@@ -23,7 +26,10 @@ import java.net.URL;
 import java.util.*;
 
 public class MainPageController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Text name;
     @FXML
@@ -102,33 +108,40 @@ public class MainPageController implements Initializable {
     protected ListView<String> middleList;
     @FXML
     protected ListView<String> leftList;
+    private boolean stop;
 
     public void showLessonsList(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "lessonListPage");
     }
 
     public void showProfessorsList(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "professorListPage");
     }
 
     public void showNewUserPage(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "newUserPage");
     }
 
     public void showWeeklySchedule(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "weeklyPlanPage");
     }
 
     public void showExamList(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "examListPage");
     }
 
     public void showRequests(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         if (EDU.userType == UserType.STUDENT) {
             EDU.sceneSwitcher.switchScenes(stage, "studentRequestPage");
@@ -139,6 +152,7 @@ public class MainPageController implements Initializable {
     }
 
     public void showUnitSelectionPage(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         if (EDU.userType == UserType.STUDENT) {
             EDU.sceneSwitcher.switchScenes(stage, "unitSelectionStudent");
@@ -151,6 +165,7 @@ public class MainPageController implements Initializable {
     }
 
     public void showTemporaryScores(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         if (EDU.userType == UserType.STUDENT) {
             EDU.sceneSwitcher.switchScenes(stage, "studentTemporaryScoresPage");
@@ -166,39 +181,56 @@ public class MainPageController implements Initializable {
     }
 
     public void showEducationalStatus(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "eduStatusPage");
     }
 
     public void showCourseware(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "courseware");
     }
 
     public void showMessages(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "messages");
     }
 
     public void showMessenger(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "chat");
     }
 
     public void showAdminMessages(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "adminMessageUser");
     }
 
     public void showProfile(ActionEvent actionEvent) {
+        stop = true;
         Stage stage = (Stage) (logOut.getScene().getWindow());
         EDU.sceneSwitcher.switchScenes(stage, "profilePage");
     }
 
     public void logOut(ActionEvent actionEvent) {
+        stop = true;
         EDU.professorType = null;
         EDU.userType = null;
         EDU.sceneSwitcher.switchScene(actionEvent, "loginPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void hideFields() {
@@ -267,9 +299,27 @@ public class MainPageController implements Initializable {
                 rightListValues.get(2), rightListValues.get(3));
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    if (!EDU.isOnline) break;
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
+        if (!EDU.isOnline) showOfflineMood();
         hideFields();
         getData();
+        updateData();
     }
 }

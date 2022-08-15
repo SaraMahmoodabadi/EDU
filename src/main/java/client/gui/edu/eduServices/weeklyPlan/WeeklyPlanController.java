@@ -2,6 +2,7 @@ package client.gui.edu.eduServices.weeklyPlan;
 
 import client.gui.EDU;
 
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +34,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class WeeklyPlanController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -74,6 +78,16 @@ public class WeeklyPlanController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void getPlan() {
@@ -156,15 +170,20 @@ public class WeeklyPlanController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
+                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            response.getData().forEach((K, V) -> {
-                                if (K.startsWith("lesson")) {
-                                    putLesson((Lesson) V);
-                                }
-                            });
+                        if (!EDU.isOnline)
+                            showOfflineMood();
+                        else {
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                response.getData().forEach((K, V) -> {
+                                    if (K.startsWith("lesson")) {
+                                        putLesson((Lesson) V);
+                                    }
+                                });
+                            }
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -177,6 +196,7 @@ public class WeeklyPlanController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
         getPlan();
+        if (!EDU.isOnline) showOfflineMood();
         updateData();
     }
 }

@@ -1,11 +1,13 @@
 package client.gui.edu.eduServices.examList;
 
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,7 +26,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ExamListController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -47,6 +52,16 @@ public class ExamListController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void makeTable() {
@@ -73,16 +88,21 @@ public class ExamListController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
+                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            List<Lesson> lessons = new ArrayList<>();
-                            for (int i = 0; i < response.getData().size(); i++) {
-                                lessons.add((Lesson) response.getData("lesson" + i));
+                        if (!EDU.isOnline)
+                            showOfflineMood();
+                        else {
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                List<Lesson> lessons = new ArrayList<>();
+                                for (int i = 0; i < response.getData().size(); i++) {
+                                    lessons.add((Lesson) response.getData("lesson" + i));
+                                }
+                                table.getItems().clear();
+                                table.getItems().addAll(lessons);
                             }
-                            table.getItems().clear();
-                            table.getItems().addAll(lessons);
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -95,6 +115,7 @@ public class ExamListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
         makeTable();
+        if (!EDU.isOnline) showOfflineMood();
         List<Lesson> lessons = getData();
         if (lessons != null) table.getItems().addAll(lessons);
         updateData();

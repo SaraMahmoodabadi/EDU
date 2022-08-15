@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.eduStatus;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +26,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class EduStatusController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -92,7 +96,18 @@ public class EduStatusController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void hide() {
@@ -132,19 +147,24 @@ public class EduStatusController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
+                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     if (request == null) continue;
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            List<Score> scores = new ArrayList<>();
-                            response.getData().forEach((K, V) -> {
-                                if (K.startsWith("score")) {
-                                    scores.add((Score) V);
-                                }
-                            });
-                            table.getItems().clear();
-                            table.getItems().addAll(scores);
+                        if (!EDU.isOnline)
+                            showOfflineMood();
+                        else {
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                List<Score> scores = new ArrayList<>();
+                                response.getData().forEach((K, V) -> {
+                                    if (K.startsWith("score")) {
+                                        scores.add((Score) V);
+                                    }
+                                });
+                                table.getItems().clear();
+                                table.getItems().addAll(scores);
+                            }
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -157,6 +177,7 @@ public class EduStatusController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
         makeTable();
+        if (!EDU.isOnline) showOfflineMood();
         if (EDU.userType == UserType.STUDENT) {
             hide();
             getData();

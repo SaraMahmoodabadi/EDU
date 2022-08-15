@@ -3,6 +3,7 @@ package client.gui.message.messenger.chat;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
@@ -44,7 +45,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ChatController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected TextField textMessage;
     @FXML
@@ -116,6 +120,17 @@ public class ChatController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void showAllChats(Map<String, Object> data) {
@@ -256,13 +271,18 @@ public class ChatController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
+                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Request request = new Request(RequestType.SHOW_ALL_CHATS);
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            allChatsPane.getChildren().clear();
-                            showAllChats(response.getData());
+                        if (!EDU.isOnline)
+                            showOfflineMood();
+                        else {
+                            Request request = new Request(RequestType.SHOW_ALL_CHATS);
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                allChatsPane.getChildren().clear();
+                                showAllChats(response.getData());
+                            }
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -275,14 +295,19 @@ public class ChatController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
+                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
-                        Request request = new Request(RequestType.SHOW_CHAT);
-                        request.addData("user", user);
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            chatPane.getChildren().clear();
-                            showChat(response.getData());
+                        if (!EDU.isOnline)
+                            showOfflineMood();
+                        else {
+                            Request request = new Request(RequestType.SHOW_CHAT);
+                            request.addData("user", user);
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                chatPane.getChildren().clear();
+                                showChat(response.getData());
+                            }
                         }
                     });
                 } catch (InterruptedException ignored) {}
@@ -294,6 +319,7 @@ public class ChatController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
+        if (!EDU.isOnline) showOfflineMood();
         Request request = new Request(RequestType.SHOW_ALL_CHATS);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) showAllChats(response.getData());

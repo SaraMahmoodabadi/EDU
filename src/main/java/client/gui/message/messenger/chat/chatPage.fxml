@@ -97,5 +97,15 @@
             </ImageView>
          </graphic>
       </Button>
+      <Label fx:id="offlineLabel" layoutX="63.0" layoutY="10.0" text="You are offline" visible="false" />
+      <Button fx:id="offlineButton" disable="true" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: #cc81d3;" visible="false">
+         <graphic>
+            <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resource/images/refreshIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>
