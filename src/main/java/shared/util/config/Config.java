@@ -44,6 +44,8 @@ public class Config extends Properties {
                 return new Config(config.getProperty(String.class, "network"));
             case ADMIN_MESSAGES:
                 return new Config(config.getProperty(String.class, "adminMessages"));
+            case CLIENT_DATA:
+                return new Config(config.getProperty(String.class, "clientData"));
             default:
                 return getMainConfig();
         }

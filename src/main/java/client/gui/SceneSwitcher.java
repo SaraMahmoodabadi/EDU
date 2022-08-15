@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import shared.model.user.UserType;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
@@ -51,8 +52,8 @@ public class SceneSwitcher {
         if (EDU.isOnline) return true;
         else {
             if (name.equals("loginPage") || name.equals("mainPage") || name.equals("weeklyPlanPage") ||
-                    name.equals("examListPage") || name.equals("eduStatusPage") || name.equals("profilePage") ||
-                    name.equals("chat")) return true;
+                    name.equals("examListPage") || name.equals("profilePage") || name.equals("chat")) return true;
+            if (name.equals("eduStatusPage") && EDU.userType == UserType.STUDENT) return true;
         }
         String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "offlineError");
         AlertMonitor.showAlert(Alert.AlertType.ERROR, error);

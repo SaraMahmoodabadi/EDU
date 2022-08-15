@@ -8,5 +8,6 @@ public enum ConfigType {
     SERVER_MESSAGES,
     SERVER_PATH,
     NETWORK,
-    ADMIN_MESSAGES
+    ADMIN_MESSAGES,
+    CLIENT_DATA,
 }
