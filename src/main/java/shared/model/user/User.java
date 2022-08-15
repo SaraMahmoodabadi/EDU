@@ -87,6 +87,23 @@ public class User {
         this.username = username;
     }
 
+    public User(String firstname, String lastname, long nationalCode, String college,
+                String username, String password, UserType userType, String email,
+                String phoneNumber, String thisLogin, String lastLogin) {
+        this.firstName = firstname;
+        this.lastName = lastname;
+        this.fullName = firstname + " " + lastName;
+        this.nationalCode = nationalCode;
+        this.collegeCode = college;
+        this.username = username;
+        this.password = password;
+        this.userType = userType;
+        this.emailAddress = email;
+        this.phoneNumber = Long.parseLong(phoneNumber);
+        this.thisLogin = thisLogin;
+        this.lastLogin = lastLogin;
+    }
+
     public String getFirstName() {
         return firstName;
     }

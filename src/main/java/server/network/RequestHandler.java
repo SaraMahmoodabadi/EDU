@@ -21,6 +21,9 @@ import server.logic.managers.messages.messages.MessagesManager;
 import server.logic.managers.messages.messenger.ChatManager;
 import server.logic.managers.messages.messenger.NewChatManager;
 import server.logic.managers.messages.mohseni.MohseniManager;
+import server.logic.managers.offlineClient.LessonManager;
+import server.logic.managers.offlineClient.MessageManager;
+import server.logic.managers.offlineClient.ScoreManager;
 import shared.model.user.UserType;
 import shared.request.Request;
 import shared.response.Response;
@@ -44,12 +47,20 @@ public class RequestHandler {
                 this.client.sendResponse(userManager.getUser());
                 break;
             case GET_USER_LESSONS:
+                LessonManager lessonManager = new LessonManager(this.client);
+                this.client.sendResponse(lessonManager.getLessons());
                 break;
             case GET_USER_SCORES:
+                ScoreManager scoreManager = new ScoreManager(this.client);
+                this.client.sendResponse(scoreManager.getScores());
                 break;
             case GET_USER_CHATS:
+                ChatManager manager = new ChatManager(this.client);
+                this.client.sendResponse(manager.getAllChats());
                 break;
             case GET_USER_LAST_MESSAGES:
+                MessageManager messageManager = new MessageManager(this.client);
+                this.client.sendResponse(messageManager.getLastMessages());
                 break;
             default:
                 handleConnectionRequest();

@@ -81,7 +81,7 @@ public class ChatDataHandler {
                 String messageText = resultSet.getString("messageText");
                 boolean isMedia = Boolean.parseBoolean(resultSet.getString("isMedia"));
                 boolean isSender = sender.equals(username);
-                Message message = new Message(otherUser, messageText,date, isSender, isMedia);
+                Message message = new Message(otherUser, messageText, date, isSender, isMedia);
                 messages.add(message);
             }
         } catch (SQLException e) {

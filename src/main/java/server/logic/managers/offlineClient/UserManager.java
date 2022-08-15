@@ -7,6 +7,7 @@ import shared.model.user.professor.Professor;
 import shared.model.user.student.Student;
 import shared.response.Response;
 import shared.response.ResponseStatus;
+import shared.util.media.MediaHandler;
 
 public class UserManager {
     private final ClientHandler client;
@@ -28,6 +29,10 @@ public class UserManager {
             response.addData("professor", professor);
         }
         String profile = this.dataHandler.getProfileImage(this.client.getUserName());
-        return null;
+        int n = profile.split("\\.").length;
+        String fileFormat = profile.split("\\.")[n-1];
+        response.addData("profile", new MediaHandler().encode(profile));
+        response.addData("fileFormat", fileFormat);
+        return response;
     }
 }

@@ -85,6 +85,16 @@ public class Lesson {
         this.plan = "days: " + days + ", time: " + classTime;
     }
 
+    public Lesson(String lessonCode, String name, String classTime,
+                  List<Day> lessonDays, String plan, String examTime) {
+        this.lessonCode = lessonCode;
+        this.name = name;
+        this.days = lessonDays;
+        this.classTime = classTime;
+        this.plan = plan;
+        this.examTime = examTime;
+    }
+
     public String getName() {
         return name;
     }

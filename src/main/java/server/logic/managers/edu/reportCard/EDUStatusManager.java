@@ -54,7 +54,7 @@ public class EDUStatusManager {
         return getAllScores(studentCode);
     }
 
-    private Response getAllScores(String studentCode) {
+    public Response getAllScores(String studentCode) {
         Map<Score, Integer> scores = this.dataHandler.getFinalScores(studentCode);
         List<String> lessons = getMainLessonCodes(this.dataHandler.getLessons(studentCode));
         List<String> finalScores = new ArrayList<>();
