@@ -15,6 +15,7 @@ public class Message {
     private boolean isMedia;
     private String user;
     private boolean isTransmitter;
+    private String fileFormat;
 
     public Message() {}
 
@@ -143,5 +144,13 @@ public class Message {
 
     public void setTransmitter(boolean sender) {
         isTransmitter = sender;
+    }
+
+    public String getFileFormat() {
+        return fileFormat;
+    }
+
+    public void setFileFormat(String fileFormat) {
+        this.fileFormat = fileFormat;
     }
 }
