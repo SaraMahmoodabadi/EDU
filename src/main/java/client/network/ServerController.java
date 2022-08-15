@@ -36,6 +36,7 @@ public class ServerController {
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
             getToken();
+            OfflineClientHandler.requestGetData();
             edu = new EDU(this);
         } catch (IOException e) {
             edu = new EDU(this);
@@ -43,7 +44,7 @@ public class ServerController {
         }
     }
 
-    public Response sendRequest(Request request) {
+    public synchronized Response sendRequest(Request request) {
         if (EDU.isOnline) {
             try {
                 request.addData("token", this.token);
