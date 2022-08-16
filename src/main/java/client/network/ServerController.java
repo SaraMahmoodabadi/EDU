@@ -1,7 +1,9 @@
 package client.network;
 
+import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.offlineClient.OfflineClientHandler;
+import javafx.scene.control.Alert;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,6 +12,7 @@ import shared.model.message.chatMessages.Message;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.Jackson;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
@@ -76,12 +79,23 @@ public class ServerController {
             Response response = new Response();
             try {
                 response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
+                checkDisconnection(response);
             } catch (NoSuchElementException | IOException e) {
                 EDU.isOnline = false;
             }
             return response;
         }
         else return offlineClientHandler.handleRequest(request);
+   }
+
+   private void checkDisconnection(Response response) {
+       String message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+               (String.class, "disconnectionMessage");
+       if (response.getStatus() == ResponseStatus.ERROR &&
+               response.getErrorMessage().equals(message)) {
+           EDU.isOnline = false;
+           AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
+       }
    }
 
    private void getToken() {

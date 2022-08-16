@@ -57,6 +57,10 @@ public class Server {
         this.clients.remove(clientHandler);
     }
 
+    public void looseDatabaseConnection() {
+        if (clients.size() == 0)
+            stop();
+    }
 
     public void stop() {
         try {

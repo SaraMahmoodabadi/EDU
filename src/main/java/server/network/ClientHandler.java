@@ -121,6 +121,11 @@ public class ClientHandler {
         Response response = new Response(ResponseStatus.ERROR);
         response.setErrorMessage(message);
         sendResponse(response);
+        this.server.disconnect(this);
+        try {
+            this.socket.close();
+        } catch (IOException ignored) {}
+        this.server.looseDatabaseConnection();
     }
 
 }
