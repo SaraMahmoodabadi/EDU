@@ -103,8 +103,12 @@ public class NewChatController implements Initializable {
             request.addData("user" + i, selectedUsers.get(i));
         }
         Response response = EDU.serverController.sendRequest(request);
-        if (response.getStatus() == ResponseStatus.OK)
+        if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+            this.file = null;
+            this.fileFormat = null;
+            this.messageArea.clear();
+        }
         else
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
     }
@@ -116,8 +120,10 @@ public class NewChatController implements Initializable {
         request.addData("user", getUserType());
         request.addData("userCode", userCodeField.getText());
         Response response = EDU.serverController.sendRequest(request);
-        if (response.getStatus() == ResponseStatus.OK)
+        if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+            userCodeField.clear();
+        }
         else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
     }
 

@@ -68,8 +68,13 @@ public class UserController {
                 message.setMessageText(messageArea.getText());
             }
             writeMessageInFile(message);
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, "offlineMessageRegistered");
         }
-    } //TODO : HANDLE OFFLINE MOOD
+        this.path = null;
+        this.file = null;
+        this.fileFormat = null;
+        this.messageArea.clear();
+    }
 
     @FXML
     public void chooseMedia(ActionEvent actionEvent) {

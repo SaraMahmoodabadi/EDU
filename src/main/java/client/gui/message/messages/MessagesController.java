@@ -97,7 +97,7 @@ public class MessagesController implements Initializable {
             Response response = EDU.serverController.sendRequest(request);
             if (response.getStatus() == ResponseStatus.OK) {
                 makeTextMessageInPage(messageField.getText(), true);
-                messageField.setText(null);
+                messageField.clear();
             }
             else AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }

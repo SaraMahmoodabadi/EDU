@@ -12,7 +12,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import shared.model.university.college.University;
-import shared.model.university.lesson.Lesson;
 import shared.model.user.student.Grade;
 import shared.model.user.student.Student;
 import shared.request.Request;
@@ -85,8 +84,12 @@ public class MohseniController implements Initializable {
         request.addData("year", yearBox.getValue());
         request.addData("college", collegeBox.getValue());
         Response response = EDU.serverController.sendRequest(request);
-        if (response.getStatus() == ResponseStatus.OK)
+        if (response.getStatus() == ResponseStatus.OK) {
             AlertMonitor.showAlert(Alert.AlertType.INFORMATION, response.getNotificationMessage());
+            this.file = null;
+            this.fileFormat = null;
+            this.messageArea.clear();
+        }
         else
             AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
     }
