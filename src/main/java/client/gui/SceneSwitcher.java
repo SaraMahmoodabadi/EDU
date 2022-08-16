@@ -52,7 +52,8 @@ public class SceneSwitcher {
         if (EDU.isOnline) return true;
         else {
             if (name.equals("loginPage") || name.equals("mainPage") || name.equals("weeklyPlanPage") ||
-                    name.equals("examListPage") || name.equals("profilePage") || name.equals("chat")) return true;
+                    name.equals("examListPage") || name.equals("profilePage") || name.equals("chat") ||
+                    name.equals("adminMessageUser")) return true;
             if (name.equals("eduStatusPage") && EDU.userType == UserType.STUDENT) return true;
         }
         String error = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "offlineError");
