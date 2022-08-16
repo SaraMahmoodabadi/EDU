@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -109,9 +110,8 @@ public class UserController {
             jsonArray.add(message);
             jo.put(EDU.username + "Messages", jsonArray);
             try {
-                FileWriter fileWriter = new FileWriter(file);
-                fileWriter.write(jo.toJSONString());
-                fileWriter.close();
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(file, jo);
             } catch (Exception ignored) {}
         } catch (Exception ignored) {}
     }
