@@ -7,6 +7,7 @@ import shared.model.user.UserType;
 import shared.model.user.professor.Professor;
 import shared.model.user.student.Student;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
@@ -25,6 +26,7 @@ public class UserDataStorage {
 
     public void storeData(Response response) {
         if (response.getData() == null) return;
+        if (response.getStatus() == ResponseStatus.ERROR) return;
         File file = makeFile();
         if (file == null) return;
         String fileFormat = (String) response.getData("fileFormat");

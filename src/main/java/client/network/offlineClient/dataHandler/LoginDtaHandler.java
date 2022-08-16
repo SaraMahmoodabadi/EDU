@@ -1,5 +1,6 @@
 package client.network.offlineClient.dataHandler;
 
+import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -61,9 +62,8 @@ public class LoginDtaHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonString = jo.toJSONString();
-            return mapper.readValue(jsonString, User.class);
+            Gson gson = new Gson();
+            return gson.fromJson(jo.get("user").toString(), User.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,7 +75,8 @@ public class LoginDtaHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Professor professor = (Professor) jo.get("user");
+            Gson gson = new Gson();
+            Professor professor = gson.fromJson(jo.get("user").toString(), Professor.class);
             return professor.getType();
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +89,8 @@ public class LoginDtaHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Student student = (Student) jo.get("user");
+            Gson gson = new Gson();
+            Student student = gson.fromJson(jo.get("user").toString(), Student.class);
             return student.getStatus();
         } catch (Exception e) {
             e.printStackTrace();

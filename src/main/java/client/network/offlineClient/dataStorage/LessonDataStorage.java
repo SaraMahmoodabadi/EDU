@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import shared.model.university.lesson.Lesson;
 import shared.response.Response;
+import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
@@ -23,6 +24,7 @@ public class LessonDataStorage {
 
     public void storeData(Response response) {
         if (response.getData() == null) return;
+        if (response.getStatus() == ResponseStatus.ERROR) return;
         File file = makeFile();
         if (file == null) return;
         JSONObject jsonObject = new JSONObject();

@@ -1,6 +1,7 @@
 package client.network.offlineClient.dataHandler;
 
 import client.gui.EDU;
+import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import shared.model.user.User;
@@ -85,7 +86,8 @@ public class MainPageDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Student student = (Student) jo.get("user");
+            Gson gson = new Gson();
+            Student student = gson.fromJson(jo.get("user").toString(), Student.class);
             List<String> tableList = new ArrayList<>();
             tableList.add(student.getStatus().toString());
             tableList.add(student.getSupervisorCode().split(" ")[0]);
@@ -104,7 +106,8 @@ public class MainPageDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            return (User) jo.get("user");
+            Gson gson = new Gson();
+            return gson.fromJson(jo.get("user").toString(), User.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

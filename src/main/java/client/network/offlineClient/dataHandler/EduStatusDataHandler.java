@@ -1,9 +1,11 @@
 package client.network.offlineClient.dataHandler;
 
 import client.gui.EDU;
+import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import shared.model.university.lesson.Lesson;
 import shared.model.university.lesson.score.Score;
 import shared.model.user.student.Student;
 import shared.response.Response;
@@ -40,7 +42,8 @@ public class EduStatusDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            return (String) jo.get("numberOfPassedUnits");
+            Gson gson = new Gson();
+            return gson.fromJson(jo.get("numberOfPassedUnits").toString(), String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,7 +55,8 @@ public class EduStatusDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Student student = (Student) jo.get("user");
+            Gson gson = new Gson();
+            Student student = gson.fromJson(jo.get("user").toString(), Student.class);
             return String.valueOf(student.getRate());
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,8 +71,9 @@ public class EduStatusDataHandler {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) jo.get("scores");
+            Gson gson = new Gson();
             for (Object o : jsonArray) {
-                Score score = (Score) o;
+                Score score = gson.fromJson(o.toString(), Score.class);
                 scores.add(score);
             }
         } catch (Exception e) {

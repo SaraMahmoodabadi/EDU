@@ -24,8 +24,12 @@ public class LessonDataHandler {
             String term = lesson.split("-")[0];
             int n = lesson.split("-").length;
             String group = lesson.split("-")[n - 1];
-            String lessonCode =  lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
-            lessons.add(getLesson(lessonCode));
+            String lessonCode = lesson.substring(term.length() + 1, lesson.length() - group.length() - 1);
+            Lesson studentLesson = getLesson(lessonCode);
+            if (studentLesson != null) {
+                studentLesson.setTerm(Integer.parseInt(term));
+                lessons.add(studentLesson);
+            }
         }
         return lessons;
     }

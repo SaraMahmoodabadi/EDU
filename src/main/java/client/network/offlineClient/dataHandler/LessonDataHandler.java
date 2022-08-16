@@ -1,10 +1,12 @@
 package client.network.offlineClient.dataHandler;
 
 import client.gui.EDU;
+import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import shared.model.university.lesson.Lesson;
+import shared.model.user.User;
 import shared.model.user.UserType;
 import shared.model.user.student.Student;
 import shared.response.Response;
@@ -51,8 +53,9 @@ public class LessonDataHandler {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) jo.get("lessons");
+            Gson gson = new Gson();
             for (Object o : jsonArray) {
-                Lesson lesson = (Lesson) o;
+                Lesson lesson = gson.fromJson(o.toString(), Lesson.class);
                 if (thisTerm.equals(String.valueOf(lesson.getTerm()))) {
                     lessons.add(lesson);
                 }
@@ -98,7 +101,8 @@ public class LessonDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Student student = (Student) jo.get("user");
+            Gson gson = new Gson();
+            Student student = gson.fromJson(jo.get("user").toString(), Student.class);
             return student.getRegistrationTime();
         } catch (Exception e) {
             e.printStackTrace();

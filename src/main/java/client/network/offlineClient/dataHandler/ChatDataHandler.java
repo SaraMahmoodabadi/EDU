@@ -1,10 +1,12 @@
 package client.network.offlineClient.dataHandler;
 
 import client.gui.EDU;
+import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import shared.model.message.chatMessages.Message;
+import shared.model.user.student.Student;
 import shared.request.Request;
 import shared.response.Response;
 import shared.response.ResponseStatus;
@@ -80,8 +82,9 @@ public class ChatDataHandler {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) jo.get("chats");
+            Gson gson = new Gson();
             for (Object o : jsonArray) {
-                Message chat = (Message) o;
+                Message chat = gson.fromJson(o.toString(), Message.class);
                 chats.add(chat);
             }
         } catch (Exception e) {
@@ -97,8 +100,9 @@ public class ChatDataHandler {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
             JSONArray jsonArray = (JSONArray) jo.get("messages");
+            Gson gson = new Gson();
             for (Object o : jsonArray) {
-                Message message = (Message) o;
+                Message message = gson.fromJson(o.toString(), Message.class);;
                 if (message.getSender().equals(user) || message.getReceiver().equals(user))
                     messages.add(message);
             }

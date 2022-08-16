@@ -1,8 +1,10 @@
 package client.network.offlineClient.dataHandler;
 
 import client.gui.EDU;
+import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import shared.model.user.User;
 import shared.model.user.UserType;
 import shared.model.user.professor.Professor;
 import shared.model.user.student.Student;
@@ -31,7 +33,8 @@ public class ProfilePageDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Student student = (Student) jo.get("user");
+            Gson gson = new Gson();
+            Student student = gson.fromJson(jo.get("user").toString(), Student.class);
             if (student != null) {
                 Response response = new Response(ResponseStatus.OK);
                 response.addData("student", student);
@@ -51,7 +54,8 @@ public class ProfilePageDataHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            Professor professor = (Professor) jo.get("user");
+            Gson gson = new Gson();
+            Professor professor = gson.fromJson(jo.get("user").toString(), Professor.class);
             if (professor != null) {
                 Response response = new Response(ResponseStatus.OK);
                 response.addData("professor", professor);
