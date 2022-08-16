@@ -9,6 +9,8 @@ import shared.request.Request;
 import shared.response.Response;
 import shared.response.ResponseStatus;
 import shared.util.Jackson;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,7 +45,7 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dataHandler = new MySQLHandler();
+        dataHandler = new MySQLHandler(this);
     }
 
     public void setUserType(UserType userType) {
@@ -111,6 +113,14 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void disconnect() {
+        String message = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
+                (String.class, "disconnectionMessage");
+        Response response = new Response(ResponseStatus.ERROR);
+        response.setErrorMessage(message);
+        sendResponse(response);
     }
 
 }

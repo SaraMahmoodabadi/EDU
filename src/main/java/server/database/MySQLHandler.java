@@ -1,11 +1,22 @@
 package server.database;
 
+import server.network.ClientHandler;
+import shared.util.config.Config;
+import shared.util.config.ConfigType;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLHandler {
     private Connection connection;
+    private ClientHandler client;
+
+    public MySQLHandler(ClientHandler client) {
+        this.client = client;
+        register();
+        createConnection();
+    }
 
     public MySQLHandler() {
         register();
@@ -14,20 +25,25 @@ public class MySQLHandler {
 
     private void register() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            String className = Config.getConfig(ConfigType.MYSQL).getProperty(String.class, "className");
+            Class.forName(className);
         }
-        catch(ClassNotFoundException ex) {
-            System.out.println("Error: unable to load driver class!");
-            //System.exit(1);
+        catch (ClassNotFoundException ex) {
+            if (this.client != null)
+                this.client.disconnect();
         }
     }
 
     private void createConnection() {
         try {
-            this.connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/edu","root","sara1381");
+            String url = Config.getConfig(ConfigType.MYSQL).getProperty(String.class, "url");
+            String user = Config.getConfig(ConfigType.MYSQL).getProperty(String.class, "user");
+            String password = Config.getConfig(ConfigType.MYSQL).getProperty(String.class, "password");
+            this.connection = DriverManager.getConnection(url,user,password);
         } catch (SQLException e) {
             e.printStackTrace();
+            if (this.client != null)
+                this.client.disconnect();
         }
     }
 
@@ -37,38 +53,10 @@ public class MySQLHandler {
             return statement.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
+            if (this.client != null)
+                this.client.disconnect();
         }
         return null;
-    }
-
-    public List<String> getData(String query, List<String> columnName) {
-        List<String> dataList = new ArrayList<>();
-        try {
-            Statement statement = this.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                String data = generateData(resultSet, columnName);
-                dataList.add(data);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dataList;
-    }
-
-    private String generateData(ResultSet resultSet, List<String> columnName) {
-        StringBuilder data = new StringBuilder();
-        int columnCount = 0;
-        for (String name : columnName) {
-            columnCount++;
-            try {
-                data.append(resultSet.getString(name));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            if (columnCount < columnName.size()) data.append(", ");
-        }
-        return data.toString();
     }
 
     public boolean updateData(String query) {
@@ -78,6 +66,8 @@ public class MySQLHandler {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            if (this.client != null)
+                this.client.disconnect();
         }
         return false;
     }
@@ -89,6 +79,8 @@ public class MySQLHandler {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            if (this.client != null)
+                this.client.disconnect();
         }
         return false;
     }

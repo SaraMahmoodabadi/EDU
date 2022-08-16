@@ -14,8 +14,6 @@ public class Config extends Properties {
             properties = new Properties();
             FileInputStream ip = new FileInputStream(address);
             properties.load(ip);
-           /** Reader fileReader = new FileReader(address);
-            this.load(fileReader);*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,6 +42,8 @@ public class Config extends Properties {
                 return new Config(config.getProperty(String.class, "network"));
             case CLIENT_DATA:
                 return new Config(config.getProperty(String.class, "clientData"));
+            case MYSQL:
+                return new Config(config.getProperty(String.class, "mysql"));
             default:
                 return getMainConfig();
         }

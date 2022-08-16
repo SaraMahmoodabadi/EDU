@@ -9,4 +9,5 @@ public enum ConfigType {
     SERVER_PATH,
     NETWORK,
     CLIENT_DATA,
+    MYSQL
 }
