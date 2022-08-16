@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import shared.model.message.chatMessages.Message;
 import shared.request.Request;
 import shared.request.RequestType;
@@ -25,6 +26,8 @@ import shared.util.media.MediaHandler;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class UserController {
     @FXML
@@ -68,7 +71,8 @@ public class UserController {
                 message.setMessageText(messageArea.getText());
             }
             writeMessageInFile(message);
-            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, "offlineMessageRegistered");
+            String note = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "offlineMessageRegistered");
+            AlertMonitor.showAlert(Alert.AlertType.INFORMATION, note);
         }
         this.path = null;
         this.file = null;
@@ -91,33 +95,45 @@ public class UserController {
     }
 
     private void writeMessageInFile(Message message) {
-        String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "adminMessagesPath");
+        String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty
+                (String.class, "adminMessagesPath") + "/user" + EDU.username + ".json";
         File file = new File(path);
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException ignored) {}
         }
+        JSONObject jo = null;
+        JSONArray jsonArray;
+        FileReader reader = null;
         try {
-            Object obj = new JSONParser().parse(new FileReader(path));
-            JSONObject jo = (JSONObject) obj;
-            if (jo == null) {
-                jo = new JSONObject();
-            }
-            JSONArray jsonArray = (JSONArray) jo.get(EDU.username + "Messages");
-            if (jsonArray == null) {
-                jsonArray = new JSONArray();
-            }
-            else {
-                jo.remove(EDU.username + "Messages");
-            }
-            jsonArray.add(message);
-            jo.put(EDU.username + "Messages", jsonArray);
+            reader = new FileReader(path);
+            Object obj = new JSONParser().parse(reader);
+            jo = (JSONObject) obj;
+        } catch (IOException | ParseException ignored) {}
+        if (jo == null) {
+            jo = new JSONObject();
+            jsonArray = new JSONArray();
+        }
+        else {
+            jsonArray = (JSONArray) jo.get(EDU.username + "Messages");
+            jo.remove(EDU.username + "Messages");
+        }
+        jsonArray.add(message);
+        jo.put(EDU.username + "Messages", jsonArray);
+        try {
+            if (reader != null)
+                reader.close();
+            Files.deleteIfExists(Paths.get(path));
+            File newFile = new File(path);
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.writeValue(file, jo);
-            } catch (Exception ignored) {}
-        } catch (Exception ignored) {}
+                newFile.createNewFile();
+            } catch (IOException ignored) {}
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(newFile, jo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

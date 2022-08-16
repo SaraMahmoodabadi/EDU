@@ -69,5 +69,6 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 }

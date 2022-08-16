@@ -281,6 +281,9 @@ public class MainPageController implements Initializable {
     }
 
     private void getTableData(Response response) {
+        rightList.getItems().clear();
+        leftList.getItems().clear();
+        middleList.getItems().clear();
         String middleList = (String) response.getData("middleList");
         String middleListString = middleList.substring(1, middleList.length() - 1);
         List<String> middleListValues = new ArrayList<>(Arrays.asList(middleListString.split(", ")));

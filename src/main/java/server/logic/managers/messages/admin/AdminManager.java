@@ -62,9 +62,9 @@ public class AdminManager {
         String fileFormat = String.valueOf(request.getData("fileFormat"));
         List<String> answers;
         if (isMedia)
-            answers = this.dataHandler.getMessageAnswers(username, time);
-        else
             answers = this.dataHandler.getMediaAnswers(username, time);
+        else
+            answers = this.dataHandler.getMessageAnswers(username, time);
         if (answers == null) {
             String error = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "error");
             return sendErrorResponse(error);
@@ -73,9 +73,9 @@ public class AdminManager {
         answers.add(answer);
         boolean result;
         if (isMedia)
-            result = this.dataHandler.updateTextAnswers(username,userMessage, time, answers);
+            result = this.dataHandler.updateMediaAnswers(username,userMessage, time, answers);
         else
-            result = this.dataHandler.updateMediaAnswers(userMessage, userMessage, time, answers);
+            result = this.dataHandler.updateTextAnswers(username, userMessage, time, answers);
         if (result) {
             Response response = new Response(ResponseStatus.OK);
             String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
@@ -107,7 +107,7 @@ public class AdminManager {
 
     public Response getMessage(Request request) {
         String user = String.valueOf(request.getData("user"));
-        String userMessage = String.valueOf(request.getData("message"));
+        String userMessage;
         String time = String.valueOf(request.getData("time"));
         Map<String, String> messages = this.dataHandler.getMessage(user, time);
         String textMessage = messages.get("message");
@@ -120,12 +120,12 @@ public class AdminManager {
         MediaHandler handler = new MediaHandler();
         int t = 0;
         if (textMessage != null) {
-            Message message = new Message(user, userMessage, false, false);
+            Message message = new Message(user, textMessage, false, false);
             response.addData("message" + t, message);
             t++;
         }
         if (media != null) {
-            userMessage = handler.encode(userMessage);
+            userMessage = handler.encode(media);
             Message message = new Message(user, userMessage, false, true);
             response.addData("message" + t, message);
             t++;
@@ -136,8 +136,8 @@ public class AdminManager {
             response.addData("message" + i, message);
             m++;
         }
-        for (int i = m; i < answers.size() + m ; i++) {
-            String answer = handler.encode(mediaAnswers.get(i - t));
+        for (int i = m; i < mediaAnswers.size() + m ; i++) {
+            String answer = handler.encode(mediaAnswers.get(i - m));
             Message message = new Message("1", answer, true, true);
             response.addData("message" + i, message);
         }

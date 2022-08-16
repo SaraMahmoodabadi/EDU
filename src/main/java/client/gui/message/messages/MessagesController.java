@@ -125,6 +125,9 @@ public class MessagesController implements Initializable {
             if (response.getStatus() == ResponseStatus.ERROR) {
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
             }
+            else {
+                makeMediaMessage(message, true);
+            }
         }
     }
 

@@ -17,6 +17,7 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -61,10 +62,14 @@ public class LoginDtaHandler {
         String path = this.address + "/user" + username + ".json";
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
+            if (obj == null) return null;
             JSONObject jo = (JSONObject) obj;
             Gson gson = new Gson();
             return gson.fromJson(jo.get("user").toString(), User.class);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

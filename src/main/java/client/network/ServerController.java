@@ -3,6 +3,7 @@ package client.network;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.offlineClient.OfflineClientHandler;
+import com.google.gson.Gson;
 import javafx.scene.control.Alert;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -76,12 +79,13 @@ public class ServerController {
 
    public Response getResponse(Request request) {
         if (EDU.isOnline) {
-            Response response = new Response();
+            Response response;
             try {
                 response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
                 checkDisconnection(response);
             } catch (NoSuchElementException | IOException e) {
                 EDU.isOnline = false;
+                return offlineClientHandler.handleRequest(request);
             }
             return response;
         }
@@ -104,14 +108,22 @@ public class ServerController {
    }
 
    public static void sendAdminMessages() {
-       String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "adminMessagesPath");
+       String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty
+               (String.class, "adminMessagesPath") + "/user" + EDU.username + ".json";
        try {
-           Object obj = new JSONParser().parse(new FileReader(path));
+           FileReader reader = new FileReader(path);
+           Object obj = new JSONParser().parse(reader);
            JSONObject jo = (JSONObject) obj;
            JSONArray jsonArray = (JSONArray) jo.get(EDU.username + "Messages");
            if (jsonArray != null) {
+               Gson gson = new Gson();
                for (Object o : jsonArray) {
-                   Message message = (Message) o;
+                   JSONObject object = gson.fromJson(o.toString(), JSONObject.class);
+                   boolean isMedia = (boolean) object.get("media");
+                   boolean isTransmitter = (boolean) object.get("transmitter");
+                   Message message = gson.fromJson(o.toString(), Message.class);
+                   message.setMedia(isMedia);
+                   message.setTransmitter(isTransmitter);
                    Request request = new Request(RequestType.SEND_MESSAGE_TO_ADMIN);
                    if (message.getFile() != null) {
                        String file = new MediaHandler().encode(message.getFile());
@@ -124,7 +136,13 @@ public class ServerController {
                    EDU.serverController.sendRequest(request);
                }
            }
+           reader.close();
        } catch (Exception ignored) {}
+       try {
+           Files.deleteIfExists(Paths.get(path));
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
    }
 
 }

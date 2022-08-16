@@ -169,12 +169,12 @@ public class LoginController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
-                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
                         if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();
