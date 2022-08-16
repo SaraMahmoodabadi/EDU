@@ -16,6 +16,7 @@ public class Message {
     private String user;
     private boolean isTransmitter;
     private String fileFormat;
+    private String file;
 
     public Message() {}
 
@@ -152,5 +153,13 @@ public class Message {
 
     public void setFileFormat(String fileFormat) {
         this.fileFormat = fileFormat;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

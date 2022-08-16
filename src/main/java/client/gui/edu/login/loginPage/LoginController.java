@@ -1,5 +1,6 @@
 package client.gui.edu.login.loginPage;
 
+import client.network.ServerController;
 import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -111,6 +112,7 @@ public class LoginController implements Initializable {
             EDU.userType = (UserType) response.getData("userType");
             if (EDU.userType == UserType.STUDENT || EDU.userType == UserType.PROFESSOR) {
                 EDU.collegeCode = (String) response.getData("collegeCode");
+                if (EDU.isOnline) ServerController.sendAdminMessages();
             }
             if (EDU.userType == UserType.STUDENT) {
                checkWithdrawal(response);

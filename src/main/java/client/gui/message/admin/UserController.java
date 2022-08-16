@@ -9,6 +9,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import shared.model.message.chatMessages.Message;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -18,6 +22,9 @@ import shared.util.config.ConfigType;
 import shared.util.media.MediaHandler;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class UserController {
     @FXML
@@ -51,12 +58,16 @@ public class UserController {
                 AlertMonitor.showAlert(Alert.AlertType.ERROR, response.getErrorMessage());
         }
         else {
+            Message message = new Message();
+            message.setSender(EDU.username);
             if (file != null) {
-                Config.getConfig(ConfigType.ADMIN_MESSAGES).write(EDU.username + "Message", this.path);
+                message.setFile(path);
+                message.setFileFormat(fileFormat);
             }
             if (messageArea.getText() != null) {
-                Config.getConfig(ConfigType.ADMIN_MESSAGES).write(EDU.username + "Message", messageArea.getText());
+                message.setMessageText(messageArea.getText());
             }
+            writeMessageInFile(message);
         }
     } //TODO : HANDLE OFFLINE MOOD
 
@@ -72,6 +83,37 @@ public class UserController {
             int n = path.split("\\.").length;
             this.fileFormat = path.split("\\.")[n-1];
         }
+    }
+
+    private void writeMessageInFile(Message message) {
+        String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "adminMessagesPath");
+        File file = new File(path);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ignored) {}
+        }
+        try {
+            Object obj = new JSONParser().parse(new FileReader(path));
+            JSONObject jo = (JSONObject) obj;
+            if (jo == null) {
+                jo = new JSONObject();
+            }
+            JSONArray jsonArray = (JSONArray) jo.get(EDU.username + "Messages");
+            if (jsonArray == null) {
+                jsonArray = new JSONArray();
+            }
+            else {
+                jo.remove(EDU.username + "Messages");
+            }
+            jsonArray.add(message);
+            jo.put(EDU.username + "Messages", jsonArray);
+            try {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(jo.toJSONString());
+                fileWriter.close();
+            } catch (Exception ignored) {}
+        } catch (Exception ignored) {}
     }
 
     @FXML

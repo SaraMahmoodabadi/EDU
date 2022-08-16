@@ -33,6 +33,7 @@ public class ScoreDataStorage {
             }
         }
         jsonObject.put("scores", scores);
+        jsonObject.put("numberOfPassedUnits", response.getData("numberPassed"));
         try {
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(jsonObject.toJSONString());
