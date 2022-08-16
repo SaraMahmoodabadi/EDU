@@ -102,7 +102,12 @@ public class ChatDataHandler {
             JSONArray jsonArray = (JSONArray) jo.get("messages");
             Gson gson = new Gson();
             for (Object o : jsonArray) {
-                Message message = gson.fromJson(o.toString(), Message.class);;
+                JSONObject object = gson.fromJson(o.toString(), JSONObject.class);
+                boolean isMedia = (boolean) object.get("media");
+                boolean isTransmitter = (boolean) object.get("transmitter");
+                Message message = gson.fromJson(o.toString(), Message.class);
+                message.setMedia(isMedia);
+                message.setTransmitter(isTransmitter);
                 if (message.getSender().equals(user) || message.getReceiver().equals(user))
                     messages.add(message);
             }
