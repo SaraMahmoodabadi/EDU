@@ -303,9 +303,20 @@ public class MainPageController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
-                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
+                    if (!EDU.isOnline) break;
                     Platform.runLater(() -> {
+                        Request request = new Request(RequestType.SHOW_MAIN_PAGE, EDU.userType);
+                        Response response = EDU.serverController.sendRequest(request);
+                        if (EDU.userType == UserType.STUDENT) {
+                            boolean result = (boolean) response.getData("isUnitSelectionTime");
+                            if (!result) {
+                                unitSelection.setVisible(false);
+                                unitSelection.setDisable(true);
+                            }
+                            this.role.setText(EDU.userType.toString().toLowerCase());
+                            getTableData(response);
+                        }
                         if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
