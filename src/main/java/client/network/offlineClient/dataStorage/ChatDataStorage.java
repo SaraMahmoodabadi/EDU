@@ -1,6 +1,7 @@
 package client.network.offlineClient.dataStorage;
 
 import client.gui.EDU;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import shared.model.message.chatMessages.Message;
@@ -9,7 +10,6 @@ import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,16 +34,15 @@ public class ChatDataStorage {
         }
         jsonObject.put("chats", chats);
         try {
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(jsonObject.toJSONString());
-            fileWriter.close();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(file, jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private File makeFile() {
-        String path = this.address + "/user" + EDU.username;
+        String path = this.address + "/user" + EDU.username + ".json";
         try {
             Files.deleteIfExists(Paths.get(path));
         } catch (IOException e) {

@@ -46,8 +46,8 @@ public class ServerController {
             Socket socket = new Socket(InetAddress.getLocalHost(), port);
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
+            EDU.isOnline = true;
             getToken();
-            OfflineClientHandler.requestGetData();
             edu = new EDU(this);
         } catch (IOException e) {
             edu = new EDU(this);
@@ -71,16 +71,13 @@ public class ServerController {
     }
 
    public Response getResponse() {
-        if (EDU.isOnline) {
-            Response response = new Response();
-            try {
-                response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
-            } catch (IOException e) {
-                EDU.isOnline = false;
-            }
-            return response;
-        }
-        else return offlineClientHandler.handleRequest(request);
+       Response response = new Response();
+       try {
+           response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
+       } catch (IOException e) {
+           EDU.isOnline = false;
+       }
+       return response;
    }
 
    private void getToken() {

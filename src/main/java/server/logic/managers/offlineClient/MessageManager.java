@@ -44,8 +44,19 @@ public class MessageManager {
         MediaHandler handler = new MediaHandler();
         for (Message message : messages) {
             if (message.isMedia()) {
+                int n = message.getMessageText().split("\\.").length;
+                String fileFormat = message.getMessageText().split("\\.")[n-1];
                 String media = handler.encode(message.getMessageText());
                 message.setMessageText(media);
+                message.setFileFormat(fileFormat);
+            }
+            if (message.isTransmitter()) {
+                message.setSender(this.client.getUserName());
+                message.setReceiver(message.getUser());
+            }
+            else {
+                message.setReceiver(this.client.getUserName());
+                message.setSender(message.getUser());
             }
         }
         for (String time : sortedTimes) {

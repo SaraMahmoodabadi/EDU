@@ -112,7 +112,10 @@ public class LoginController implements Initializable {
             EDU.userType = (UserType) response.getData("userType");
             if (EDU.userType == UserType.STUDENT || EDU.userType == UserType.PROFESSOR) {
                 EDU.collegeCode = (String) response.getData("collegeCode");
-                if (EDU.isOnline) ServerController.sendAdminMessages();
+                if (EDU.isOnline) {
+                    ServerController.sendAdminMessages();
+                    OfflineClientHandler.requestGetData();
+                }
             }
             if (EDU.userType == UserType.STUDENT) {
                checkWithdrawal(response);
