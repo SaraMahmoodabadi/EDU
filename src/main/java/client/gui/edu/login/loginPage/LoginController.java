@@ -87,8 +87,10 @@ public class LoginController implements Initializable {
         Request request = new Request(RequestType.LOGIN);
         request.addData("username", this.username.getText());
         request.addData("password", this.password.getText());
-        request.addData("captcha", this.captchaText.getText());
-        request.addData("captchaValue", response.getData("captchaValue"));
+        if (EDU.isOnline) {
+            request.addData("captcha", this.captchaText.getText());
+            request.addData("captchaValue", response.getData("captchaValue"));
+        }
         Response response = EDU.serverController.sendRequest(request);
         changeScene(actionEvent, response);
     }

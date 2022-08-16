@@ -24,6 +24,7 @@ public class UserDataStorage {
     }
 
     public void storeData(Response response) {
+        if (response.getData() == null) return;
         File file = makeFile();
         if (file == null) return;
         String fileFormat = (String) response.getData("fileFormat");

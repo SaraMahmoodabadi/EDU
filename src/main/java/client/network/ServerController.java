@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ServerController {
@@ -50,8 +51,8 @@ public class ServerController {
             getToken();
             edu = new EDU(this);
         } catch (IOException e) {
-            edu = new EDU(this);
             EDU.isOnline = false;
+            edu = new EDU(this);
         }
     }
 
@@ -65,23 +66,26 @@ public class ServerController {
             } catch (IOException e) {
                 EDU.isOnline = false;
             }
-            return getResponse();
+            return getResponse(request);
         }
         else return offlineClientHandler.handleRequest(request);
     }
 
-   public Response getResponse() {
-       Response response = new Response();
-       try {
-           response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
-       } catch (IOException e) {
-           EDU.isOnline = false;
-       }
-       return response;
+   public Response getResponse(Request request) {
+        if (EDU.isOnline) {
+            Response response = new Response();
+            try {
+                response = this.objectMapper.readValue(this.scanner.nextLine(), Response.class);
+            } catch (NoSuchElementException | IOException e) {
+                EDU.isOnline = false;
+            }
+            return response;
+        }
+        else return offlineClientHandler.handleRequest(request);
    }
 
    private void getToken() {
-        Response response = getResponse();
+        Response response = getResponse(new Request());
         this.token = (String) response.getData("token");
    }
 

@@ -1,5 +1,6 @@
 package client.network.offlineClient.dataHandler;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -60,7 +61,9 @@ public class LoginDtaHandler {
         try {
             Object obj = new JSONParser().parse(new FileReader(path));
             JSONObject jo = (JSONObject) obj;
-            return (User) jo.get("user");
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = jo.toJSONString();
+            return mapper.readValue(jsonString, User.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

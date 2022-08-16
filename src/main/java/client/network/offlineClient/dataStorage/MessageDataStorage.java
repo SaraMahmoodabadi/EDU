@@ -24,9 +24,9 @@ public class MessageDataStorage {
     }
 
     public void storeData(Response response) {
+        if (response.getData() == null) return;
         File file = makeFile();
         if (file == null) return;
-
         JSONObject jsonObject = new JSONObject();
         JSONArray messages = new JSONArray();
         for (int i = 0; i < response.getData().size(); i++) {

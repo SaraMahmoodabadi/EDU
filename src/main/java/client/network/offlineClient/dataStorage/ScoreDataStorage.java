@@ -22,6 +22,7 @@ public class ScoreDataStorage {
     }
 
     public void storeData(Response response) {
+        if (response.getData() == null) return;
         File file = makeFile();
         if (file == null) return;
         JSONObject jsonObject = new JSONObject();
