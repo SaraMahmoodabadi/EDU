@@ -8,15 +8,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import shared.model.user.UserType;
 import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Professor;
@@ -32,7 +29,6 @@ import shared.util.config.Config;
 import shared.util.config.ConfigType;
 import shared.util.media.ImageHandler;
 
-import javax.rmi.CORBA.Stub;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,8 +38,6 @@ public class NewUserController implements Initializable {
     public Label offlineLabel;
     @FXML
     public Button offlineButton;
-    @FXML
-    protected AnchorPane pane;
     @FXML
     protected Rectangle rectangle;
     @FXML
@@ -58,8 +52,6 @@ public class NewUserController implements Initializable {
     protected RadioButton student;
     @FXML
     protected RadioButton professor;
-    @FXML
-    protected Rectangle rectangle2;
     @FXML
     protected Text firstNameText;
     @FXML
@@ -93,8 +85,6 @@ public class NewUserController implements Initializable {
     @FXML
     protected Button select;
     @FXML
-    protected Rectangle rectangle3;
-    @FXML
     protected Text studentCodeText;
     @FXML
     protected TextField studentCodeField;
@@ -110,8 +100,6 @@ public class NewUserController implements Initializable {
     protected RadioButton master;
     @FXML
     protected RadioButton doctorate;
-    @FXML
-    protected Rectangle rectangle4;
     @FXML
     protected Text professorCodeText;
     @FXML

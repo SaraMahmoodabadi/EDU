@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.Image?>
@@ -13,252 +12,249 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.registration.newUser.NewUserController">
-   <content>
-      <AnchorPane fx:id="pane" prefHeight="1360.0" prefWidth="1180.0" style="-fx-background-color: #b151b8;">
-         <children>
-            <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="1230.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
-               <effect>
-                  <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
-               </effect>
-            </Rectangle>
-            <Button fx:id="back" layoutX="563.0" layoutY="1292.0" mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <graphic>
-                  <ImageView fx:id="backImage" fitHeight="50.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../resource/images/backButton.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="62.0" layoutX="101.0" layoutY="98.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="999.0" />
-            <Text fx:id="chooseText" fill="#b151b8" layoutX="434.0" layoutY="137.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose:">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <RadioButton fx:id="student" layoutX="559.0" layoutY="121.0" mnemonicParsing="false" onAction="#selectStudent" text="Student" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="professor" layoutX="664.0" layoutY="121.0" mnemonicParsing="false" onAction="#selectProfessor" text="Professor" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <Rectangle fx:id="rectangle2" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="512.0" layoutX="100.0" layoutY="182.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="1000.0" />
-            <Text fx:id="firstNameText" fill="#b151b8" layoutX="140.0" layoutY="223.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First name">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="firstNameField" layoutX="140.0" layoutY="235.0" prefHeight="40.0" prefWidth="215.0" promptText="first name" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="lastNameText" fill="#b151b8" layoutX="600.0" layoutY="222.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last name">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="lastNameField" layoutX="600.0" layoutY="235.0" prefHeight="40.0" prefWidth="215.0" promptText="last name" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="nationalCodeText" fill="#b151b8" layoutX="140.0" layoutY="313.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="National code">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="nationalCodeField" layoutX="140.0" layoutY="325.0" prefHeight="40.0" prefWidth="215.0" promptText="national code" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="emailText" fill="#b151b8" layoutX="600.0" layoutY="407.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="emailField" layoutX="600.0" layoutY="418.0" prefHeight="40.0" prefWidth="400.0" promptText="email" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="phoneText" fill="#b151b8" layoutX="140.0" layoutY="407.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="phoneField" layoutX="140.0" layoutY="418.0" prefHeight="40.0" prefWidth="215.0" promptText="phone number" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="usernameText" fill="#b151b8" layoutX="140.0" layoutY="500.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="usernameField" layoutX="140.0" layoutY="513.0" prefHeight="40.0" prefWidth="215.0" promptText="username" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="passwordText" fill="#b151b8" layoutX="141.0" layoutY="598.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="passwordField" layoutX="140.0" layoutY="606.0" prefHeight="40.0" prefWidth="215.0" promptText="password" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" layoutX="708.0" layoutY="478.0" pickOnBounds="true" preserveRatio="true">
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.registration.newUser.NewUserController">
+   <children>
+      <Rectangle fx:id="rectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="695.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1100.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="576.0" layoutY="753.0" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="28.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fx:id="backImage" fitHeight="35.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../resource/images/defaultProfile.png" />
+                  <Image url="@../../../../resource/images/backButton.png" />
                </image>
             </ImageView>
-            <Button fx:id="select" layoutX="708.0" layoutY="641.0" mnemonicParsing="false" onAction="#select" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #b151b8;" text="select" textAlignment="CENTER" textFill="#ffd100">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Button>
-            <Rectangle fx:id="rectangle3" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="200.0" layoutX="100.0" layoutY="725.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="1000.0" />
-            <Text fx:id="studentCodeText" fill="#b151b8" layoutX="140.0" layoutY="765.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student code">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="studentCodeField" layoutX="140.0" layoutY="777.0" prefHeight="40.0" prefWidth="215.0" promptText="student code" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="supervisorCodeText" fill="#b151b8" layoutX="600.0" layoutY="765.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Supervisor code">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="superVisorCodeField" layoutX="600.0" layoutY="777.0" prefHeight="40.0" prefWidth="215.0" promptText="supervisor code" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="gradeText1" fill="#b151b8" layoutX="140.0" layoutY="867.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <RadioButton fx:id="undergraduate" layoutX="140.0" layoutY="880.0" mnemonicParsing="false" text="Undergraduate" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="master" layoutX="299.0" layoutY="880.0" mnemonicParsing="false" text="Master" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="doctorate" layoutX="404.0" layoutY="880.0" mnemonicParsing="false" text="Doctorate" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <Rectangle fx:id="rectangle4" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="200.0" layoutX="100.0" layoutY="955.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="1000.0" />
-            <Text fx:id="professorCodeText" fill="#b151b8" layoutX="140.0" layoutY="995.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Professor code">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="professorCodeField" layoutX="140.0" layoutY="1007.0" prefHeight="40.0" prefWidth="215.0" promptText="professor code" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="roomText" fill="#b151b8" layoutX="600.0" layoutY="995.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room number">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="roomField" layoutX="600.0" layoutY="1007.0" prefHeight="40.0" prefWidth="215.0" promptText="room number" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="gradeText2" fill="#b151b8" layoutX="140.0" layoutY="1097.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <RadioButton fx:id="assistant" layoutX="140.0" layoutY="1110.0" mnemonicParsing="false" text="Assistant" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="associate" layoutX="254.0" layoutY="1110.0" mnemonicParsing="false" text="Associate" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="full" layoutX="368.0" layoutY="1110.0" mnemonicParsing="false" text="Full" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <Button fx:id="register" layoutX="525.0" layoutY="1183.0" mnemonicParsing="false" onAction="#register" prefHeight="39.0" prefWidth="150.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Button>
-            <Text fx:id="enteringYearText" fill="#b151b8" layoutX="600.0" layoutY="313.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entering year">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <TextField fx:id="EnteringYearField" layoutX="600.0" layoutY="325.0" prefHeight="40.0" prefWidth="215.0" promptText="entering year" style="-fx-background-color: #ffffff;">
-               <effect>
-                  <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
-               </effect>
-            </TextField>
-            <Text fx:id="status" fill="#b151b8" layoutX="600.0" layoutY="867.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Educational status">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Text>
-            <RadioButton fx:id="studying" layoutX="600.0" layoutY="880.0" mnemonicParsing="false" text="Studying" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="graduated" layoutX="710.0" layoutY="880.0" mnemonicParsing="false" text="Graduated" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="withdrawal" layoutX="820.0" layoutY="880.0" mnemonicParsing="false" text="Withdrawal feom education" textFill="#b151b8">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </RadioButton>
-            <Label fx:id="offlineLabel" layoutX="1015.0" layoutY="15.0" text="You are offline" visible="false" />
-            <Button fx:id="offlineButton" disable="true" layoutX="1117.0" layoutY="6.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: #b151b8;" visible="false">
-               <graphic>
-                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../resource/images/refreshIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-   </content>
-</ScrollPane>
+         </graphic>
+      </Button>
+      <Rectangle fx:id="rectangle1" arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="62.0" layoutX="101.0" layoutY="91.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="999.0" />
+      <Text fx:id="chooseText" fill="#b151b8" layoutX="438.0" layoutY="130.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose:" AnchorPane.leftAnchor="438.0">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="student" layoutX="570.0" layoutY="112.0" mnemonicParsing="false" onAction="#selectStudent" text="Student" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="professor" layoutX="657.0" layoutY="112.0" mnemonicParsing="false" onAction="#selectProfessor" text="Professor" textFill="#b151b8" AnchorPane.rightAnchor="438.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="510.0" layoutX="100.0" layoutY="167.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="486.0" />
+      <Text fx:id="firstNameText" fill="#b151b8" layoutX="149.0" layoutY="214.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First name">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="firstNameField" layoutX="149.0" layoutY="226.0" prefHeight="40.0" prefWidth="160.0" promptText="first name" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="lastNameText" fill="#b151b8" layoutX="390.0" layoutY="213.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last name">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="lastNameField" layoutX="390.0" layoutY="226.0" prefHeight="40.0" prefWidth="160.0" promptText="last name" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="nationalCodeText" fill="#b151b8" layoutX="149.0" layoutY="307.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="National code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="nationalCodeField" layoutX="149.0" layoutY="323.0" prefHeight="40.0" prefWidth="160.0" promptText="national code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="phoneText" fill="#b151b8" layoutX="149.0" layoutY="408.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="phoneField" layoutX="149.0" layoutY="423.0" prefHeight="40.0" prefWidth="160.0" promptText="phone number" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="usernameText" fill="#b151b8" layoutX="151.0" layoutY="502.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="usernameField" layoutX="149.0" layoutY="515.0" prefHeight="40.0" prefWidth="160.0" promptText="username" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="passwordText" fill="#b151b8" layoutX="149.0" layoutY="596.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="passwordField" layoutX="149.0" layoutY="608.0" prefHeight="40.0" prefWidth="160.0" promptText="password" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="enteringYearText" fill="#b151b8" layoutX="387.0" layoutY="306.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entering year">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="EnteringYearField" layoutX="390.0" layoutY="323.0" prefHeight="40.0" prefWidth="160.0" promptText="entering year" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="emailText" fill="#b151b8" layoutX="394.0" layoutY="405.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="emailField" layoutX="390.0" layoutY="419.0" prefHeight="40.0" prefWidth="160.0" promptText="email" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <ImageView fx:id="profileImage" fitHeight="130.0" fitWidth="150.0" layoutX="405.0" layoutY="470.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../resource/images/defaultProfile.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="select" layoutX="415.0" layoutY="609.0" mnemonicParsing="false" onAction="#select" prefHeight="39.0" prefWidth="111.0" style="-fx-background-color: #b151b8;" text="select" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="271.0" layoutX="600.0" layoutY="168.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="486.0" />
+      <Rectangle arcHeight="100.0" arcWidth="100.0" fill="#ffd100" height="219.0" layoutX="600.0" layoutY="453.0" opacity="0.5" stroke="#ffd100" strokeType="INSIDE" width="486.0" />
+      <Text fx:id="studentCodeText" fill="#b151b8" layoutX="637.0" layoutY="212.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="studentCodeField" layoutX="637.0" layoutY="226.0" prefHeight="40.0" prefWidth="160.0" promptText="student code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="supervisorCodeText" fill="#b151b8" layoutX="886.0" layoutY="211.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Supervisor code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="superVisorCodeField" layoutX="886.0" layoutY="226.0" prefHeight="40.0" prefWidth="160.0" promptText="supervisor code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="gradeText1" fill="#b151b8" layoutX="640.0" layoutY="311.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="undergraduate" layoutX="632.0" layoutY="324.0" mnemonicParsing="false" text="Undergraduate" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="master" layoutX="784.0" layoutY="324.0" mnemonicParsing="false" text="Master" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="doctorate" layoutX="879.0" layoutY="324.0" mnemonicParsing="false" text="Doctorate" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Text fx:id="status" fill="#b151b8" layoutX="640.0" layoutY="391.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Educational status">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="studying" layoutX="637.0" layoutY="403.0" mnemonicParsing="false" text="Studying" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="graduated" layoutX="733.0" layoutY="403.0" mnemonicParsing="false" text="Graduated" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="withdrawal" layoutX="843.0" layoutY="403.0" mnemonicParsing="false" text="Withdrawal from education" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Text fx:id="professorCodeText" fill="#b151b8" layoutX="635.0" layoutY="490.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Professor code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="professorCodeField" layoutX="635.0" layoutY="507.0" prefHeight="40.0" prefWidth="160.0" promptText="professor code" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="roomText" fill="#b151b8" layoutX="887.0" layoutY="489.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room number">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="roomField" layoutX="886.0" layoutY="507.0" prefHeight="40.0" prefWidth="160.0" promptText="room number" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.5" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="gradeText2" fill="#b151b8" layoutX="640.0" layoutY="582.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="assistant" layoutX="637.0" layoutY="598.0" mnemonicParsing="false" text="Assistant" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="associate" layoutX="750.0" layoutY="598.0" mnemonicParsing="false" text="Associate" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="full" layoutX="875.0" layoutY="598.0" mnemonicParsing="false" text="Full" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </RadioButton>
+      <Label fx:id="offlineLabel" layoutX="1015.0" layoutY="15.0" text="You are offline" visible="false" />
+      <Button fx:id="offlineButton" disable="true" layoutX="1117.0" layoutY="6.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: #b151b8;" visible="false">
+         <graphic>
+            <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resource/images/refreshIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="register" layoutX="525.0" layoutY="687.0" mnemonicParsing="false" onAction="#register" prefHeight="21.0" prefWidth="150.0" style="-fx-background-color: #b151b8; -fx-background-radius: 30;" text="register" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
