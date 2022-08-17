@@ -117,8 +117,9 @@ public class UnitSelectionDataHandler {
     public List<Lesson> getCollegeLesson(String collegeName) {
         String collegeCode = getCollegeCode(collegeName);
         if (collegeCode == null) return null;
+        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "lessonCode, name, examTime, grade", "lesson") +
+        query = String.format(query, "lessonCode, name, examTime, grade, term", "lesson") +
                 " collegeCode = " + getStringFormat(collegeCode);
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<Lesson> lessons = new ArrayList<>();
@@ -128,6 +129,8 @@ public class UnitSelectionDataHandler {
                 String name  = resultSet.getString("name");
                 String examTime = resultSet.getString("examTime");
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
+                String term = String.valueOf(resultSet.getInt("term"));
+                if (!term.equals(thisTerm)) continue;
                 List<String> groups = getGroups(lessonCode);
                 for (String group : groups) {
                     Lesson lesson = new Lesson(lessonCode, name, examTime, grade, Integer.parseInt(group));
@@ -195,8 +198,9 @@ public class UnitSelectionDataHandler {
     } //lessonCode-group
 
     public List<Lesson> getSuggestedLessons(String items) {
+        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
-        query = String.format(query, "lessonCode, name, examTime, grade", "lesson") + " " + items;
+        query = String.format(query, "lessonCode, name, examTime, grade, term", "lesson") + " " + items;
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         List<Lesson> lessons = new ArrayList<>();
         try {
@@ -205,6 +209,8 @@ public class UnitSelectionDataHandler {
                 String name  = resultSet.getString("name");
                 String examTime = resultSet.getString("examTime");
                 Grade grade = Grade.valueOf(resultSet.getString("grade"));
+                String term = String.valueOf(resultSet.getInt("term"));
+                if (!term.equals(thisTerm)) continue;
                 List<String> groups = getGroups(lessonCode);
                 for (String group : groups) {
                     Lesson lesson = new Lesson(lessonCode, name, examTime, grade, Integer.parseInt(group));
