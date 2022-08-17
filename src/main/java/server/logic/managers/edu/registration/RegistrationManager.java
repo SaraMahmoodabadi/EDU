@@ -4,6 +4,7 @@ import server.database.dataHandlers.edu.registration.RegistrationDataHandler;
 import server.network.ClientHandler;
 import shared.model.university.lesson.Group;
 import shared.model.university.lesson.Lesson;
+import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Professor;
 import shared.model.user.professor.Type;
 import shared.request.Request;
@@ -212,16 +213,16 @@ public class RegistrationManager {
         String phoneNumber = (String) request.getData("phoneNumber");
         String email = (String) request.getData("email");
         String room = (String) request.getData("room");
-        String degree = (String) request.getData("degree");
+        MasterDegree degree = (MasterDegree) request.getData("degree");
         String collegeCode = (String) request.getData("collegeCode");
         if (collegeCode.equals(this.dataHandler.getProfessorCollegeCode(professorCode))) {
             String query = "";
             int n = 0;
-            if (phoneNumber != null) {
+            if (phoneNumber != null && !phoneNumber.equals("")) {
                 query += ("phoneNumber = " + getStringFormat(phoneNumber));
                 n++;
             }
-            if (email != null) {
+            if (email != null && !email.equals("")) {
                 if (n == 1) query += ", ";
                 query += ("emailAddress = " + getStringFormat(email));
                 n++;
@@ -232,10 +233,10 @@ public class RegistrationManager {
             }
             int m = 0;
             if (degree != null) {
-                query += ("degree = " + getStringFormat(degree));
+                query += ("degree = " + getStringFormat(degree.toString()));
                 m++;
             }
-            if (room != null) {
+            if (room != null && !room.equals("")) {
                 if (m == 1) query += ", ";
                 query += ("roomNumber = " + getStringFormat(room));
                 m++;
@@ -244,7 +245,7 @@ public class RegistrationManager {
             if (m != 0) {
                 result2 = this.dataHandler.editProfessor(professorCode, query);
             }
-            if ((m == 0 && n == 0) || (result1 && result2)) {
+            if ((m == 0 && n == 0) || (!result1 && !result2)) {
                 String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                         (String.class, "invalidInputs");
                 return getErrorResponse(errorMessage);
@@ -265,7 +266,7 @@ public class RegistrationManager {
     public Response deposal(Request request) {
         String professorCode = (String) request.getData("professorCode");
         String collegeCode = (String) request.getData("collegeCode");
-        String query = "educationalAssistant = NULL";
+        String query = "educationalAssistantCode = NULL";
         boolean result = this.dataHandler.deposal(professorCode, query, collegeCode);
         if (result) {
             String items = " type = " + getStringFormat(Type.PROFESSOR.toString());
@@ -285,7 +286,7 @@ public class RegistrationManager {
     public Response appointment(Request request) {
         String professorCode = (String) request.getData("professorCode");
         String collegeCode = (String) request.getData("collegeCode");
-        String query = "educationalAssistant = " + professorCode;
+        String query = "educationalAssistantCode = " + getStringFormat(professorCode);
         boolean result = this.dataHandler.appointment(professorCode, query, collegeCode);
         if (result) {
             String items = " type = " + getStringFormat(Type.EDUCATIONAL_ASSISTANT.toString());
@@ -306,8 +307,10 @@ public class RegistrationManager {
         String collegeCode = (String) request.getData("collegeCode");
         String professorCode = (String) request.getData("professorCode");
         if (collegeCode.equals(this.dataHandler.getProfessorCollegeCode(professorCode))) {
+            String username = this.dataHandler.getUsername(professorCode);
             boolean result = this.dataHandler.removeProfessor(professorCode);
             if (result) {
+                this.dataHandler.removeUser(username);
                 String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "done");
                 Response response = new Response(ResponseStatus.OK);
                 response.setNotificationMessage(note);

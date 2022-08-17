@@ -267,6 +267,8 @@ public class ChatController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File newFile = new File(path);
+        newFile.deleteOnExit();
     }
 
     private void updateAllChats() {

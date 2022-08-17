@@ -286,6 +286,26 @@ public class RegistrationDataHandler {
         return this.dataBaseHandler.updateData(query);
     }
 
+    public String getUsername(String professorCode) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getOneData");
+        query = String.format(query, "username", "professor") + " professorCode = " + getStringFormat(professorCode);
+        ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
+        try {
+            if (resultSet.next()) {
+                return resultSet.getString("username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "-";
+    }
+
+    public void removeUser(String username) {
+        String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "removeData");
+        query = String.format(query, "user") + " username = " + getStringFormat(username);
+        this.dataBaseHandler.updateData(query);
+    }
+
     private String getAssistant(String collegeCode) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "educationalAssistantCode")
                 + " " + getStringFormat(collegeCode);
@@ -341,8 +361,9 @@ public class RegistrationDataHandler {
     }
 
     public String getProfessorCollegeCode(String professorCode) {
+        String username = getUsername(professorCode);
         String query = Config.getConfig(ConfigType.QUERY).getProperty
-                (String.class, "getProfessorCollege") + " " + getStringFormat(professorCode);
+                (String.class, "getProfessorCollege") + " " + getStringFormat(username);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         if (resultSet != null) {
             try {
