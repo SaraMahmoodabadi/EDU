@@ -20,8 +20,6 @@ import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
 import shared.response.ResponseStatus;
-import shared.util.config.Config;
-import shared.util.config.ConfigType;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -102,6 +100,11 @@ public class LessonListController implements Initializable {
     public void edit(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "editLessonPage");
+    }
+
+    public void add(ActionEvent actionEvent) {
+        stop = true;
+        EDU.sceneSwitcher.switchScene(actionEvent, "addLessonPage");
     }
 
     public void back(ActionEvent actionEvent) {
