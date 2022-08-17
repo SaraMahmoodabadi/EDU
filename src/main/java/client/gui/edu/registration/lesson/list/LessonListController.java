@@ -137,7 +137,16 @@ public class LessonListController implements Initializable {
         List<Lesson> lessons = new ArrayList<>();
         response.getData().forEach((K, V) -> {
             if (K.startsWith("lesson")) {
-                lessons.add((Lesson) V);
+                Lesson lesson = (Lesson) V ;
+                ArrayList<String> list = new ArrayList<>();
+                list.add("-");
+                if (lesson.getPrerequisites() == null ||
+                        lesson.getPrerequisites().toString().equals("[null]"))
+                    lesson.setPrerequisites(list);
+                if (lesson.getTheNeed() == null ||
+                        lesson.getTheNeed().toString().equals("[null]"))
+                    lesson.setTheNeed(list);
+                lessons.add(lesson);
             }
         });
         return lessons;
@@ -170,7 +179,16 @@ public class LessonListController implements Initializable {
                             List<Lesson> desiredLessons = new ArrayList<>();
                             response.getData().forEach((K, V) -> {
                                 if (K.startsWith("lesson")) {
-                                    desiredLessons.add((Lesson) V);
+                                    Lesson lesson = (Lesson) V ;
+                                    ArrayList<String> list = new ArrayList<>();
+                                    list.add("-");
+                                    if (lesson.getPrerequisites() == null ||
+                                            lesson.getPrerequisites().toString().equals("[null]"))
+                                        lesson.setPrerequisites(list);
+                                    if (lesson.getTheNeed() == null ||
+                                            lesson.getTheNeed().toString().equals("[null]"))
+                                        lesson.setTheNeed(list);
+                                    desiredLessons.add(lesson);
                                 }
                             });
                             list.getItems().clear();
