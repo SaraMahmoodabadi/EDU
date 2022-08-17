@@ -64,8 +64,8 @@ public class Server {
 
     public void stop() {
         try {
-            this.serverSocket.close();
             this.running = false;
+            this.serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

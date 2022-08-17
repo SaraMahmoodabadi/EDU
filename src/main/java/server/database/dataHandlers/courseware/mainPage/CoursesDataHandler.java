@@ -255,7 +255,7 @@ public class CoursesDataHandler {
     public void updateSystemMessages(String username, String message) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "insertData");
         query = String.format(query, "system_messages", "sender, receiver, time, message",
-                "Courseware, " + getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) +
+                "'Courseware', " + getStringFormat(username) + ", " + getStringFormat(LocalDateTime.now().toString()) +
                 ", " + getStringFormat(message));
         this.databaseHandler.updateData(query);
     }
