@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #b151b8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.gui.edu.registration.lesson.edit.AddLessonController">
+   <children>
+      <Rectangle fx:id="bigRectangle" arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="695.0" layoutX="50.0" layoutY="50.0" stroke="WHITE" strokeType="INSIDE" width="1114.0">
+         <effect>
+            <InnerShadow choke="0.5" color="#ffd100" height="125.0" radius="62.0" width="125.0" />
+         </effect>
+      </Rectangle>
+      <Button fx:id="back" layoutX="582.0" layoutY="754.0" mnemonicParsing="false" onAction="#back" prefHeight="39.0" prefWidth="28.0" style="-fx-background-color: #ffd100;" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="30.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../resource/images/backButton.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Rectangle fx:id="rectangle1" arcHeight="50.0" arcWidth="50.0" fill="#ffd100" height="635.0" layoutX="86.0" layoutY="83.0" stroke="#ffd100" strokeType="INSIDE" width="1043.0" />
+      <Text fx:id="addText" fill="#b151b8" layoutX="503.0" layoutY="130.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" text="Add new lesson">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Text fx:id="nameText" fill="#b151b8" layoutX="151.0" layoutY="180.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lesson's name">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="codeText1" fill="#b151b8" layoutX="600.0" layoutY="179.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lesson code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="nameField" layoutX="149.0" layoutY="193.0" prefHeight="30.0" prefWidth="275.0" promptText="lesson's name">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <TextField fx:id="codeField1" layoutX="600.0" layoutY="193.0" prefHeight="30.0" prefWidth="275.0" promptText="lesson code">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="gradeText" fill="#b151b8" layoutX="151.0" layoutY="263.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Grade">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <ComboBox fx:id="gradeBox" layoutX="149.0" layoutY="273.0" prefHeight="30.0" prefWidth="275.0" promptText="grade" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </ComboBox>
+      <Text fx:id="unitText" fill="#b151b8" layoutX="597.0" layoutY="262.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Unit number">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <ComboBox fx:id="unitBox" layoutX="600.0" layoutY="273.0" prefHeight="30.0" prefWidth="275.0" promptText="unit" style="-fx-background-color: #ffffff;">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </ComboBox>
+      <Text fx:id="Days1" fill="#b151b8" layoutX="156.0" layoutY="349.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Days">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <CheckBox fx:id="saturday1" layoutX="156.0" layoutY="365.0" mnemonicParsing="false" text="Saturday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="sunday1" layoutX="267.0" layoutY="365.0" mnemonicParsing="false" text="Sunday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="monday1" layoutX="366.0" layoutY="365.0" mnemonicParsing="false" text="Monday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="tuesday1" layoutX="467.0" layoutY="365.0" mnemonicParsing="false" text="Tuesday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="wednesday1" layoutX="578.0" layoutY="365.0" mnemonicParsing="false" text="Wednesday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="thursday1" layoutX="703.0" layoutY="365.0" mnemonicParsing="false" prefHeight="6.0" prefWidth="93.0" text="Thursday" textFill="#b151b8">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <Text fx:id="timeText1" fill="#b151b8" layoutX="158.0" layoutY="429.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time of class">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="hour1" layoutX="159.0" layoutY="449.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text layoutX="204.0" layoutY="472.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="minute1" layoutX="219.0" layoutY="449.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text layoutX="263.0" layoutY="472.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="hour2" layoutX="279.0" layoutY="449.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text layoutX="325.0" layoutY="472.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="minute2" layoutX="340.0" layoutY="449.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="examText1" fill="#b151b8" layoutX="600.0" layoutY="428.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time of exam">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <DatePicker fx:id="date1" layoutX="597.0" layoutY="449.0" prefHeight="31.0" prefWidth="150.0" promptText="Date">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </DatePicker>
+      <TextField fx:id="hour3" layoutX="756.0" layoutY="448.0" prefHeight="31.0" prefWidth="40.0" promptText="hh">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text layoutX="802.0" layoutY="471.0" strokeType="OUTSIDE" strokeWidth="0.0" text=":">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="minute3" layoutX="815.0" layoutY="448.0" prefHeight="31.0" prefWidth="40.0" promptText="mm">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="prerequisiteText" fill="#b151b8" layoutX="151.0" layoutY="516.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prerequisites">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="prerequisiteList" layoutX="151.0" layoutY="535.0" prefHeight="31.0" prefWidth="225.0" promptText="prerequisite">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="plusButton1" layoutX="390.0" layoutY="536.0" mnemonicParsing="false" onAction="#addPrerequisite" prefHeight="30.0" prefWidth="40.0">
+         <graphic>
+            <ImageView fx:id="plusImage1" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../resource/images/plusIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </Button>
+      <Text fx:id="needText" fill="#b151b8" layoutX="600.0" layoutY="517.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The need">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="needList" layoutX="599.0" layoutY="535.0" prefHeight="31.0" prefWidth="225.0" promptText="the need">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="plusButton2" layoutX="835.0" layoutY="536.0" mnemonicParsing="false" onAction="#addNeed" prefHeight="30.0" prefWidth="40.0">
+         <graphic>
+            <ImageView fx:id="plusImage2" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../resource/images/plusIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </Button>
+      <Text fx:id="professorText1" fill="#b151b8" layoutX="151.0" layoutY="602.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Professor's code">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="professorField1" layoutX="149.0" layoutY="616.0" prefHeight="30.0" prefWidth="275.0" promptText="professor's code">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Text fx:id="capacityText1" fill="#b151b8" layoutX="603.0" layoutY="601.0" stroke="#b151b8" strokeDashOffset="10.0" strokeMiterLimit="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Capacity">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <TextField fx:id="capacityField1" layoutX="600.0" layoutY="616.0" prefHeight="30.0" prefWidth="275.0" promptText="capacity">
+         <effect>
+            <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
+         </effect>
+      </TextField>
+      <Button fx:id="register" layoutX="546.0" layoutY="665.0" mnemonicParsing="false" onAction="#register" prefHeight="39.0" prefWidth="122.0" style="-fx-background-color: #b151b8;" text="register" textAlignment="CENTER" textFill="#ffd100">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="offlineLabel" layoutX="1025.0" layoutY="15.0" text="You are offline" visible="false" />
+      <Button fx:id="offlineButton" disable="true" layoutX="1120.0" layoutY="6.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: #b151b8;" visible="false">
+         <graphic>
+            <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../resource/images/refreshIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>
