@@ -135,17 +135,20 @@ public class NewUserController implements Initializable {
     private ToggleGroup pDegree;
     private ToggleGroup eduStatus;
     private String imageCode;
+    private String fileFormat;
     private boolean stop;
 
     public void select(ActionEvent actionEvent) {
         FileChooser imageChooser = new FileChooser();
         imageChooser.setTitle("select image");
-        imageChooser.setInitialDirectory(new File(imageCode));
+        imageChooser.setInitialDirectory(new File("E:/"));
         File file = imageChooser.showOpenDialog(ServerController.edu);
-        if(file != null) {
+        if (file != null) {
             Image image = new Image(file.toURI().toString());
             profileImage.setImage(image);
-            imageCode = file.toURI().toString();
+            imageCode = file.toPath().toString();
+            int n = imageCode.split("\\.").length;
+            this.fileFormat = imageCode.split("\\.")[n-1];
         }
     }
 
@@ -155,8 +158,7 @@ public class NewUserController implements Initializable {
             AlertMonitor.showAlert(Alert.AlertType.ERROR, errorMessage);
         }
         else if(isValid(nationalCodeField.getText()) &&
-                isValid(EnteringYearField.getText()) &&
-                isValid(roomField.getText())) {
+                isValid(EnteringYearField.getText())) {
             if (student.isSelected()) {
                 makeStudent();
             } else if (professor.isSelected()) {
@@ -337,6 +339,7 @@ public class NewUserController implements Initializable {
         String image = new ImageHandler().encode(imageCode);
         if (image != null) {
             request.addData("profile", image);
+            request.addData("fileFormat", fileFormat);
         }
         showRequestResult(request);
     }
