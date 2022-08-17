@@ -74,6 +74,7 @@ public class EditProfessorController implements Initializable {
     private boolean stop;
 
     public void add(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "newUserPage");
     }
 
