@@ -23,6 +23,7 @@ import shared.response.ResponseStatus;
 import shared.util.media.ImageHandler;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainPageController implements Initializable {
@@ -328,6 +329,21 @@ public class MainPageController implements Initializable {
         loop.start();
     }
 
+    private void showCurrentTime() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Platform.runLater(() -> {
+                        String time = LocalDateTime.now().toString().replace("T", " ");
+                        this.time.setText("current time: " + time.substring(0, time.length() - 4));
+                    });
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
@@ -335,5 +351,6 @@ public class MainPageController implements Initializable {
         hideFields();
         getData();
         updateData();
+        showCurrentTime();
     }
 }
