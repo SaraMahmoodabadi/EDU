@@ -14,6 +14,7 @@ import shared.response.ResponseStatus;
 import shared.util.config.Config;
 import shared.util.config.ConfigType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class RegistrationManager {
         }
         else {
             if (this.dataHandler.makeLesson(lesson)) {
-                if (addProfessorLesson(lesson.getProfessorCode(), lesson.getLessonCode())) {
+                if (addProfessorLesson(lesson.getProfessorCode(), lesson.getLessonCode(), "1")) {
                     String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
                             (String.class, "lessonCreated");
                     Response response = new Response(ResponseStatus.OK);
@@ -106,12 +107,15 @@ public class RegistrationManager {
     }
 
     public Response editLesson(Request request) {
-        String lessonCode = (String) request.getData("lessonCode");
+        String lessonCode = (String) request.getData("lesson");
         String collegeCode = (String) request.getData("collegeCode");
         if (this.dataHandler.existLesson(lessonCode) &&
                 collegeCode.equals(this.dataHandler.getLessonCollegeCode(lessonCode))) {
             String examTime = (String) request.getData("examTime");
-            String days = request.getData("days").toString();
+            String days = null;
+            try {
+                days = request.getData("days").toString();
+            } catch (Exception ignored) {}
             String classTime = (String) request.getData("classTime");
             Group group = (Group) request.getData("group");
             String query = "";
@@ -129,26 +133,28 @@ public class RegistrationManager {
                 if (n >= 1) query += ", ";
                 query += ("examTime = " + getStringFormat(examTime));
             }
+            boolean result = false;
             if (group != null) {
-                boolean result = this.dataHandler.makeGroup(group) &&
-                        addProfessorLesson(group.getProfessorCode(), group.getLessonCode());
-                if (!result) {
+                int groupNumber = this.dataHandler.generateGroupNumber(lessonCode);
+                group.setGroupNumber(groupNumber);
+                result = this.dataHandler.makeGroup(group) &&
+                        addProfessorLesson(group.getProfessorCode(), group.getLessonCode(),
+                                String.valueOf(group.getGroupNumber()));
+                if (result) {
                     List<String> groups = this.dataHandler.getLessonGroups(group.getLessonCode());
-                    groups.add(String.valueOf(group.getGroupNumber()));
+                    if (!groups.contains(String.valueOf(group.getGroupNumber())))
+                        groups.add(String.valueOf(group.getGroupNumber()));
                     this.dataHandler.updateLessonGroups(group.getLessonCode(), groups);
-                    String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty
-                            (String.class, "invalidInputs");
-                    return getErrorResponse(errorMessage);
                 }
             }
             if (n != 0) {
-                boolean result = this.dataHandler.editLesson(query, lessonCode);
-                if (result) {
-                    String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonEdited");
-                    Response response = new Response(ResponseStatus.OK);
-                    response.setNotificationMessage(note);
-                    return response;
-                }
+                result = this.dataHandler.editLesson(query, lessonCode);
+            }
+            if (result) {
+                String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonEdited");
+                Response response = new Response(ResponseStatus.OK);
+                response.setNotificationMessage(note);
+                return response;
             }
         }
         String errorMessage = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "invalidInputs");
@@ -161,19 +167,21 @@ public class RegistrationManager {
         if (collegeCode.equals(this.dataHandler.getLessonCollegeCode(lessonCode))) {
             boolean result;
             if (request.getRequestType() == RequestType.REMOVE_LESSON_GROUP) {
+                String professorCode = this.dataHandler.getProfessorByLesson
+                        (lessonCode, (String) request.getData("group"));
                 result = this.dataHandler.removeGroup(lessonCode, (String) request.getData("group"));
-                List<String> professor = Collections.singletonList(this.dataHandler.getProfessorByLesson
-                        (lessonCode, (String) request.getData("group")));
-                removeProfessorsLesson(professor, lessonCode);
+                List<String> professor = new ArrayList<>();
+                professor.add(professorCode);
+                removeProfessorsLesson(professor, lessonCode, (String) request.getData("group"));
                 String group = (String) request.getData("group");
                 List<String> groups = this.dataHandler.getLessonGroups(lessonCode);
                 groups.remove(group);
                 this.dataHandler.updateLessonGroups(lessonCode, groups);
             }
             else {
-                result = this.dataHandler.removeLesson(lessonCode);
                 List<String> professor = this.dataHandler.getProfessorsByLesson(lessonCode);
-                removeProfessorsLesson(professor, lessonCode);
+                result = this.dataHandler.removeLesson(lessonCode);
+                removeProfessorsLesson(professor, lessonCode, "0");
             }
             if (result) {
                 String note = Config.getConfig(ConfigType.SERVER_MESSAGES).getProperty(String.class, "lessonRemoved");
@@ -321,16 +329,33 @@ public class RegistrationManager {
         return getErrorResponse(errorMessage);
     }
 
-    private boolean addProfessorLesson(String professorCode, String lessonCode) {
+    private boolean addProfessorLesson(String professorCode, String lessonCode, String group) {
         List<String> lessons = this.dataHandler.getProfessorLessons(professorCode);
-        lessons.add(lessonCode);
+        String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
+        String lesson = thisTerm + "-" + lessonCode + "-" + group;
+        lessons.add(lesson);
         return this.dataHandler.updateProfessorLessons(professorCode, lessons);
     }
 
-    public void removeProfessorsLesson(List<String> professorsCode, String lessonCode) {
+    public void removeProfessorsLesson(List<String> professorsCode, String lessonCode, String group) {
         for (String code : professorsCode) {
             List<String> lessons = this.dataHandler.getProfessorLessons(code);
-            lessons.remove(lessonCode);
+            String thisTerm = Config.getConfig(ConfigType.GUI_TEXT).getProperty(String.class, "thisTerm");
+            String lesson = thisTerm + "-" + lessonCode + "-" + group;
+            if (!group.equals("0"))
+                lessons.remove(lesson);
+            else {
+                ArrayList<String> removedLessons = new ArrayList<>();
+                for (String professorLesson : lessons) {
+                    String term = professorLesson.split("-")[0];
+                    int n = professorLesson.split("-").length;
+                    String groupNumber = professorLesson.split("-")[n - 1];
+                    String professorLessonCode = professorLesson.substring
+                            (term.length() + 1, professorLesson.length() - groupNumber.length() - 1);
+                    if (professorLessonCode.equals(lessonCode)) removedLessons.add(professorLesson);
+                }
+                lessons.removeAll(removedLessons);
+            }
             this.dataHandler.updateProfessorLessons(code, lessons);
         }
     }

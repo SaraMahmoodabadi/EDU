@@ -107,19 +107,26 @@ public class EditLessonController implements Initializable {
     private boolean stop;
 
     public void edit(ActionEvent actionEvent) {
-        int capacity = getCapacity(capacityField2.getText());
-        if (capacity == -1) return;
-        Group group = new Group(codeField2.getText(), capacity, professorField2.getText());
-        List<Day> days = setEditedPlan();
-        String examTime = date2.getValue() + "-" + hour6.getText() + ":" + minute6.getText();
-        String classTime = hour4.getText() + ":" + minute4.getText() +
-                "-" + hour5.getText() + ":" + minute5.getText();
+        if (codeField2.getText() == null || codeField2.getText().equals("")) return;
         Request request = new Request(RequestType.EDIT_LESSON);
+        int capacity = getCapacity(capacityField2.getText());
+        if (capacity != -1) {
+            Group group = new Group(codeField2.getText(), capacity, professorField2.getText());
+            request.addData("group", group);
+        }
+        List<Day> days = setEditedPlan();
+        if (days.size() != 0)
+            request.addData("days", days);
+        if (date2.getValue() != null && !date2.getValue().equals("")) {
+            String examTime = date2.getValue() + "-" + hour6.getText() + ":" + minute6.getText();
+            request.addData("examTime", examTime);
+        }
+        if (hour4.getText() != null && !hour4.getText().equals("")) {
+            String classTime = hour4.getText() + ":" + minute4.getText() +
+                    "-" + hour5.getText() + ":" + minute5.getText();
+            request.addData("classTime", classTime);
+        }
         request.addData("lesson", codeField2.getText());
-        request.addData("group", group);
-        request.addData("days", days);
-        request.addData("examTime", examTime);
-        request.addData("classTime", classTime);
         request.addData("collegeCode", EDU.collegeCode);
         showRequestResult(request);
     }

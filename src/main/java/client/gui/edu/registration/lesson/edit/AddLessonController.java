@@ -125,10 +125,12 @@ public class AddLessonController implements Initializable {
 
     public void addPrerequisite(ActionEvent actionEvent) {
         prerequisites.add(prerequisiteList.getText());
+        prerequisiteList.clear();
     }
 
     public void addNeed(ActionEvent actionEvent) {
         theNeeds.add(needList.getText());
+        needList.clear();
     }
 
     public void back(ActionEvent actionEvent) {

@@ -119,7 +119,7 @@ public class RegistrationDataHandler {
 
     public void updateLessonGroups(String lessonCode, List<String> groups) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "updateData");
-        query = String.format(query, "lesson", "edu.groups = " + getStringFormat(groups.toString())) + " lessonCode = " +
+        query = String.format(query, "lesson", "lesson.groups = " + getStringFormat(groups.toString())) + " lessonCode = " +
                 getStringFormat(lessonCode);
         this.dataBaseHandler.updateData(query);
     }
@@ -161,7 +161,7 @@ public class RegistrationDataHandler {
         query = String.format(query, getStringFormat(lesson.getLessonCode()) + ", " + getStringFormat(lesson.getName()) +
                 ", " + getStringFormat(lesson.getCollegeCode()) + ", " + lesson.getUnitNumber() +
                 ", " + getStringFormat(lesson.getGrade().toString()) + ", " + getStringFormat(lesson.getPrerequisites().toString()) +
-                ", " + getStringFormat(lesson.getTheNeed().toString()) + ", [1], " + getStringFormat(lesson.getDays().toString()) +
+                ", " + getStringFormat(lesson.getTheNeed().toString()) + ", '[1]', " + getStringFormat(lesson.getDays().toString()) +
                 ", " + getStringFormat(lesson.getClassTime()) + ", " + getStringFormat(lesson.getExamTime()));
         String query2 = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
         query2 = String.format(query2, "'1', " +getStringFormat(lesson.getLessonCode()) + ", " +
@@ -174,7 +174,7 @@ public class RegistrationDataHandler {
 
     public boolean makeGroup(Group group) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "makeGroup");
-        query = String.format(query, getStringFormat(String.valueOf(generateGroupNumber(group.getLessonCode()))) + ", " +
+        query = String.format(query, getStringFormat(String.valueOf(group.getGroupNumber())) + ", " +
                 getStringFormat(group.getLessonCode()) + ", " + getStringFormat(group.getProfessorCode()) +
                 ", " + group.getCapacity());
         return this.dataBaseHandler.updateData(query);
@@ -390,16 +390,16 @@ public class RegistrationDataHandler {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getUserLessons");
         query = String.format(query, "professor") + " professorCode = " + getStringFormat(professorCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
-        if (resultSet != null) {
-            try {
-                if (resultSet.next()) {
-                    String lessons = resultSet.getString("lessonCode");
+        try {
+            if (resultSet.next()) {
+                String lessons = resultSet.getString("lessonsCode");
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
                 }
-            } catch (SQLException ignored) {}
-        }
-        return null;
+            }
+        } catch (SQLException ignored) {}
+        return new ArrayList<>();
     }
 
     public List<String> getProfessorsByLesson(String lessonCode) {
@@ -419,22 +419,20 @@ public class RegistrationDataHandler {
 
     public String getProfessorByLesson(String lessonCode, String groupNumber) {
         String query = Config.getConfig(ConfigType.QUERY).getProperty(String.class, "getProfessorByLesson");
-        query = query + " lessonCode = " + getStringFormat(lessonCode) + " AND groupNumber = " + getStringFormat(groupNumber);
+        query = query + " lessonCode = " + getStringFormat(lessonCode) + " AND groupNumber = " + getStringFormat(groupNumber);;
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);
         String professor = null;
-        if (resultSet != null) {
-            try {
-                if (resultSet.next()) {
-                    professor = resultSet.getString("professorCode");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            if (resultSet.next()) {
+                professor = resultSet.getString("professorCode");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return professor;
     }
 
-    private int generateGroupNumber(String lessonCode) {
+    public int generateGroupNumber(String lessonCode) {
         String query = Config.getConfig
                 (ConfigType.QUERY).getProperty(String.class, "getAllGroups") + " " + getStringFormat(lessonCode);
         ResultSet resultSet = this.dataBaseHandler.getResultSet(query);

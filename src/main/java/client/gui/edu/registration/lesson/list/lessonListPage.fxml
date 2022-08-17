@@ -90,7 +90,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="695.0" layoutY="634.0" mnemonicParsing="false" onAction="#add" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="add lessons" textAlignment="CENTER" textFill="#ffd100">
+      <Button layoutX="693.0" layoutY="641.0" mnemonicParsing="false" onAction="#add" prefHeight="39.0" prefWidth="157.0" style="-fx-background-color: #b151b8;" text="add lessons" textAlignment="CENTER" textFill="#ffd100">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
