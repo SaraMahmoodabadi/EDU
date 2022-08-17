@@ -4,6 +4,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.InnerShadow?>
@@ -441,6 +442,16 @@
                   <InnerShadow choke="0.3" color="#b151b8" height="35.0" radius="17.0" width="35.0" />
                </effect>
             </TextField>
+            <Label fx:id="offlineLabel" layoutX="1014.0" layoutY="15.0" text="You are offline" visible="false" />
+            <Button fx:id="offlineButton" disable="true" layoutX="1111.0" layoutY="6.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: #b151b8;" visible="false">
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../resource/images/refreshIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children></AnchorPane>
    </content>
 </ScrollPane>

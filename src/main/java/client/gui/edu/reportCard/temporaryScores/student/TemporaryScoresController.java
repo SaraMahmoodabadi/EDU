@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +16,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import shared.model.university.lesson.score.Score;
 import shared.model.user.UserType;
-import shared.model.user.professor.Professor;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -29,7 +29,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TemporaryScoresController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -87,6 +90,16 @@ public class TemporaryScoresController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void showRequestResult(Request request, Score score, String protest) {
@@ -149,8 +162,10 @@ public class TemporaryScoresController implements Initializable {
                             });
                             updateTable(scores);
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

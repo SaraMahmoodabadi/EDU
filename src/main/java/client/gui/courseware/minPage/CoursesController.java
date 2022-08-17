@@ -2,6 +2,7 @@ package client.gui.courseware.minPage;
 
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +28,10 @@ import java.util.ResourceBundle;
 
 public class CoursesController implements Initializable {
     @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
+    @FXML
     protected Button back;
     @FXML
     protected VBox coursesPane;
@@ -40,6 +45,17 @@ public class CoursesController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void showData(HashMap<String, Object> data) {
@@ -77,8 +93,10 @@ public class CoursesController implements Initializable {
                             coursesPane.getChildren().clear();
                             showData(response.getData());
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();
@@ -99,6 +117,7 @@ public class CoursesController implements Initializable {
                         }
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

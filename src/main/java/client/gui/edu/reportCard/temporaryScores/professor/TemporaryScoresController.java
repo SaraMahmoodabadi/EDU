@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.professor;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,7 +30,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TemporaryScoresController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -208,6 +212,16 @@ public class TemporaryScoresController implements Initializable {
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private void showRequestResult(Request request) {
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.ERROR) {
@@ -253,30 +267,33 @@ public class TemporaryScoresController implements Initializable {
             while (!stop) {
                 try {
                     Thread.sleep(2000);
-                    if (lessonCode == null || lessonCode.equals("") ||
-                            groupField.getText() == null || groupField.getText().equals("")) continue;
-                    Request request = new Request(RequestType.SHOW_LESSON_SCORES, UserType.PROFESSOR);
-                    request.addData("lessonCode", lessonCodeField.getText());
-                    request.addData("group", groupField.getText());
-                    request.addData("page", "professor");
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            List<Score> scores = new ArrayList<>();
-                            response.getData().forEach((K, V) -> {
-                                if (K.startsWith("score")) {
-                                    scores.add((Score) V);
+                        if (lessonCode != null && !lessonCode.equals("") &&
+                                groupField.getText() != null && !groupField.getText().equals("")) {
+                            Request request = new Request(RequestType.SHOW_LESSON_SCORES, UserType.PROFESSOR);
+                            request.addData("lessonCode", lessonCodeField.getText());
+                            request.addData("group", groupField.getText());
+                            request.addData("page", "professor");
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                List<Score> scores = new ArrayList<>();
+                                response.getData().forEach((K, V) -> {
+                                    if (K.startsWith("score")) {
+                                        scores.add((Score) V);
+                                    }
+                                });
+                                for (Score score : scores) {
+                                    if (score.getScore() != null && !score.getScore().equals("")) {
+                                        updateTable(scores);
+                                    }
+                                    break;
                                 }
-                            });
-                            for (Score score : scores) {
-                                if (score.getScore() != null && !score.getScore().equals("")) {
-                                    updateTable(scores);
-                                }
-                                break;
                             }
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

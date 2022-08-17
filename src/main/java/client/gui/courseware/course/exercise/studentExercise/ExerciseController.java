@@ -3,6 +3,7 @@ package client.gui.courseware.course.exercise.studentExercise;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,6 +32,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ExerciseController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Text exerciseName;
     @FXML
@@ -129,6 +134,17 @@ public class ExerciseController implements Initializable {
         EDU.sceneSwitcher.switchScene(new ActionEvent(), "course");
     }
 
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private void showData(Map<String, Object> data) {
         Exercise exercise = (Exercise) data.get("exercise");
         exerciseName.setText(exercise.getName());
@@ -173,8 +189,10 @@ public class ExerciseController implements Initializable {
                         if (response.getStatus() == ResponseStatus.OK) {
                             showData(response.getData());
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

@@ -2,6 +2,8 @@ package client.gui.edu.registration.lesson.edit;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,8 +30,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditLessonController implements Initializable {
-
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -194,6 +198,7 @@ public class EditLessonController implements Initializable {
     protected TextField minute6;
     private List<String> prerequisites;
     private List<String> theNeeds;
+    private boolean stop;
 
 
     public void register(ActionEvent actionEvent) {
@@ -246,7 +251,18 @@ public class EditLessonController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "lessonListPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void showRequestResult(Request request) {
@@ -347,10 +363,27 @@ public class EditLessonController implements Initializable {
         return capacity;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         prerequisites = new ArrayList<>();
         theNeeds = new ArrayList<>();
         completeBoxes();
+        updateData();
     }
 }

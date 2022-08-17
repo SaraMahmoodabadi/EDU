@@ -2,6 +2,8 @@ package client.gui.edu.eduServices.unitSelection.eduAssistant;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,10 +15,13 @@ import shared.response.Response;
 import shared.response.ResponseStatus;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class AssistantUnitSelectionController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Button back;
     @FXML
@@ -35,6 +40,7 @@ public class AssistantUnitSelectionController implements Initializable {
     protected ComboBox<Integer> minuteCollege;
     @FXML
     protected DatePicker dateCollege;
+    private boolean stop;
 
 
     public void register(ActionEvent actionEvent) {
@@ -70,7 +76,18 @@ public class AssistantUnitSelectionController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private boolean isNull() {
@@ -135,8 +152,25 @@ public class AssistantUnitSelectionController implements Initializable {
         return dateValue + "-" + time;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         makeBoxes();
+        updateData();
     }
 }

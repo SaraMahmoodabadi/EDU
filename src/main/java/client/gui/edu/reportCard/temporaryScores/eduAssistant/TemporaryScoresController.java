@@ -2,6 +2,7 @@ package client.gui.edu.reportCard.temporaryScores.eduAssistant;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import shared.model.university.lesson.score.Score;
-import shared.model.user.UserType;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -27,7 +27,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TemporaryScoresController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -136,6 +139,16 @@ public class TemporaryScoresController implements Initializable {
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private void makeTable() {
         lessonCodeColumn.setCellValueFactory(new PropertyValueFactory<>("lessonCode"));
         professorCodeColumn.setCellValueFactory(new PropertyValueFactory<>("professorCode"));
@@ -215,20 +228,23 @@ public class TemporaryScoresController implements Initializable {
             while (!stop) {
                 try {
                     Thread.sleep(2000);
-                    if (request == null) continue;
                     Platform.runLater(() -> {
-                        Response response = EDU.serverController.sendRequest(request);
-                        if (response.getStatus() == ResponseStatus.OK) {
-                            List<Score> scores = new ArrayList<>();
-                            response.getData().forEach((K, V) -> {
-                                if (K.startsWith("score")) {
-                                    scores.add((Score) V);
-                                }
-                            });
-                            updateTable(scores);
+                        if (request != null) {
+                            Response response = EDU.serverController.sendRequest(request);
+                            if (response.getStatus() == ResponseStatus.OK) {
+                                List<Score> scores = new ArrayList<>();
+                                response.getData().forEach((K, V) -> {
+                                    if (K.startsWith("score")) {
+                                        scores.add((Score) V);
+                                    }
+                                });
+                                updateTable(scores);
+                            }
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

@@ -2,16 +2,15 @@ package client.gui.edu.eduServices.unitSelection.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import shared.model.university.college.University;
 import shared.model.university.lesson.Lesson;
-import shared.model.user.student.Grade;
 import shared.request.Request;
 import shared.request.RequestType;
 import shared.response.Response;
@@ -21,6 +20,10 @@ import java.net.URL;
 import java.util.*;
 
 public class StudentUnitSelectionController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Button back;
     @FXML
@@ -80,7 +83,18 @@ public class StudentUnitSelectionController implements Initializable {
     }
 
     public void back(ActionEvent event) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(event, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private boolean isNull() {
@@ -221,6 +235,7 @@ public class StudentUnitSelectionController implements Initializable {
                         }
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();
@@ -245,8 +260,10 @@ public class StudentUnitSelectionController implements Initializable {
                                 stop = true;
                             }
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

@@ -2,6 +2,8 @@ package client.gui.edu.registration.professor.edit;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +22,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class EditProfessorController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -66,6 +71,7 @@ public class EditProfessorController implements Initializable {
     @FXML
     protected Button remove;
     private final ToggleGroup grade = new ToggleGroup();
+    private boolean stop;
 
     public void add(ActionEvent actionEvent) {
         EDU.sceneSwitcher.switchScene(actionEvent, "newUserPage");
@@ -107,7 +113,18 @@ public class EditProfessorController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "professorListPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void showRequestResult(Request request) {
@@ -130,10 +147,27 @@ public class EditProfessorController implements Initializable {
         else return null;
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         assistant.setToggleGroup(grade);
         associate.setToggleGroup(grade);
         full.setToggleGroup(grade);
+        updateData();
     }
 }

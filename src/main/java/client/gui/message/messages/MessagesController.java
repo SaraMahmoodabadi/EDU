@@ -3,6 +3,7 @@ package client.gui.message.messages;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
@@ -44,6 +45,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MessagesController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Button mediaButton;
     @FXML
@@ -129,6 +134,17 @@ public class MessagesController implements Initializable {
                 makeMediaMessage(message, true);
             }
         }
+    }
+
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void sendRequestAnswer(boolean result) {
@@ -274,8 +290,10 @@ public class MessagesController implements Initializable {
                                 showData(response.getData());
                             }
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

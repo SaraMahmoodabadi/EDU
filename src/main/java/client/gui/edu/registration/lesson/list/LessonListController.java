@@ -2,6 +2,7 @@ package client.gui.edu.registration.lesson.list;
 
 import client.gui.EDU;
 import client.gui.AlertMonitor;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,7 +29,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class LessonListController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Pane pane;
     @FXML
@@ -105,6 +109,16 @@ public class LessonListController implements Initializable {
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
     }
 
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private void hide() {
         if (EDU.userType != UserType.PROFESSOR ||
                 EDU.professorType != Type.EDUCATIONAL_ASSISTANT) {
@@ -162,8 +176,10 @@ public class LessonListController implements Initializable {
                             list.getItems().clear();
                             list.getItems().addAll(desiredLessons);
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

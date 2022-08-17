@@ -3,22 +3,19 @@ package client.gui.edu.registration.professor.list;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
-import shared.model.university.college.University;
-import shared.model.university.lesson.Lesson;
 import shared.model.user.UserType;
-import shared.model.user.professor.MasterDegree;
 import shared.model.user.professor.Professor;
 import shared.model.user.professor.Type;
 import shared.request.Request;
@@ -28,22 +25,18 @@ import shared.response.ResponseStatus;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ProfessorListController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Pane pane;
     @FXML
     protected Rectangle rectangle;
-    @FXML
-    protected TextField codeField;
-    @FXML
-    protected ComboBox<String> degreeBox;
-    @FXML
-    protected ComboBox<String> collegeBox;
     @FXML
     protected Button show;
     @FXML
@@ -75,6 +68,16 @@ public class ProfessorListController implements Initializable {
     public void back(ActionEvent actionEvent) {
         stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void hide() {
@@ -128,8 +131,10 @@ public class ProfessorListController implements Initializable {
                             list.getItems().clear();
                             list.getItems().addAll(professors);
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

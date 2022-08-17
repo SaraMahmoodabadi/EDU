@@ -3,6 +3,8 @@ package client.gui.courseware.course.exercise.addExercise;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +25,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewExerciseController implements Initializable{
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected TextField nameField;
     @FXML
@@ -54,6 +60,7 @@ public class NewExerciseController implements Initializable{
     private ToggleGroup exerciseType;
     private String courseCode;
     private String exerciseCode;
+    private boolean stop;
 
     @FXML
     public void addFile(ActionEvent event) {
@@ -99,10 +106,22 @@ public class NewExerciseController implements Initializable{
 
     @FXML
     public void back(ActionEvent event) {
+        stop = true;
         Request request = new Request(RequestType.SHOW_COURSE);
         request.addData("courseCode", this.courseCode);
         ServerController.request = request;
         EDU.sceneSwitcher.switchScene(new ActionEvent(), "course");
+    }
+
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private ItemType getValidType() {
@@ -144,8 +163,24 @@ public class NewExerciseController implements Initializable{
         exerciseType.selectToggle(textType);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         Request request = ServerController.request;
         this.courseCode = (String) request.getData("courseCode");
         this.nameField.setText((String) request.getData("name"));
@@ -153,5 +188,6 @@ public class NewExerciseController implements Initializable{
         this.exerciseCode = courseCode + "-" + this.nameField.getText();
         makeBoxes();
         makeToggle();
+        updateData();
     }
 }

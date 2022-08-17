@@ -2,6 +2,8 @@ package client.gui.edu.eduServices.request.student;
 
 import client.gui.AlertMonitor;
 import client.gui.EDU;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +28,10 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class StudentRequestController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -44,14 +49,6 @@ public class StudentRequestController implements Initializable {
     @FXML
     protected Label recentRequestLabel;
     @FXML
-    protected TableView<Request> table;
-    @FXML
-    protected TableColumn<Request, String> typeColumn;
-    @FXML
-    protected TableColumn<Request, String> dateColumn;
-    @FXML
-    protected TableColumn<Request, String> resultColumn;
-    @FXML
     protected Button register;
     @FXML
     protected Button back;
@@ -62,6 +59,7 @@ public class StudentRequestController implements Initializable {
     @FXML
     protected TextArea result;
     private Grade grade;
+    private boolean stop;
 
     public void register(ActionEvent actionEvent) {
         if (requestBox.getValue() == null) return;
@@ -87,7 +85,18 @@ public class StudentRequestController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     private void makeBoxes() {
@@ -109,31 +118,14 @@ public class StudentRequestController implements Initializable {
         }
     }
 
-    private List<Request> getData() {
+    private void getData() {
         shared.request.Request request = new shared.request.Request(RequestType.SHOW_REQUESTS_PAGE, UserType.STUDENT);
         Response response = EDU.serverController.sendRequest(request);
         if (response.getStatus() == ResponseStatus.OK) {
             grade = (Grade) response.getData("grade");
             makeBoxes();
             hide();
-            /**
-            List<Request> requests = new ArrayList<>();
-            response.getData().forEach((K, V) -> {
-                if (K.startsWith("request")) {
-                    requests.add((Request) V);
-                }
-            });
-            return requests;*/
         }
-        return null;
-    }
-
-    private void makeTable() {
-        /**
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-        resultColumn.setCellValueFactory(new PropertyValueFactory<>("finalResult"));
-         */
     }
 
     private void hide() {
@@ -141,12 +133,25 @@ public class StudentRequestController implements Initializable {
         if (grade != Grade.UNDERGRADUATE) majorBox.setVisible(false);
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        makeTable();
-        List<Request> requests = getData();
-        if (requests != null) {
-            table.getItems().addAll(requests);
-        }
+        stop = false;
+        getData();
+        updateData();
     }
 }

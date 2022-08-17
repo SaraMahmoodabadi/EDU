@@ -3,6 +3,8 @@ package client.gui.edu.registration.newUser;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,7 +38,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class NewUserController implements Initializable {
-
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected AnchorPane pane;
     @FXML
@@ -142,6 +147,7 @@ public class NewUserController implements Initializable {
     private ToggleGroup pDegree;
     private ToggleGroup eduStatus;
     private String imageCode;
+    private boolean stop;
 
     public void select(ActionEvent actionEvent) {
         FileChooser imageChooser = new FileChooser();
@@ -172,7 +178,18 @@ public class NewUserController implements Initializable {
     }
 
     public void back(ActionEvent actionEvent) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(actionEvent, "mainPage");
+    }
+
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
     }
 
     public void selectStudent(ActionEvent actionEvent) {
@@ -346,10 +363,27 @@ public class NewUserController implements Initializable {
         }
     }
 
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
         imageCode = Config.getConfig(ConfigType.CLIENT_IMAGE).getProperty(String.class, "defaultProfile");
         setToggleGroups();
         makeDisable();
+        updateData();
     }
 }

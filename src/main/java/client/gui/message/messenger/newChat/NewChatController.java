@@ -3,6 +3,7 @@ package client.gui.message.messenger.newChat;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +27,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class NewChatController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Button back;
     @FXML
@@ -133,6 +138,17 @@ public class NewChatController implements Initializable {
         EDU.sceneSwitcher.switchScene(event, "chat");
     }
 
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private String getUserType() {
         if (userType.getSelectedToggle() == professorRadioButton) return UserType.PROFESSOR.toString();
         else return UserType.STUDENT.toString();
@@ -172,8 +188,10 @@ public class NewChatController implements Initializable {
                         if (response.getStatus() == ResponseStatus.OK) {
                             showData(response.getData());
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

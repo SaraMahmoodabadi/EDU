@@ -3,10 +3,14 @@ package client.gui.message.admin;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,10 +30,16 @@ import shared.util.media.MediaHandler;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
 
-public class UserController {
+public class UserController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected Button sendMediaButton;
     @FXML
@@ -41,6 +51,7 @@ public class UserController {
     private String file;
     private String fileFormat;
     private String path;
+    private boolean stop;
 
     @FXML
     void sendMessage(ActionEvent event) {
@@ -138,7 +149,39 @@ public class UserController {
 
     @FXML
     void back(ActionEvent event) {
+        stop = true;
         EDU.sceneSwitcher.switchScene(event, "mainPage");
     }
 
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
+    private void updateData() {
+        Thread loop = new Thread(() -> {
+            while (!stop) {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(() -> {
+                        if (!EDU.isOnline) showOfflineMood();
+                    });
+                } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
+            }
+        });
+        loop.start();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        stop = false;
+        updateData();
+    }
 }

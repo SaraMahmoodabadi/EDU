@@ -297,7 +297,6 @@ public class ChatController implements Initializable {
         Thread loop = new Thread(() -> {
             while (!stop) {
                 try {
-                    if (!EDU.isOnline) break;
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
                         if (!EDU.isOnline)
@@ -313,6 +312,7 @@ public class ChatController implements Initializable {
                         }
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();

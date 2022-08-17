@@ -3,6 +3,7 @@ package client.gui.courseware.course.course;
 import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.ServerController;
+import client.network.offlineClient.OfflineClientHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,6 +32,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CourseController implements Initializable {
+    @FXML
+    public Label offlineLabel;
+    @FXML
+    public Button offlineButton;
     @FXML
     protected TextField studentCodeField;
     @FXML
@@ -132,6 +137,17 @@ public class CourseController implements Initializable {
         EDU.sceneSwitcher.switchScene(new ActionEvent(), "courseware");
     }
 
+    @FXML
+    public void connectToServer(ActionEvent actionEvent) {
+        OfflineClientHandler.connectToServer();
+    }
+
+    private void showOfflineMood() {
+        this.offlineLabel.setVisible(true);
+        this.offlineButton.setVisible(true);
+        this.offlineButton.setDisable(false);
+    }
+
     private void showEduMaterials(Map<String, Object> data) {
         int size = (int) data.get("educationalMaterialSize");
         int t = 0;
@@ -226,8 +242,10 @@ public class CourseController implements Initializable {
                             exercisesPane.getChildren().clear();
                             showExercises(response.getData());
                         }
+                        if (!EDU.isOnline) showOfflineMood();
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();
@@ -249,6 +267,7 @@ public class CourseController implements Initializable {
                         }
                     });
                 } catch (InterruptedException ignored) {}
+                if (!EDU.isOnline) break;
             }
         });
         loop.start();
