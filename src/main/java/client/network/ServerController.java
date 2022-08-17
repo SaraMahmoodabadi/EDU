@@ -4,7 +4,10 @@ import client.gui.AlertMonitor;
 import client.gui.EDU;
 import client.network.offlineClient.OfflineClientHandler;
 import com.google.gson.Gson;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,6 +43,7 @@ public class ServerController {
     public static EDU edu;
     public static Request request;
     public OfflineClientHandler offlineClientHandler;
+    private Socket socket;
 
     public ServerController(int port) {
         this.port = port;
@@ -50,7 +54,7 @@ public class ServerController {
     //TODO : set socket address
     public void connectToServer() {
         try {
-            Socket socket = new Socket(InetAddress.getLocalHost(), port);
+            this.socket = new Socket(InetAddress.getLocalHost(), port);
             this.printStream = new PrintStream(socket.getOutputStream());
             this.scanner = new Scanner(socket.getInputStream());
             EDU.isOnline = true;
@@ -106,6 +110,17 @@ public class ServerController {
         Response response = getResponse(new Request());
         this.token = (String) response.getData("token");
    }
+
+    public void closeSocket(Stage stage) {
+        stage.setOnCloseRequest(event -> {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.close();
+        });
+    }
 
    public static void sendAdminMessages() {
        String path = Config.getConfig(ConfigType.GUI_TEXT).getProperty

@@ -26,6 +26,7 @@ public class EDU extends Stage {
     public static boolean isOnline;
 
     public EDU(ServerController controller) {
+        controller.closeSocket(this);
         sceneSwitcher = new SceneSwitcher();
         serverController = controller;
         try {
