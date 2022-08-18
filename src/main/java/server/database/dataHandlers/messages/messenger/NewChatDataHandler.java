@@ -172,7 +172,7 @@ public class NewChatDataHandler {
         ResultSet resultSet = this.databaseHandler.getResultSet(query);
         try {
             if (resultSet.next()) {
-                return resultSet.getString("enteringYear");
+                return resultSet.getString("professorCode");
             }
         } catch (SQLException e) {
             e.printStackTrace();

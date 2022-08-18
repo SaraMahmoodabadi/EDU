@@ -29,10 +29,11 @@ public class PlanDataHandler {
             try {
                 if (resultSet.next()) {
                     String lessons = resultSet.getString("lessonsCode");
-                    if (lessons != null) {
+                    if (lessons != null && !lessons.equals("[]")) {
                         String lessonArray = lessons.substring(1, lessons.length() - 1);
                         return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
                     }
+                    else return new ArrayList<>();
                 }
             } catch (SQLException ignored) {
             }
@@ -88,8 +89,11 @@ public class PlanDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
-                String lessonArray = lessons.substring(1, lessons.length() - 1);
-                return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
+                if (lessons != null && !lessons.equals("[]")) {
+                    String lessonArray = lessons.substring(1, lessons.length() - 1);
+                    return new ArrayList<>(Arrays.asList(lessonArray.split(", ")));
+                }
+                else return new ArrayList<>();
             }
         } catch (SQLException e) {
             e.printStackTrace();

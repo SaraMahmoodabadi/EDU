@@ -280,7 +280,7 @@ public class TemporaryScoresDataHandler {
                 if (!professor.equals(professorCode)) return list;
                 list.add(professor);
                 String students = resultSet.getString("students");
-                if (students == null) return list;
+                if (students == null || students.equals("[]")) return list;
                 String array = students.substring(1, students.length() - 1);
                 list.addAll(Arrays.asList(array.split(", ")));
                 return list;

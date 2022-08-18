@@ -206,7 +206,7 @@ public class ChatController implements Initializable {
         time.setMaxWidth(100);
         if (isSender) time.setLayoutX(430);
         else time.setLayoutX(width - 100);
-        double height = label.getHeight() + 30;
+        double height = label.getPrefHeight() + 30;
         label.setPrefHeight(height + 15);
         pane.setPrefHeight(height + 15);
         time.setLayoutY(height);

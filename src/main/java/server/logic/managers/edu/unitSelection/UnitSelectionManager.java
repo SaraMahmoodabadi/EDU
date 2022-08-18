@@ -365,8 +365,8 @@ public class UnitSelectionManager {
         int end1 = h2 * 60 + m2;
         int start2 = h3 * 60 + m3;
         int end2 = h4 * 60 + m4;
-        if (start2 > start1 && end1 > start2) return false;
-        return start1 <= start2 || end2 <= start1;
+        if (start2 >= start1 && end1 > start2) return false;
+        return start1 < start2 || end2 <= start1;
     }
 
     private boolean checkExamTime(Request request) {

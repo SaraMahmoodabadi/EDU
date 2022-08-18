@@ -66,10 +66,11 @@ public class EDUStatusDataHandler {
         try {
             if (resultSet.next()) {
                 String lessons = resultSet.getString("lessonsCode");
-                if (lessons != null) {
+                if (lessons != null && !lessons.equals("[]")) {
                     String lessonsArray = lessons.substring(1, lessons.length() - 1);
                     return new ArrayList<>(Arrays.asList(lessonsArray.split(", ")));
                 }
+                else return new ArrayList<>();
             }
         } catch (SQLException e) {
             e.printStackTrace();

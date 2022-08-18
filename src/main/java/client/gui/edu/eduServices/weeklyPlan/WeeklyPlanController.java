@@ -74,6 +74,7 @@ public class WeeklyPlanController implements Initializable {
     protected ImageView backImage;
     private Request request;
     private boolean stop;
+    ArrayList<Label> lessons;
 
     public void back(ActionEvent actionEvent) {
         stop = true;
@@ -137,6 +138,7 @@ public class WeeklyPlanController implements Initializable {
             AnchorPane.setRightAnchor(lessonLabel, 1200 - width - x);
             AnchorPane.setBottomAnchor(lessonLabel, 800 - (double) getY(day) - 75);
             pane.getChildren().add(lessonLabel);
+            lessons.add(lessonLabel);
         }
     }
 
@@ -178,6 +180,7 @@ public class WeeklyPlanController implements Initializable {
                         else {
                             Response response = EDU.serverController.sendRequest(request);
                             if (response.getStatus() == ResponseStatus.OK) {
+                                pane.getChildren().removeAll(lessons);
                                 response.getData().forEach((K, V) -> {
                                     if (K.startsWith("lesson")) {
                                         putLesson((Lesson) V);
@@ -195,6 +198,7 @@ public class WeeklyPlanController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         stop = false;
+        lessons = new ArrayList<>();
         getPlan();
         if (!EDU.isOnline) showOfflineMood();
         updateData();
