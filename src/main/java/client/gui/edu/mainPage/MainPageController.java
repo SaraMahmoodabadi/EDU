@@ -221,6 +221,7 @@ public class MainPageController implements Initializable {
         stop = true;
         EDU.professorType = null;
         EDU.userType = null;
+        EDU.username = null;
         EDU.sceneSwitcher.switchScene(actionEvent, "loginPage");
     }
 

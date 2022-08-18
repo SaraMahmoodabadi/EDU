@@ -51,6 +51,7 @@ public class OfflineClientHandler {
             return;
         Thread thread = new Thread(() -> {
             while (EDU.isOnline) {
+                if (EDU.username == null) break;
                 Request request;
                 Response response;
 
